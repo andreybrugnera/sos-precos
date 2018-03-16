@@ -1,7 +1,9 @@
-package br.edu.ifspsaocarlos.sosprecos;
+package br.edu.ifspsaocarlos.sosprecos.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import br.edu.ifspsaocarlos.sosprecos.R;
 
 public class MainActivity extends Activity {
 

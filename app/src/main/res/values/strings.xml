@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">SOS Precos</string>
+    <string name="enter">Entrar</string>
+    <string name="register">Registrar-se</string>
+    <string name="new_user">Novo usuário</string>
+    <string name="new_user_register">Novo usuário? Registre-se</string>
+    <string name="inform_email">Informe seu e-mail</string>
+    <string name="inform_password">Informe sua senha</string>
+    <string name="confirm_password">Repita sua senha</string>
+    <string name="enter_valid_email">Informe um e-mail válido</string>
+    <string name="enter_password">Informe uma senha</string>
+    <string name="password_mismatch">As senhas não conferem</string>
+    <string name="password_length_error">A senha deve possuir pelo menos 8 caracteres</string>
+    <string name="registration_failure">Ocorreu um erro ao fazer o registro</string>
+    <string name="registration_failure_user_exists">Ocorreu um erro ao fazer o registro, o usuário já existe</string>
+    <string name="login_failure">Ocorreu um erro ao fazer a autenticação</string>
+    <string name="invalid_email_passeord">E-mail ou senha inválidos</string>
+    <string name="forgot_passeord">Esqueci minha senha</string>
+    <string name="reset_passeord">Resetar senha</string>
+    <string name="reset_password_message">Informe seu endereço de e-mail e lhe enviaremos instruções de como recuperar sua senha</string>
+    <string name="send_reset_password_email_message">Um e-mail foi enviado com instruções para recuperar a senha</string>
+    <string name="send_reset_password_email_failed">Ocorreu um erro ao tentar enviar o e-mail de recuperação de senha</string>
+    <string name="back">Voltar</string>
 </resources>
