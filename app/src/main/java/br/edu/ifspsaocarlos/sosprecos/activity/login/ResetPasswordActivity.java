@@ -58,11 +58,11 @@ public class ResetPasswordActivity extends Activity {
                         if (task.isSuccessful()) {
                             Toast.makeText(ResetPasswordActivity.this,
                                     getString(R.string.send_reset_password_email_message),
-                                    Toast.LENGTH_SHORT).show();
+                                    Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(ResetPasswordActivity.this,
                                     getString(R.string.send_reset_password_email_failed),
-                                    Toast.LENGTH_SHORT).show();
+                                    Toast.LENGTH_LONG).show();
                         }
                     }
                 });

@@ -8,6 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/background_color"
     tools:context="br.edu.ifspsaocarlos.sosprecos.activity.login.RegisterActivity">
 
     <ProgressBar
@@ -37,12 +38,14 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="15dp"
+                android:textColor="@color/label_text_color"
                 android:text="@string/new_user" />
 
             <AutoCompleteTextView
                 android:id="@+id/actv_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/input_text_color"
                 android:hint="@string/inform_email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
@@ -52,6 +55,7 @@
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/input_text_color"
                 android:hint="@string/inform_password"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
@@ -62,6 +66,7 @@
                 android:id="@+id/et_confirm_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/input_text_color"
                 android:hint="@string/confirm_password"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
@@ -74,6 +79,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:textColor="@color/button_text_color"
+                android:background="@color/button_background_color"
                 android:text="@string/register"
                 android:textStyle="bold"
                 android:onClick="registerUser"/>

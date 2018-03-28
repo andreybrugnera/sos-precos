@@ -8,6 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/background_color"
     tools:context="br.edu.ifspsaocarlos.sosprecos.activity.login.LoginActivity">
 
     <ProgressBar
@@ -29,10 +30,21 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tv_reset_title"
+                style="?android:textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="15dp"
+                android:textColor="@color/label_text_color"
+                android:text="@string/enter" />
+
             <AutoCompleteTextView
                 android:id="@+id/actv_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/label_text_color"
                 android:hint="@string/inform_email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
@@ -42,6 +54,7 @@
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/label_text_color"
                 android:hint="@string/inform_password"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
@@ -54,6 +67,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:textColor="@color/button_text_color"
+                android:background="@color/button_background_color"
                 android:text="@string/enter"
                 android:onClick="startLogin"
                 android:textStyle="bold" />
@@ -62,6 +77,7 @@
                 android:id="@+id/tv_forgot_passrod"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/link_text_color"
                 android:gravity="center"
                 android:paddingTop="15dp"
                 android:text="@string/forgot_passeord"
@@ -72,6 +88,7 @@
                 android:id="@+id/tv_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/link_text_color"
                 android:gravity="center"
                 android:paddingTop="15dp"
                 android:text="@string/new_user_register"

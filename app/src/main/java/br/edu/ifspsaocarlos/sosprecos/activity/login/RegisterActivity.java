@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dao.UserDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.User;
 
 public class RegisterActivity extends Activity {
@@ -28,6 +30,7 @@ public class RegisterActivity extends Activity {
     private EditText etPassword;
     private EditText etConfirmPassword;
     private ProgressBar progressBar;
+    private UserDao userDao;
 
     private static final int PASSWORD_MIN_LENGTH = 8;
 
@@ -42,6 +45,7 @@ public class RegisterActivity extends Activity {
         this.etPassword = findViewById(R.id.et_password);
         this.etConfirmPassword = findViewById(R.id.et_confirm_password);
         this.progressBar = findViewById(R.id.pb_register);
+        this.userDao = new UserDao(this);
 
         this.auth = FirebaseAuth.getInstance();
     }
@@ -98,17 +102,19 @@ public class RegisterActivity extends Activity {
                         if (task.isSuccessful()) {
                             FirebaseUser user = auth.getCurrentUser();
                             //Register user into firebase app database
-                            UserDao userDao = new UserDao();
-                            userDao.addUser(User.getInstance(user));
-
+                            try{
+                                userDao.addUser(User.getInstance(user));
+                            }catch(DaoException ex){
+                                Log.e(getString(R.string.firebase_error), ex.getMessage());
+                            }
                             //Go back to login
                             finish();
                         } else if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                             Toast.makeText(RegisterActivity.this, getString(R.string.registration_failure_user_exists),
-                                    Toast.LENGTH_SHORT).show();
+                                    Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(RegisterActivity.this, getString(R.string.registration_failure),
-                                    Toast.LENGTH_SHORT).show();
+                                    Toast.LENGTH_LONG).show();
                         }
                     }
                 });
