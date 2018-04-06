@@ -1,6 +1,8 @@
 package br.edu.ifspsaocarlos.sosprecos.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -8,10 +10,10 @@ import java.util.Objects;
  */
 public class Service implements Serializable {
     private String id;
-    private String serviceProvider;
     private String name;
     private String description;
     private Float price;
+    private Map<String, Qualification> qualifications;
 
     public String getId() {
         return id;
@@ -19,14 +21,6 @@ public class Service implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getServiceProvider() {
-        return serviceProvider;
-    }
-
-    public void setServiceProvider(String serviceProvider) {
-        this.serviceProvider = serviceProvider;
     }
 
     public String getName() {
@@ -51,6 +45,17 @@ public class Service implements Serializable {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public Map<String, Qualification> getQualifications() {
+        if (qualifications == null){
+            qualifications = new HashMap<>();
+        }
+        return qualifications;
+    }
+
+    public void setQualifications(Map<String, Qualification> qualifications) {
+        this.qualifications = qualifications;
     }
 
     @Override

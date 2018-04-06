@@ -32,6 +32,11 @@ public class RegisterActivity extends Activity {
     private ProgressBar progressBar;
     private UserDao userDao;
 
+    /*
+    private CategoryDao catDao;
+    private ServiceProviderDao servProvDao;
+    */
+
     private static final int PASSWORD_MIN_LENGTH = 8;
 
     private FirebaseAuth auth;
@@ -46,6 +51,11 @@ public class RegisterActivity extends Activity {
         this.etConfirmPassword = findViewById(R.id.et_confirm_password);
         this.progressBar = findViewById(R.id.pb_register);
         this.userDao = new UserDao(this);
+
+        /*
+        this.catDao = new CategoryDao(this);
+        this.servProvDao = new ServiceProviderDao(this);
+        */
 
         this.auth = FirebaseAuth.getInstance();
     }
@@ -104,6 +114,18 @@ public class RegisterActivity extends Activity {
                             //Register user into firebase app database
                             try{
                                 userDao.addUser(User.getInstance(user));
+
+                                /*
+                                Category c = new Category();
+                                c.setName("Category test");
+                                c.setImagePath("Category test image path");
+                                catDao.addCategory(c);
+
+                                ServiceProvider sp = new ServiceProvider();
+                                sp.setName("Test service provider");
+                                servProvDao.addServiceProvider(sp, c);
+                                */
+
                             }catch(DaoException ex){
                                 Log.e(getString(R.string.firebase_error), ex.getMessage());
                             }

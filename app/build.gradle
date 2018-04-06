@@ -32,6 +32,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:11.8.0'
     implementation 'com.google.firebase:firebase-database:11.8.0'
     implementation 'com.google.firebase:firebase-auth:11.8.0'
+    //implementation 'com.fasterxml.jackson.core:jackson-core:2.5.3'
+    //implementation 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
+    //implementation 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'
 }
 
 apply plugin: 'com.google.gms.google-services'

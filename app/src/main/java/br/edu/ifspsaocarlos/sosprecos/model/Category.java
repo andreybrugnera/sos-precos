@@ -1,21 +1,27 @@
 package br.edu.ifspsaocarlos.sosprecos.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Andrey R. Brugnera on 05/03/2018.
  */
 public class Category implements Serializable{
+    private String id;
     private String name;
-    private Set<String> serviceProviders;
+    private String imagePath;
+    private List<String> serviceProviders;
 
-    public Category() {
+    public String getId() {
+        return id;
     }
 
-    public Category(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -26,14 +32,22 @@ public class Category implements Serializable{
         this.name = name;
     }
 
-    public Set<String> getServiceProviders() {
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public List<String> getServiceProviders() {
         if(serviceProviders == null){
-            serviceProviders = new HashSet<>();
+            serviceProviders = new ArrayList();
         }
         return serviceProviders;
     }
 
-    public void setServiceProviders(Set<String> serviceProviders) {
+    public void setServiceProviders(List<String> serviceProviders) {
         this.serviceProviders = serviceProviders;
     }
 
@@ -41,14 +55,13 @@ public class Category implements Serializable{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Category)) return false;
-
-        Category that = (Category) o;
-
-        return name.equals(that.name);
+        Category category = (Category) o;
+        return Objects.equals(id, category.id);
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+
+        return Objects.hash(id);
     }
 }

@@ -2,20 +2,22 @@ package br.edu.ifspsaocarlos.sosprecos.model;
 
 import android.location.Location;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Created by Andrey R. Brugnera on 05/03/2018.
  */
-public class ServiceProvider implements Serializable{
+public class ServiceProvider implements Serializable {
     private String id;
     private String name;
-    private Set<String> services;
-    private Set<String> qualifications;
+    private Map<String, Service> services;
+    private Map<String, Qualification> qualifications;
     private String description;
     private String phoneNumber;
     private String email;
@@ -23,6 +25,7 @@ public class ServiceProvider implements Serializable{
     private String state;
     private Double latitude;
     private Double longitude;
+    @Exclude
     private Location location;
     private Date registrationDate;
     private int qualificationsCount;
@@ -126,10 +129,10 @@ public class ServiceProvider implements Serializable{
         getLocation().setLongitude(longitude);
     }
 
-    public Location getLocation(){
-        if(location == null){
-            location = new Location("");
-            if(latitude != null && longitude != null){
+    public Location getLocation() {
+        if (location == null) {
+            if (latitude != null && longitude != null) {
+                location = new Location("");
                 location.setLatitude(latitude);
                 location.setLongitude(longitude);
             }
@@ -137,25 +140,25 @@ public class ServiceProvider implements Serializable{
         return location;
     }
 
-    public Set<String> getServices() {
-        if(services == null){
-            services = new HashSet<>();
+    public Map<String, Service> getServices() {
+        if (services == null) {
+            services = new HashMap<>();
         }
         return services;
     }
 
-    public void setServices(Set<String> services) {
+    public void setServices(Map<String, Service> services) {
         this.services = services;
     }
 
-    public Set<String> getQualifications() {
-        if(qualifications == null){
-            qualifications = new HashSet<>();
+    public Map<String, Qualification> getQualifications() {
+        if (qualifications == null) {
+            qualifications = new HashMap<>();
         }
         return qualifications;
     }
 
-    public void setQualifications(Set<String> qualifications) {
+    public void setQualifications(Map<String, Qualification> qualifications) {
         this.qualifications = qualifications;
     }
 
@@ -169,7 +172,6 @@ public class ServiceProvider implements Serializable{
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id);
     }
 }
