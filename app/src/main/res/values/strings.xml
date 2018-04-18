@@ -22,9 +22,18 @@
     <string name="send_reset_password_email_failed">Ocorreu um erro ao tentar enviar o e-mail de recuperação de senha</string>
     <string name="back"><u>Voltar</u></string>
     <string name="firebase_error">Erro com o Firebase</string>
-    <string name="user_uuid_not_set">O uuid não foi definido</string>
     <string name="user_email_not_set">O e-mail não foi definido</string>
+    <string name="id_not_set">O id não foi definido</string>
+    <string name="image_not_set">A imagem não foi definida</string>
+    <string name="user_not_set">O usuário não foi especificado</string>
+    <string name="name_not_set">O nome não foi informado</string>
+    <string name="city_not_set">O nome da cidade não foi informado</string>
+    <string name="state_not_set">O estado não foi informado</string>
+    <string name="price_not_set">O preço não foi informado</string>
+    <string name="description_not_set">A descrição não foi informada</string>
     <string name="category_id_not_set">O id da categoria não foi definido</string>
-    <string name="category_name_not_set">O nome da categoria não foi definido</string>
-    <string name="category_image_not_set">A imagem da categoria não foi definida</string>
+    <string name="provider_id_not_set">O id do prestador de serviço não foi definido</string>
+    <string name="service_id_not_set">O id do serviço não foi definido</string>
+    <string name="qualification_id_not_set">O id da qualificação não foi definida</string>
+
 </resources>

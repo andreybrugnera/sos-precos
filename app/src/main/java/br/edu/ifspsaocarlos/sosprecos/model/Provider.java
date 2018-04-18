@@ -6,18 +6,14 @@ import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
  * Created by Andrey R. Brugnera on 05/03/2018.
  */
-public class ServiceProvider implements Serializable {
+public class Provider implements Serializable {
     private String id;
     private String name;
-    private Map<String, Service> services;
-    private Map<String, Qualification> qualifications;
     private String description;
     private String phoneNumber;
     private String email;
@@ -140,33 +136,11 @@ public class ServiceProvider implements Serializable {
         return location;
     }
 
-    public Map<String, Service> getServices() {
-        if (services == null) {
-            services = new HashMap<>();
-        }
-        return services;
-    }
-
-    public void setServices(Map<String, Service> services) {
-        this.services = services;
-    }
-
-    public Map<String, Qualification> getQualifications() {
-        if (qualifications == null) {
-            qualifications = new HashMap<>();
-        }
-        return qualifications;
-    }
-
-    public void setQualifications(Map<String, Qualification> qualifications) {
-        this.qualifications = qualifications;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ServiceProvider)) return false;
-        ServiceProvider that = (ServiceProvider) o;
+        if (!(o instanceof Provider)) return false;
+        Provider that = (Provider) o;
         return Objects.equals(id, that.id);
     }
 

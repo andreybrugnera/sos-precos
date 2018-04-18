@@ -12,11 +12,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
+
 /**
  * Created by Andrey R. Brugnera on 15/03/2018.
  */
 public abstract class AbstractDao<E> {
-    protected final String LOGGER_TAG = "DATABASE";
+    protected final String DATABASE_LOGGER_TAG = "DATABASE";
     private Context context;
     protected DatabaseReference mDatabase;
     protected String referenceName;
@@ -31,7 +33,7 @@ public abstract class AbstractDao<E> {
     }
 
     public DatabaseReference getDatabaseReference() {
-        if (dRef == null) {
+        if (dRef == null && referenceName != null) {
             dRef = mDatabase.getDatabase().getReference(referenceName);
             dRef.addListenerForSingleValueEvent(
                     new ValueEventListener() {
@@ -42,8 +44,8 @@ public abstract class AbstractDao<E> {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Log.e(LOGGER_TAG, databaseError.getMessage());
-                            Log.e(LOGGER_TAG, databaseError.getDetails());
+                            Log.e(DATABASE_LOGGER_TAG, databaseError.getMessage());
+                            Log.e(DATABASE_LOGGER_TAG, databaseError.getDetails());
                         }
                     });
         }
@@ -60,7 +62,7 @@ public abstract class AbstractDao<E> {
      * @param key
      * @param e
      */
-    public void add(String key, E e) {
+    protected void add(String key, E e) {
         DatabaseReference dRef = getDatabaseReference();
         dRef.child(key).setValue(e);
     }
@@ -70,17 +72,18 @@ public abstract class AbstractDao<E> {
      *
      * @param key
      */
-    public void delete(String key) {
+    protected void delete(String key) {
         DatabaseReference dRef = getDatabaseReference();
         dRef.child(key).setValue(null);
     }
 
     /**
      * Gets element by key
+     *
      * @param key
      * @return element found with specified key
      */
-    public E get(String key){
+    public E get(String key) {
         return getElementsMap().get(key);
     }
 
@@ -90,7 +93,7 @@ public abstract class AbstractDao<E> {
      * @param key
      * @param e
      */
-    public void update(String key, E e) {
+    protected void update(String key, E e) {
         add(key, e);
     }
 
@@ -108,7 +111,7 @@ public abstract class AbstractDao<E> {
      * @return all elements
      */
     public Map<String, E> getElementsMap() {
-        if(elementsMap == null){
+        if (elementsMap == null) {
             elementsMap = new HashMap<>();
         }
         return elementsMap;
@@ -116,16 +119,20 @@ public abstract class AbstractDao<E> {
 
     /**
      * Updates database reference name.
-     *
+     * <p>
      * Changing the reference name will force
      * the database reference to be recreated.
      *
      * @param referenceName
      */
-    public void updateDatabaseReferenceName(String referenceName){
+    public void updateDatabaseReferenceName(String referenceName) {
         this.referenceName = referenceName;
         this.mDatabase = FirebaseDatabase.getInstance().getReference();
         this.dRef = null;
         this.elementsMap = null;
     }
+
+    public abstract void add(E e) throws DaoException;
+    public abstract void update(E e) throws DaoException;
+    public abstract void delete(E e) throws DaoException;
 }

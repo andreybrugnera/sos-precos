@@ -1,41 +1,53 @@
 package br.edu.ifspsaocarlos.sosprecos.dao;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 
+import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Qualification;
-import br.edu.ifspsaocarlos.sosprecos.model.Service;
 
 /**
  * Created by Andrey R. Brugnera on 06/04/2018.
  */
 public class QualificationDao extends AbstractDao<Qualification> {
     public static final String DATABASE_REFERENCE = "qualifications";
-    private ServiceDao serviceDao;
 
     public QualificationDao(Context context) {
         super(context, DATABASE_REFERENCE);
-        this.serviceDao = new ServiceDao(context);
     }
 
-    public String addQualification(Qualification qualification, Service service) throws DaoException {
+    @Override
+    public void add(Qualification qualification) throws DaoException {
+        validate(qualification, false);
+
         String qualificationId = getDatabaseReference().push().getKey();
-        qualification.setDescription(qualificationId);
+        qualification.setId(qualificationId);
         add(qualificationId, qualification);
-
-        service.getQualifications().put(qualificationId, qualification);
-        this.serviceDao.updateService(service);
-        return qualificationId;
     }
 
-    public void deleteQualification(Qualification qualification, Service service) throws DaoException {
+    @Override
+    public void delete(Qualification qualification) throws DaoException {
+        validate(qualification, true);
         delete(qualification.getId());
-
-        service.getQualifications().remove(qualification.getId());
-        this.serviceDao.updateService(service);
     }
 
-    public void updateQualification(Qualification qualification) throws DaoException {
+    @Override
+    public void update(Qualification qualification) throws DaoException {
+        validate(qualification, true);
         update(qualification.getId(), qualification);
+    }
+
+    private void validate(Qualification qualification, boolean checkId) throws DaoException {
+        if (TextUtils.isEmpty(qualification.getId()) && checkId) {
+            Log.d(DATABASE_LOGGER_TAG, getContext().getResources().getString(R.string.id_not_set));
+            throw new DaoException(getContext().getResources().getString(R.string.id_not_set));
+        }
+
+        if (TextUtils.isEmpty(qualification.getUserId())) {
+            Log.d(DATABASE_LOGGER_TAG, getContext().getResources().getString(R.string.user_not_set));
+            throw new DaoException(getContext().getResources().getString(R.string.user_not_set));
+        }
     }
 }

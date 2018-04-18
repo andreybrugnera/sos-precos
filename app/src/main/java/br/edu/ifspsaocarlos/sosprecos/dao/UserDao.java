@@ -18,27 +18,33 @@ public class UserDao extends AbstractDao<User> {
         super(context, DATABASE_REFERENCE);
     }
 
-    public void addUser(User user) throws DaoException {
-        if (TextUtils.isEmpty(user.getEmail())) {
-            Log.d(LOGGER_TAG, getContext().getResources().getString(R.string.user_email_not_set));
-            throw new DaoException(getContext().getResources().getString(R.string.user_email_not_set));
-        }
-        if (TextUtils.isEmpty(user.getUuid())) {
-            Log.d(LOGGER_TAG, getContext().getResources().getString(R.string.user_uuid_not_set));
-            throw new DaoException(getContext().getResources().getString(R.string.user_uuid_not_set));
-        }
+    @Override
+    public void add(User user) throws DaoException {
+        validate(user);
         add(user.getUuid(), user);
     }
 
-    public void deleteUser(User user) throws DaoException {
-        if (TextUtils.isEmpty(user.getUuid())) {
-            Log.d(LOGGER_TAG, getContext().getResources().getString(R.string.user_uuid_not_set));
-            throw new DaoException(getContext().getResources().getString(R.string.user_uuid_not_set));
-        }
+    @Override
+    public void delete(User user) throws DaoException {
+        validate(user);
         delete(user.getUuid());
     }
 
-    public void updateUser(User user) throws DaoException {
-        addUser(user);
+    @Override
+    public void update(User user) throws DaoException {
+        validate(user);
+        add(user);
+    }
+
+    private void validate(User user) throws DaoException{
+        if (TextUtils.isEmpty(user.getUuid())) {
+            Log.d(DATABASE_LOGGER_TAG, getContext().getResources().getString(R.string.id_not_set));
+            throw new DaoException(getContext().getResources().getString(R.string.id_not_set));
+        }
+
+        if (TextUtils.isEmpty(user.getEmail())) {
+            Log.d(DATABASE_LOGGER_TAG, getContext().getResources().getString(R.string.user_email_not_set));
+            throw new DaoException(getContext().getResources().getString(R.string.user_email_not_set));
+        }
     }
 }

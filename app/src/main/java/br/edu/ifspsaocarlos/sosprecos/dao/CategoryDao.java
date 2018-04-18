@@ -18,12 +18,9 @@ public class CategoryDao extends AbstractDao<Category> {
         super(context, DATABASE_REFERENCE);
     }
 
-    public void addCategory(Category category) throws DaoException {
-        if (TextUtils.isEmpty(category.getName())) {
-            Log.d(LOGGER_TAG, getContext().getResources().getString(R.string.category_name_not_set));
-            throw new DaoException(getContext().getResources().getString(R.string.category_name_not_set));
-        }
-        /* @ToDo: Check if there are any category with the same name on firebase */
+    @Override
+    public void add(Category category) throws DaoException {
+        validate(category, false);
         if (isCategoryNameValid(category.getName())) {
             String categoryId = getDatabaseReference().push().getKey();
             category.setId(categoryId);
@@ -31,24 +28,15 @@ public class CategoryDao extends AbstractDao<Category> {
         }
     }
 
-    public void deleteCategory(Category category) throws DaoException {
-        if (TextUtils.isEmpty(category.getId())) {
-            Log.d(LOGGER_TAG, getContext().getResources().getString(R.string.category_id_not_set));
-            throw new DaoException(getContext().getResources().getString(R.string.category_id_not_set));
-        }
+    @Override
+    public void delete(Category category) throws DaoException {
+        validate(category, true);
         delete(category.getId());
     }
 
-    public void updateCategory(Category category) throws DaoException {
-        if (TextUtils.isEmpty(category.getId())) {
-            Log.d(LOGGER_TAG, getContext().getResources().getString(R.string.category_id_not_set));
-            throw new DaoException(getContext().getResources().getString(R.string.category_id_not_set));
-        }
-        if (!TextUtils.isEmpty(category.getName())) {
-            Log.d(LOGGER_TAG, getContext().getResources().getString(R.string.category_name_not_set));
-            throw new DaoException(getContext().getResources().getString(R.string.category_name_not_set));
-        }
-        /* @ToDo: Check if there are any category with the same name on firebase */
+    @Override
+    public void update(Category category) throws DaoException {
+        validate(category, true);
         update(category.getId(), category);
     }
 
@@ -61,5 +49,16 @@ public class CategoryDao extends AbstractDao<Category> {
             }
         }
         return true;
+    }
+
+    private void validate(Category category, boolean checkId) throws DaoException {
+        if (TextUtils.isEmpty(category.getId()) && checkId) {
+            Log.d(DATABASE_LOGGER_TAG, getContext().getResources().getString(R.string.id_not_set));
+            throw new DaoException(getContext().getResources().getString(R.string.id_not_set));
+        }
+        if (TextUtils.isEmpty(category.getName())) {
+            Log.d(DATABASE_LOGGER_TAG, getContext().getResources().getString(R.string.name_not_set));
+            throw new DaoException(getContext().getResources().getString(R.string.name_not_set));
+        }
     }
 }
