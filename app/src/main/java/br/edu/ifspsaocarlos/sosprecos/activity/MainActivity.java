@@ -3,6 +3,8 @@ package br.edu.ifspsaocarlos.sosprecos.activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -24,10 +26,10 @@ public class MainActivity extends AppCompatActivity {
         this.drawerLayout = findViewById(R.id.drawer_layout);
 
         configureToolbar();
-        configureDrawerActions();
+        configureDrawer();
     }
 
-    private void configureDrawerActions() {
+    private void configureDrawer() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -38,11 +40,19 @@ public class MainActivity extends AppCompatActivity {
                         // close drawer when item is tapped
                         drawerLayout.closeDrawers();
 
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
                         switch (menuItem.getItemId()) {
+                            case R.id.nav_categories:
+                                CategoryFragment fragment = new CategoryFragment();
+                                fragmentTransaction.add(R.id.content_frame, fragment);
+                                fragmentTransaction.commit();
+                                break;
                             case R.id.nav_logout:
                                 logout();
+                                break;
                         }
-
                         return true;
                     }
                 });
