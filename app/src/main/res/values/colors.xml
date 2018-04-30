@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background_color">#ffffff</color>
+    <color name="header_background_color">#000000</color>
     <color name="input_text_color">#000000</color>
     <color name="label_text_color">#000000</color>
     <color name="button_text_color">#ffffff</color>

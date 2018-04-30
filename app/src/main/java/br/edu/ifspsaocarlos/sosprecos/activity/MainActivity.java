@@ -3,6 +3,7 @@ package br.edu.ifspsaocarlos.sosprecos.activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -27,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
 
         configureToolbar();
         configureDrawer();
+
+        MainFragment mainFragment = new MainFragment();
+        changeFragment(mainFragment);
     }
 
     private void configureDrawer() {
@@ -40,14 +44,10 @@ public class MainActivity extends AppCompatActivity {
                         // close drawer when item is tapped
                         drawerLayout.closeDrawers();
 
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
                         switch (menuItem.getItemId()) {
                             case R.id.nav_categories:
                                 CategoryFragment fragment = new CategoryFragment();
-                                fragmentTransaction.add(R.id.content_frame, fragment);
-                                fragmentTransaction.commit();
+                                changeFragment(fragment);
                                 break;
                             case R.id.nav_logout:
                                 logout();
@@ -67,6 +67,18 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+    }
+
+    /**
+     * Change current fragment
+     * @param fragment
+     */
+    private void changeFragment(Fragment fragment){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        fragmentTransaction.add(R.id.content_frame, fragment);
+        fragmentTransaction.commit();
     }
 
     @Override

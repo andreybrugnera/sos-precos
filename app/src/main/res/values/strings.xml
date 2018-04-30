@@ -35,6 +35,7 @@
     <string name="provider_id_not_set">O id do prestador de serviço não foi definido</string>
     <string name="service_id_not_set">O id do serviço não foi definido</string>
     <string name="qualification_id_not_set">O id da qualificação não foi definida</string>
+    <string name="home">Início</string>
     <string name="categories">Categorias</string>
     <string name="providers">Prestadores de serviço</string>
     <string name="services">Serviços</string>
