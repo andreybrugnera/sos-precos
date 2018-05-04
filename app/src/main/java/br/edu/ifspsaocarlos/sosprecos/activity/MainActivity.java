@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         configureDrawer();
 
         MainFragment mainFragment = new MainFragment();
-        changeFragment(mainFragment);
+        changeFragment(mainFragment, null);
     }
 
     private void configureDrawer() {
@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
                         switch (menuItem.getItemId()) {
                             case R.id.nav_categories:
-                                CategoryFragment fragment = new CategoryFragment();
-                                changeFragment(fragment);
+                                CategoryFragment categoryFragment = new CategoryFragment();
+                                changeFragment(categoryFragment, "category");
                                 break;
                             case R.id.nav_logout:
                                 logout();
@@ -71,13 +71,19 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Change current fragment
+     *
      * @param fragment
+     * @param tag
      */
-    private void changeFragment(Fragment fragment){
+    private void changeFragment(Fragment fragment, String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        fragmentTransaction.add(R.id.content_frame, fragment);
+        if (tag == null) {
+            fragmentTransaction.add(R.id.content_frame, fragment);
+        } else {
+            fragmentTransaction.replace(R.id.content_frame, fragment);
+            fragmentTransaction.addToBackStack(tag);
+        }
         fragmentTransaction.commit();
     }
 
