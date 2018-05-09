@@ -44,4 +44,5 @@
     <string name="are_you_sure">Você tem certeza?</string>
     <string name="yes">Sim</string>
     <string name="no">Não</string>
+    <string name="loading_categories">Carregando categorias</string>
 </resources>

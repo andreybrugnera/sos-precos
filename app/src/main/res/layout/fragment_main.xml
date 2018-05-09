@@ -10,7 +10,7 @@
         android:layout_height="244dp">
 
         <ImageView
-            android:src="@drawable/rounded_shape_button"
+            android:src="@drawable/rounded_corner_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

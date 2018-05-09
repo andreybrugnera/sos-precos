@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
                         switch (menuItem.getItemId()) {
                             case R.id.nav_categories:
-                                CategoryFragment categoryFragment = new CategoryFragment();
-                                changeFragment(categoryFragment, "category");
+                                CategoryListFragment categoryListFragment = new CategoryListFragment();
+                                changeFragment(categoryListFragment, "category");
                                 break;
                             case R.id.nav_logout:
                                 logout();

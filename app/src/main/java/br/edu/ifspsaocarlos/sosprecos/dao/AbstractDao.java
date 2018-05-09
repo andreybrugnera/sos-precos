@@ -1,13 +1,9 @@
 package br.edu.ifspsaocarlos.sosprecos.dao;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,19 +31,6 @@ public abstract class AbstractDao<E> {
     public DatabaseReference getDatabaseReference() {
         if (dRef == null && referenceName != null) {
             dRef = mDatabase.getDatabase().getReference(referenceName);
-            dRef.addListenerForSingleValueEvent(
-                    new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            refreshElements((Map<String, Object>) dataSnapshot.getValue());
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.e(DATABASE_LOGGER_TAG, databaseError.getMessage());
-                            Log.e(DATABASE_LOGGER_TAG, databaseError.getDetails());
-                        }
-                    });
         }
         return dRef;
     }
@@ -97,7 +80,7 @@ public abstract class AbstractDao<E> {
         add(key, e);
     }
 
-    protected void refreshElements(Map<String, Object> mapCategories) {
+    public void refreshElements(Map<String, Object> mapCategories) {
         Map<String, E> elements = getElementsMap();
         for (String key : mapCategories.keySet()) {
             E element = (E) mapCategories.get(key);
