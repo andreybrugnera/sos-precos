@@ -46,9 +46,13 @@
     <string name="no">Não</string>
     <string name="loading_categories">Carregando categorias</string>
     <string name="new_category">Nova categoria</string>
+    <string name="edit_category">Editar categoria</string>
     <string name="category_name">Nome da categoria</string>
     <string name="add">Adicionar</string>
     <string name="enter_category_name">Informe o nome da categoria</string>
     <string name="error_adding_category">Erro ao adicionar a categoria</string>
+    <string name="error_editing_category">Erro ao atualizar a categoria</string>
     <string name="category_name_exists">Nome de categoria existente</string>
+    <string name="edit">Editar</string>
+    <string name="remove">Remover</string>
 </resources>

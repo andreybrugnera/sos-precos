@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -33,12 +36,15 @@ public class CategoryListFragment extends Fragment {
 
     private ProgressBar progressBar;
     private Button btAddCategory;
+    private ListView categoriesListView;
     private CategoryAdapter listAdapter;
 
     private CategoryDao categoryDao;
     private List<Category> categories;
+    private Category selectedCategory;
 
     private static final int ADD_CATEGORY = 1;
+    private static final int EDIT_CATEGORY = 2;
 
     public CategoryListFragment() {
         // Required empty public constructor
@@ -60,19 +66,46 @@ public class CategoryListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         this.progressBar = getView().findViewById(R.id.pb_categories);
+        this.categoriesListView = getView().findViewById(R.id.category_list);
 
-        this.btAddCategory = getView().findViewById(R.id.bt_add_category);
+        this.btAddCategory = getView().findViewById(R.id.bt_add_edit_category);
         this.btAddCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent addCategoryIntent = new Intent(getContext(), CategoryActivity.class);
+                addCategoryIntent.putExtra(CategoryActivity.OPERATION, CategoryActivity.OPERATION_ADD);
                 startActivityForResult(addCategoryIntent, ADD_CATEGORY);
             }
         });
 
         configureListAdapter();
+        registerForContextMenu(this.categoriesListView);
         loadCategories();
     }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        getActivity().getMenuInflater().inflate(R.menu.crud_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.menu_edit:
+                this.selectedCategory = listAdapter.getItem(info.position);
+                Intent editCategoryIntent = new Intent(getContext(), CategoryActivity.class);
+                editCategoryIntent.putExtra(CategoryActivity.OPERATION, CategoryActivity.OPERATION_EDIT);
+                editCategoryIntent.putExtra(CategoryActivity.CATEGORY, selectedCategory);
+                startActivityForResult(editCategoryIntent, EDIT_CATEGORY);
+                return true;
+            case R.id.menu_remove:
+                Log.d(LOG_TAG, "removing...");
+                return true;
+        }
+        return super.onContextItemSelected(item);
+    }
+
 
     private void loadCategories() {
         Log.d(LOG_TAG, getString(R.string.loading_categories));
@@ -117,20 +150,29 @@ public class CategoryListFragment extends Fragment {
 
     private void configureListAdapter() {
         this.listAdapter = new CategoryAdapter(getContext(), R.id.category_list, categories);
-        ListView categoryListView = getView().findViewById(R.id.category_list);
-        categoryListView.setAdapter(listAdapter);
+        this.categoriesListView.setAdapter(listAdapter);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD_CATEGORY) {
             if (resultCode == CategoryActivity.OPERATION_STATUS_OK) {
-                Category addedCategory = (Category) data.getSerializableExtra(CategoryActivity.ADDED_CATEGORY);
+                Category addedCategory = (Category) data.getSerializableExtra(CategoryActivity.CATEGORY);
                 categories.add(addedCategory);
                 sortCategoriesByName();
                 listAdapter.notifyDataSetChanged();
             } else if (resultCode == CategoryActivity.OPERATION_STATUS_ERROR) {
                 Toast.makeText(getContext(), getString(R.string.error_adding_category),
+                        Toast.LENGTH_LONG).show();
+            }
+        } else if (requestCode == EDIT_CATEGORY) {
+            if (resultCode == CategoryActivity.OPERATION_STATUS_OK) {
+                Category editedCategory = (Category) data.getSerializableExtra(CategoryActivity.CATEGORY);
+                this.selectedCategory.setName(editedCategory.getName());
+                sortCategoriesByName();
+                listAdapter.notifyDataSetChanged();
+            }else if (resultCode == CategoryActivity.OPERATION_STATUS_ERROR) {
+                Toast.makeText(getContext(), getString(R.string.error_editing_category),
                         Toast.LENGTH_LONG).show();
             }
         }

@@ -49,13 +49,12 @@
                 android:textColor="@color/label_text_color" />
 
             <Button
-                android:id="@+id/bt_add_category"
+                android:id="@+id/bt_add_edit_category"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@color/button_background_color"
-                android:onClick="addCategory"
                 android:text="@string/add"
                 android:textColor="@color/button_text_color"
                 android:enabled="false"
