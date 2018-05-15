@@ -1,12 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/background_color"
     android:gravity="center_horizontal"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="br.edu.ifspsaocarlos.sosprecos.activity.CategoryListFragment">
 
     <ProgressBar
         android:id="@+id/pb_categories"
@@ -23,6 +25,7 @@
 
         <TextView
             style="?android:textAppearanceLarge"
+            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -30,15 +33,10 @@
             android:text="@string/categories"
             android:textColor="@color/label_text_color" />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
             <ListView
-                android:id="@android:id/list"
+                android:id="@+id/category_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-        </ScrollView>
     </LinearLayout>
 
     <Button

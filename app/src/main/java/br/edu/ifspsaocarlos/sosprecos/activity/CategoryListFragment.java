@@ -1,5 +1,6 @@
 package br.edu.ifspsaocarlos.sosprecos.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,9 +21,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
+import br.edu.ifspsaocarlos.sosprecos.adapter.CategoryAdapter;
 import br.edu.ifspsaocarlos.sosprecos.dao.CategoryDao;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
 
@@ -30,9 +33,12 @@ public class CategoryListFragment extends Fragment {
 
     private ProgressBar progressBar;
     private Button btAddCategory;
+    private CategoryAdapter listAdapter;
 
     private CategoryDao categoryDao;
     private List<Category> categories;
+
+    private static final int ADD_CATEGORY = 1;
 
     public CategoryListFragment() {
         // Required empty public constructor
@@ -42,6 +48,7 @@ public class CategoryListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.categoryDao = new CategoryDao(getContext());
+        this.categories = new ArrayList<>();
     }
 
     @Override
@@ -53,33 +60,37 @@ public class CategoryListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         this.progressBar = getView().findViewById(R.id.pb_categories);
+
         this.btAddCategory = getView().findViewById(R.id.bt_add_category);
+        this.btAddCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent addCategoryIntent = new Intent(getContext(), CategoryActivity.class);
+                startActivityForResult(addCategoryIntent, ADD_CATEGORY);
+            }
+        });
+
+        configureListAdapter();
         loadCategories();
     }
 
     private void loadCategories() {
         Log.d(LOG_TAG, getString(R.string.loading_categories));
-
-        this.progressBar.setVisibility(View.VISIBLE);
-        this.categories = new ArrayList<>();
+        progressBar.setVisibility(View.VISIBLE);
 
         categoryDao.getDatabaseReference().addListenerForSingleValueEvent(
                 new ValueEventListener() {
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Map<String, Object> firebaseCategories = (Map<String, Object>) dataSnapshot.getValue();
-                        if (firebaseCategories != null) {
-                            categoryDao.refreshElements(firebaseCategories);
-
-                            for (String key : categoryDao.getElementsMap().keySet()) {
-                                Category category = categoryDao.get(key);
-                                categories.add(category);
-                            }
-
-                            sortCategoriesByName();
+                        categories.clear();
+                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                        for (DataSnapshot child : children) {
+                            Category category = child.getValue(Category.class);
+                            categories.add(category);
                         }
-
+                        sortCategoriesByName();
+                        listAdapter.notifyDataSetChanged();
                         progressBar.setVisibility(View.GONE);
                     }
 
@@ -102,5 +113,26 @@ public class CategoryListFragment extends Fragment {
         };
 
         Collections.sort(categories, comparator);
+    }
+
+    private void configureListAdapter() {
+        this.listAdapter = new CategoryAdapter(getContext(), R.id.category_list, categories);
+        ListView categoryListView = getView().findViewById(R.id.category_list);
+        categoryListView.setAdapter(listAdapter);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ADD_CATEGORY) {
+            if (resultCode == CategoryActivity.OPERATION_STATUS_OK) {
+                Category addedCategory = (Category) data.getSerializableExtra(CategoryActivity.ADDED_CATEGORY);
+                categories.add(addedCategory);
+                sortCategoriesByName();
+                listAdapter.notifyDataSetChanged();
+            } else if (resultCode == CategoryActivity.OPERATION_STATUS_ERROR) {
+                Toast.makeText(getContext(), getString(R.string.error_adding_category),
+                        Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

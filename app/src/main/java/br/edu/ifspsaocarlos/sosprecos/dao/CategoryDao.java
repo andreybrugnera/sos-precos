@@ -21,11 +21,9 @@ public class CategoryDao extends AbstractDao<Category> {
     @Override
     public void add(Category category) throws DaoException {
         validate(category, false);
-        if (isCategoryNameValid(category.getName())) {
-            String categoryId = getDatabaseReference().push().getKey();
-            category.setId(categoryId);
-            add(categoryId, category);
-        }
+        String categoryId = getDatabaseReference().push().getKey();
+        category.setId(categoryId);
+        add(categoryId, category);
     }
 
     @Override
@@ -38,17 +36,6 @@ public class CategoryDao extends AbstractDao<Category> {
     public void update(Category category) throws DaoException {
         validate(category, true);
         update(category.getId(), category);
-    }
-
-    private boolean isCategoryNameValid(String name) {
-        String upperCaseName = name.toUpperCase();
-        for (String categoryId : getElementsMap().keySet()) {
-            Category category = getElementsMap().get(categoryId);
-            if (category.getName().toUpperCase().equals(upperCaseName)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private void validate(Category category, boolean checkId) throws DaoException {
