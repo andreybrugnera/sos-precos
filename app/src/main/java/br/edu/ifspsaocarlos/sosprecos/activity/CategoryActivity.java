@@ -1,11 +1,14 @@
 package br.edu.ifspsaocarlos.sosprecos.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +27,7 @@ import br.edu.ifspsaocarlos.sosprecos.dao.CategoryDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
 
-public class CategoryActivity extends Activity {
+public class CategoryActivity extends AppCompatActivity {
     private static final String LOG_TAG = "ADD_CATEGORY";
 
     public static final int OPERATION_STATUS_ERROR = -1;
@@ -59,8 +62,27 @@ public class CategoryActivity extends Activity {
         this.categoryDao = new CategoryDao(this);
         this.categories = new ArrayList<>();
 
+        configureToolbar();
         defineOperation();
         loadCategories();
+    }
+
+    private void configureToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void defineOperation() {
