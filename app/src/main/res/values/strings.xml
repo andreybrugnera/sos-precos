@@ -52,7 +52,10 @@
     <string name="enter_category_name">Informe o nome da categoria</string>
     <string name="error_adding_category">Erro ao adicionar a categoria</string>
     <string name="error_editing_category">Erro ao atualizar a categoria</string>
+    <string name="error_removing_category">Erro ao remover a categoria</string>
     <string name="category_name_exists">Nome de categoria existente</string>
     <string name="edit">Editar</string>
     <string name="remove">Remover</string>
+    <string name="remove_category">Remover categoria</string>
+    <string name="confirm_remove_category">Deseja realmente remover a categoria?</string>
 </resources>

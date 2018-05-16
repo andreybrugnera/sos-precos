@@ -1,5 +1,7 @@
 package br.edu.ifspsaocarlos.sosprecos.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,6 +30,7 @@ import java.util.List;
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.adapter.CategoryAdapter;
 import br.edu.ifspsaocarlos.sosprecos.dao.CategoryDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
 
 public class CategoryListFragment extends Fragment {
@@ -72,15 +75,19 @@ public class CategoryListFragment extends Fragment {
         this.btAddCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent addCategoryIntent = new Intent(getContext(), CategoryActivity.class);
-                addCategoryIntent.putExtra(CategoryActivity.OPERATION, CategoryActivity.OPERATION_ADD);
-                startActivityForResult(addCategoryIntent, ADD_CATEGORY);
+                addCategory();
             }
         });
 
         configureListAdapter();
         registerForContextMenu(this.categoriesListView);
         loadCategories();
+    }
+
+    private void addCategory() {
+        Intent addCategoryIntent = new Intent(getContext(), CategoryActivity.class);
+        addCategoryIntent.putExtra(CategoryActivity.OPERATION, CategoryActivity.OPERATION_ADD);
+        startActivityForResult(addCategoryIntent, ADD_CATEGORY);
     }
 
     @Override
@@ -93,19 +100,57 @@ public class CategoryListFragment extends Fragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.menu_edit:
-                this.selectedCategory = listAdapter.getItem(info.position);
-                Intent editCategoryIntent = new Intent(getContext(), CategoryActivity.class);
-                editCategoryIntent.putExtra(CategoryActivity.OPERATION, CategoryActivity.OPERATION_EDIT);
-                editCategoryIntent.putExtra(CategoryActivity.CATEGORY, selectedCategory);
-                startActivityForResult(editCategoryIntent, EDIT_CATEGORY);
+                editSelectedCategory(info);
                 return true;
             case R.id.menu_remove:
-                Log.d(LOG_TAG, "removing...");
+                removeSelectedCategory(info);
                 return true;
         }
         return super.onContextItemSelected(item);
     }
 
+    private void editSelectedCategory(final AdapterView.AdapterContextMenuInfo info) {
+        this.selectedCategory = listAdapter.getItem(info.position);
+        Intent editCategoryIntent = new Intent(getContext(), CategoryActivity.class);
+        editCategoryIntent.putExtra(CategoryActivity.OPERATION, CategoryActivity.OPERATION_EDIT);
+        editCategoryIntent.putExtra(CategoryActivity.CATEGORY, selectedCategory);
+        startActivityForResult(editCategoryIntent, EDIT_CATEGORY);
+    }
+
+    private void removeSelectedCategory(final AdapterView.AdapterContextMenuInfo info) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        dialog.setTitle(getString(R.string.remove_category));
+        dialog.setMessage(getString(R.string.confirm_remove_category));
+        dialog.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                progressBar.setVisibility(View.VISIBLE);
+                selectedCategory = listAdapter.getItem(info.position);
+                try {
+                    categoryDao.delete(selectedCategory);
+                    categories.remove(selectedCategory);
+                    listAdapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.GONE);
+                } catch (DaoException e) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), getString(R.string.error_removing_category),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        dialog.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
 
     private void loadCategories() {
         Log.d(LOG_TAG, getString(R.string.loading_categories));
@@ -171,7 +216,7 @@ public class CategoryListFragment extends Fragment {
                 this.selectedCategory.setName(editedCategory.getName());
                 sortCategoriesByName();
                 listAdapter.notifyDataSetChanged();
-            }else if (resultCode == CategoryActivity.OPERATION_STATUS_ERROR) {
+            } else if (resultCode == CategoryActivity.OPERATION_STATUS_ERROR) {
                 Toast.makeText(getContext(), getString(R.string.error_editing_category),
                         Toast.LENGTH_LONG).show();
             }
