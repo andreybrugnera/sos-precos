@@ -7,12 +7,11 @@ import android.util.Log;
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.ProviderQualification;
-import br.edu.ifspsaocarlos.sosprecos.model.ServiceQualification;
 
 /**
  * Created by Andrey R. Brugnera on 17/04/2018.
  */
-public class ProviderQualificationDao extends AbstractDao<ProviderQualification>{
+public class ProviderQualificationDao extends FirebaseHelper<ProviderQualification> {
     public static final String DATABASE_REFERENCE = "providers_qualifications";
 
     public ProviderQualificationDao(Context context, String referenceName) {

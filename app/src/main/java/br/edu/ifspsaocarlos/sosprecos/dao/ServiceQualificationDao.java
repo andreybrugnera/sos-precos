@@ -11,7 +11,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.ServiceQualification;
 /**
  * Created by Andrey R. Brugnera on 17/04/2018.
  */
-public class ServiceQualificationDao extends AbstractDao<ServiceQualification>{
+public class ServiceQualificationDao extends FirebaseHelper<ServiceQualification> {
     public static final String DATABASE_REFERENCE = "services_qualifications";
 
     public ServiceQualificationDao(Context context) {

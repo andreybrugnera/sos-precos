@@ -11,7 +11,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.Provider;
 /**
  * Created by Andrey R. Brugnera on 30/03/2018.
  */
-public class ProviderDao extends AbstractDao<Provider> {
+public class ProviderDao extends FirebaseHelper<Provider> {
     public static final String DATABASE_REFERENCE = "providers";
 
     public ProviderDao(Context context) {

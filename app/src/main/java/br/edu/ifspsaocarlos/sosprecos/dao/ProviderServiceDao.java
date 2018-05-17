@@ -11,7 +11,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.ProviderService;
 /**
  * Created by Andrey R. Brugnera on 17/04/2018.
  */
-public class ProviderServiceDao extends AbstractDao<ProviderService>{
+public class ProviderServiceDao extends FirebaseHelper<ProviderService> {
     public static final String DATABASE_REFERENCE = "providers_services";
 
     public ProviderServiceDao(Context context, String referenceName) {

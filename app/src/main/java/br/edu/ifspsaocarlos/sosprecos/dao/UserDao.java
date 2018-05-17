@@ -11,7 +11,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.User;
 /**
  * Created by Andrey R. Brugnera on 15/03/2018.
  */
-public class UserDao extends AbstractDao<User> {
+public class UserDao extends FirebaseHelper<User> {
     public static final String DATABASE_REFERENCE = "users";
 
     public UserDao(Context context) {

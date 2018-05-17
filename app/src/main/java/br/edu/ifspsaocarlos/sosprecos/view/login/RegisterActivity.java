@@ -1,4 +1,4 @@
-package br.edu.ifspsaocarlos.sosprecos.activity.login;
+package br.edu.ifspsaocarlos.sosprecos.view.login;
 
 import android.app.Activity;
 import android.os.Bundle;

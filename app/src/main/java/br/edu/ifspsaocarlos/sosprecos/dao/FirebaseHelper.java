@@ -13,7 +13,7 @@ import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 /**
  * Created by Andrey R. Brugnera on 15/03/2018.
  */
-public abstract class AbstractDao<E> {
+public abstract class FirebaseHelper<E> {
     protected final String DATABASE_LOGGER_TAG = "DATABASE";
     private Context context;
     protected DatabaseReference mDatabase;
@@ -22,7 +22,7 @@ public abstract class AbstractDao<E> {
     //All elements on database
     private Map<String, E> elementsMap;
 
-    public AbstractDao(Context context, String referenceName) {
+    public FirebaseHelper(Context context, String referenceName) {
         this.context = context;
         this.referenceName = referenceName;
         this.mDatabase = FirebaseDatabase.getInstance().getReference();

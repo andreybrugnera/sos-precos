@@ -11,7 +11,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.Service;
 /**
  * Created by Andrey R. Brugnera on 06/04/2018.
  */
-public class ServiceDao extends AbstractDao<Service> {
+public class ServiceDao extends FirebaseHelper<Service> {
     public static final String DATABASE_REFERENCE = "services";
 
     public ServiceDao(Context context) {

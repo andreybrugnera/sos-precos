@@ -11,7 +11,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.CategoryProvider;
 /**
  * Created by Andrey R. Brugnera on 17/04/2018.
  */
-public class CategoryProviderDao extends AbstractDao<CategoryProvider>{
+public class CategoryProviderDao extends FirebaseHelper<CategoryProvider> {
     public static final String DATABASE_REFERENCE = "categories_providers";
 
     public CategoryProviderDao(Context context) {

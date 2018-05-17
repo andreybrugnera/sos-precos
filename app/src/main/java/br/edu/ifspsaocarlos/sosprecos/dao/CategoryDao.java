@@ -11,7 +11,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.Category;
 /**
  * Created by Andrey R. Brugnera on 30/03/2018.
  */
-public class CategoryDao extends AbstractDao<Category> {
+public class CategoryDao extends FirebaseHelper<Category> {
     public static final String DATABASE_REFERENCE = "categories";
 
     public CategoryDao(Context context) {

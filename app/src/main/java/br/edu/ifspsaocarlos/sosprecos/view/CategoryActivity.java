@@ -1,4 +1,4 @@
-package br.edu.ifspsaocarlos.sosprecos.activity;
+package br.edu.ifspsaocarlos.sosprecos.view;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package br.edu.ifspsaocarlos.sosprecos.activity.login;
+package br.edu.ifspsaocarlos.sosprecos.view.login;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
-import br.edu.ifspsaocarlos.sosprecos.activity.MainActivity;
+import br.edu.ifspsaocarlos.sosprecos.view.MainActivity;
 
 public class LoginActivity extends Activity {
 
