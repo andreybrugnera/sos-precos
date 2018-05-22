@@ -12,10 +12,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -41,13 +43,14 @@ public class CategoryListFragment extends Fragment {
     private Button btAddCategory;
     private ListView categoriesListView;
     private CategoryAdapter listAdapter;
+    private TextView viewTitle;
 
     private CategoryDao categoryDao;
     private List<Category> categories;
     private Category selectedCategory;
 
-    private static final int ADD_CATEGORY = 1;
-    private static final int EDIT_CATEGORY = 2;
+    private static final int ADD = 1;
+    private static final int EDIT = 2;
 
     public CategoryListFragment() {
         // Required empty public constructor
@@ -63,15 +66,17 @@ public class CategoryListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_category_list, container, false);
+        return inflater.inflate(R.layout.fragment_crud_list, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        this.progressBar = getView().findViewById(R.id.pb_categories);
-        this.categoriesListView = getView().findViewById(R.id.category_list);
+        this.progressBar = getView().findViewById(R.id.progress_bar);
+        this.categoriesListView = getView().findViewById(R.id.list_view);
+        this.viewTitle = getView().findViewById(R.id.list_title);
+        this.viewTitle.setText(getString(R.string.categories));
 
-        this.btAddCategory = getView().findViewById(R.id.bt_add_edit_category);
+        this.btAddCategory = getView().findViewById(R.id.bt_add_edit_item);
         this.btAddCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,7 +92,7 @@ public class CategoryListFragment extends Fragment {
     private void addCategory() {
         Intent addCategoryIntent = new Intent(getContext(), CategoryActivity.class);
         addCategoryIntent.putExtra(CategoryActivity.OPERATION, CategoryActivity.OPERATION_ADD);
-        startActivityForResult(addCategoryIntent, ADD_CATEGORY);
+        startActivityForResult(addCategoryIntent, ADD);
     }
 
     @Override
@@ -114,7 +119,7 @@ public class CategoryListFragment extends Fragment {
         Intent editCategoryIntent = new Intent(getContext(), CategoryActivity.class);
         editCategoryIntent.putExtra(CategoryActivity.OPERATION, CategoryActivity.OPERATION_EDIT);
         editCategoryIntent.putExtra(CategoryActivity.CATEGORY, selectedCategory);
-        startActivityForResult(editCategoryIntent, EDIT_CATEGORY);
+        startActivityForResult(editCategoryIntent, EDIT);
     }
 
     private void removeSelectedCategory(final AdapterView.AdapterContextMenuInfo info) {
@@ -194,13 +199,29 @@ public class CategoryListFragment extends Fragment {
     }
 
     private void configureListAdapter() {
-        this.listAdapter = new CategoryAdapter(getContext(), R.id.category_list, categories);
+        this.listAdapter = new CategoryAdapter(getContext(), R.id.list_view, categories);
         this.categoriesListView.setAdapter(listAdapter);
+
+        this.categoriesListView.setOnScrollListener(new AbsListView.OnScrollListener(){
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+                if (btAddCategory.getVisibility() == View.VISIBLE) {
+                    btAddCategory.setVisibility(View.GONE);
+                } else {
+                    btAddCategory.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+
+            }
+        });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ADD_CATEGORY) {
+        if (requestCode == ADD) {
             if (resultCode == CategoryActivity.OPERATION_STATUS_OK) {
                 Category addedCategory = (Category) data.getSerializableExtra(CategoryActivity.CATEGORY);
                 categories.add(addedCategory);
@@ -210,7 +231,7 @@ public class CategoryListFragment extends Fragment {
                 Toast.makeText(getContext(), getString(R.string.error_adding_category),
                         Toast.LENGTH_LONG).show();
             }
-        } else if (requestCode == EDIT_CATEGORY) {
+        } else if (requestCode == EDIT) {
             if (resultCode == CategoryActivity.OPERATION_STATUS_OK) {
                 Category editedCategory = (Category) data.getSerializableExtra(CategoryActivity.CATEGORY);
                 this.selectedCategory.setName(editedCategory.getName());

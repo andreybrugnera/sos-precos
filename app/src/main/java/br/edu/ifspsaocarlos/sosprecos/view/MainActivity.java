@@ -47,11 +47,14 @@ public class MainActivity extends AppCompatActivity {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_categories:
                                 CategoryListFragment categoryListFragment = new CategoryListFragment();
-                                changeFragment(categoryListFragment, "category");
+                                changeFragment(categoryListFragment, "categories");
+                                break;
+                            case R.id.nav_providers:
+                                ProviderListFragment providerListFragment = new ProviderListFragment();
+                                changeFragment(providerListFragment, "providers");
                                 break;
                             case R.id.nav_logout:
                                 logout();
-                                break;
                         }
                         return true;
                     }
@@ -78,10 +81,8 @@ public class MainActivity extends AppCompatActivity {
     private void changeFragment(Fragment fragment, String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if (tag == null) {
-            fragmentTransaction.add(R.id.content_frame, fragment);
-        } else {
-            fragmentTransaction.replace(R.id.content_frame, fragment);
+        fragmentTransaction.replace(R.id.content_frame, fragment);
+        if (tag != null) {
             fragmentTransaction.addToBackStack(tag);
         }
         fragmentTransaction.commit();

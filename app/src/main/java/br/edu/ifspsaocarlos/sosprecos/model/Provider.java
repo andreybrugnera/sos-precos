@@ -17,10 +17,15 @@ public class Provider implements Serializable {
     private String description;
     private String phoneNumber;
     private String email;
+    private String street;
+    private String number;
+    private String zipCode;
     private String city;
     private String state;
+    private String country;
     private Double latitude;
     private Double longitude;
+
     @Exclude
     private Location location;
     private Date registrationDate;
@@ -105,6 +110,38 @@ public class Provider implements Serializable {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 
     public Double getLatitude() {

@@ -4,7 +4,7 @@
     <string name="register">Registrar-se</string>
     <string name="new_user">Novo usuário</string>
     <string name="new_user_register">Novo usuário? <u>Registre-se</u></string>
-    <string name="inform_email">Informe seu e-mail</string>
+    <string name="inform_email">Endereço de e-mail</string>
     <string name="inform_password">Informe sua senha</string>
     <string name="confirm_password">Repita sua senha</string>
     <string name="enter_valid_email">Informe um e-mail válido</string>
@@ -37,7 +37,7 @@
     <string name="qualification_id_not_set">O id da qualificação não foi definida</string>
     <string name="home">Início</string>
     <string name="categories">Categorias</string>
-    <string name="providers">Prestadores de serviço</string>
+    <string name="providers">Estabelecimentos</string>
     <string name="services">Serviços</string>
     <string name="settings">Configurações</string>
     <string name="logout">Sair</string>
@@ -47,7 +47,7 @@
     <string name="loading_categories">Carregando categorias</string>
     <string name="new_category">Nova categoria</string>
     <string name="edit_category">Editar categoria</string>
-    <string name="category_name">Nome da categoria</string>
+    <string name="category_name">Nome</string>
     <string name="add">Adicionar</string>
     <string name="enter_category_name">Informe o nome da categoria</string>
     <string name="error_adding_category">Erro ao adicionar a categoria</string>
@@ -58,4 +58,17 @@
     <string name="remove">Remover</string>
     <string name="remove_category">Remover categoria</string>
     <string name="confirm_remove_category">Deseja realmente remover a categoria?</string>
+    <string name="loading_providers">Carregando estabelecimentos</string>
+    <string name="new_provider">Novo estabelecimento</string>
+    <string name="edit_provider">Editar estabelecimento</string>
+    <string name="provider_name">Nome</string>
+    <string name="phone">Telefone</string>
+    <string name="street">Rua</string>
+    <string name="number">Número</string>
+    <string name="city">Cidade</string>
+    <string name="state">Estado</string>
+    <string name="country">País</string>
+    <string name="zip_code">CEP</string>
+    <string name="search_zip">Consultar CEP</string>
+    <string name="search_zip_error">Erro ao consultar CEP</string>
 </resources>

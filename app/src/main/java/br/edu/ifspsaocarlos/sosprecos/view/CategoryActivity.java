@@ -28,7 +28,7 @@ import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
 
 public class CategoryActivity extends AppCompatActivity {
-    private static final String LOG_TAG = "ADD_CATEGORY";
+    private static final String LOG_TAG = "ADD_EDIT_CATEGORY";
 
     public static final int OPERATION_STATUS_ERROR = -1;
     public static final int OPERATION_STATUS_OK = 1;

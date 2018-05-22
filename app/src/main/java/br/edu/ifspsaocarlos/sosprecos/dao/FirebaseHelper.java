@@ -19,7 +19,7 @@ public abstract class FirebaseHelper<E> {
     protected DatabaseReference mDatabase;
     protected String referenceName;
     private DatabaseReference dRef;
-    //All elements on database
+    //All items on database
     private Map<String, E> elementsMap;
 
     public FirebaseHelper(Context context, String referenceName) {
@@ -89,9 +89,9 @@ public abstract class FirebaseHelper<E> {
     }
 
     /**
-     * Retrieve all elements
+     * Retrieve all items
      *
-     * @return all elements
+     * @return all items
      */
     public Map<String, E> getElementsMap() {
         if (elementsMap == null) {
