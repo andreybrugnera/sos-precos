@@ -27,8 +27,7 @@
     <string name="image_not_set">A imagem não foi definida</string>
     <string name="user_not_set">O usuário não foi especificado</string>
     <string name="name_not_set">O nome não foi informado</string>
-    <string name="city_not_set">O nome da cidade não foi informado</string>
-    <string name="state_not_set">O estado não foi informado</string>
+    <string name="address_not_set">O endereço não foi informado</string>
     <string name="price_not_set">O preço não foi informado</string>
     <string name="description_not_set">A descrição não foi informada</string>
     <string name="category_id_not_set">O id da categoria não foi definido</string>
@@ -71,4 +70,10 @@
     <string name="zip_code">CEP</string>
     <string name="search_zip">Consultar CEP</string>
     <string name="search_zip_error">Erro ao consultar CEP</string>
+    <string name="service_not_available">Serviço não disponível</string>
+    <string name="invalid_lat_long_used">Localização inválida</string>
+    <string name="address">Endereço</string>
+    <string name="cannot_fetch_address">Não foi possível buscar o endereço</string>
+    <string name="no_address_found">Endereço não encontrado</string>
+    <string name="address_found">Endereço encontrado</string>
 </resources>

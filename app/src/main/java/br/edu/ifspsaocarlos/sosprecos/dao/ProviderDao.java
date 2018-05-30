@@ -50,14 +50,9 @@ public class ProviderDao extends FirebaseHelper<Provider> {
             throw new DaoException(getContext().getResources().getString(R.string.name_not_set));
         }
 
-        if (TextUtils.isEmpty(provider.getCity())) {
-            Log.d(DATABASE_LOGGER_TAG, getContext().getResources().getString(R.string.city_not_set));
-            throw new DaoException(getContext().getResources().getString(R.string.city_not_set));
-        }
-
-        if (TextUtils.isEmpty(provider.getState())) {
-            Log.d(DATABASE_LOGGER_TAG, getContext().getResources().getString(R.string.state_not_set));
-            throw new DaoException(getContext().getResources().getString(R.string.state_not_set));
+        if (TextUtils.isEmpty(provider.getAddress())) {
+            Log.d(DATABASE_LOGGER_TAG, getContext().getResources().getString(R.string.address_not_set));
+            throw new DaoException(getContext().getResources().getString(R.string.address_not_set));
         }
     }
 }

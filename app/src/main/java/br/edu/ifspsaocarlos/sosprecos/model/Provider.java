@@ -17,12 +17,7 @@ public class Provider implements Serializable {
     private String description;
     private String phoneNumber;
     private String email;
-    private String street;
-    private String number;
-    private String zipCode;
-    private String city;
-    private String state;
-    private String country;
+    private String address;
     private Double latitude;
     private Double longitude;
 
@@ -72,6 +67,14 @@ public class Provider implements Serializable {
         this.email = email;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public Date getRegistrationDate() {
         return registrationDate;
     }
@@ -94,54 +97,6 @@ public class Provider implements Serializable {
 
     public void setAverageScore(float averageScore) {
         this.averageScore = averageScore;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
     }
 
     public Double getLatitude() {

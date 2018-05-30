@@ -64,96 +64,32 @@
                 android:singleLine="true"
                 android:textColor="@color/label_text_color" />
 
-            <EditText
-                android:id="@+id/et_provider_phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:digits="0123456789+"
-                android:hint="@string/phone"
-                android:inputType="phone"
-                android:maxLength="13"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textColor="@color/label_text_color" />
-
-            <EditText
-                android:id="@+id/et_provider_street"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/street"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textColor="@color/label_text_color" />
-
-            <EditText
-                android:id="@+id/et_provider_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:digits="0123456789"
-                android:hint="@string/number"
-                android:inputType="number"
-                android:maxLength="4"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textColor="@color/label_text_color" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/et_provider_city"
+                    android:id="@+id/et_provider_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:hint="@string/city"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="@color/label_text_color" />
-
-                <EditText
-                    android:id="@+id/et_provider_state"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:hint="@string/state"
-                    android:inputType="textCapCharacters"
-                    android:maxLength="2"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="@color/label_text_color" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/et_provider_zip"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:digits="0123456789"
-                    android:hint="@string/zip_code"
-                    android:inputType="number"
-                    android:maxLength="8"
-                    android:maxLines="1"
-                    android:singleLine="true"
+                    android:layout_weight="1"
+                    android:hint="@string/address"
                     android:textColor="@color/label_text_color" />
 
                 <Button
-                    android:id="@+id/bt_search_zip"
+                    android:id="@+id/bt_get_location"
                     style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginLeft="18dp"
+                    android:layout_marginRight="18dp"
+                    android:layout_marginTop="2dp"
                     android:layout_weight="3"
-                    android:background="@color/button_background_color"
-                    android:enabled="true"
-                    android:text="@string/search_zip"
-                    android:textColor="@color/button_text_color"
-                    android:textStyle="bold" />
+                    android:background="@drawable/ic_location"
+                    android:enabled="true" />
+
             </LinearLayout>
 
             <Button
@@ -163,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@color/button_background_color"
-                android:enabled="false"
+                android:enabled="true"
                 android:text="@string/add"
                 android:textColor="@color/button_text_color"
                 android:textStyle="bold" />

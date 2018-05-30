@@ -1,4 +1,4 @@
-package br.edu.ifspsaocarlos.sosprecos.util;
+package br.edu.ifspsaocarlos.sosprecos.util.ws;
 
 /**
  * Created by Andrey R. Brugnera on 20/05/2018.

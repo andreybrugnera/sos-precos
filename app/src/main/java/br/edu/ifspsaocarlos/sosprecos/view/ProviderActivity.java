@@ -1,10 +1,19 @@
 package br.edu.ifspsaocarlos.sosprecos.view;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -14,21 +23,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.model.Provider;
-import br.edu.ifspsaocarlos.sosprecos.util.ZipCodeWebService;
+import br.edu.ifspsaocarlos.sosprecos.service.FetchLocationService;
+import br.edu.ifspsaocarlos.sosprecos.util.location.LocationAddress;
+import br.edu.ifspsaocarlos.sosprecos.util.location.LocationUtils;
 
-public class ProviderActivity extends AppCompatActivity {
+public class ProviderActivity extends AppCompatActivity implements LocationListener {
     private static final String LOG_TAG = "ADD_EDIT_PROVIDER";
 
     public static final int OPERATION_STATUS_ERROR = -1;
@@ -44,16 +45,17 @@ public class ProviderActivity extends AppCompatActivity {
     private TextView tvTitle;
     private EditText etProviderName;
     private AutoCompleteTextView acTvProviderEmail;
-    private EditText etProviderPhone;
-    private EditText etProviderStreet;
-    private EditText etProviderNumber;
-    private EditText etProviderCity;
-    private EditText etProviderState;
-    private EditText etProviderZIP;
+    private EditText etProviderAddress;
+    private Button btGetLocation;
     private Button btAddOrEditProvider;
-    private Button btSearchZip;
 
     private Provider editingProvider;
+
+    private LocationManager locationManager;
+    private Location currentLocation;
+    private AddressResultReceiver addressResultReceiver;
+
+    private boolean isLocationAccessGranted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,24 +66,20 @@ public class ProviderActivity extends AppCompatActivity {
         this.tvTitle = findViewById(R.id.tv_title);
         this.etProviderName = findViewById(R.id.et_provider_name);
         this.acTvProviderEmail = findViewById(R.id.actv_provider_email);
-        this.etProviderPhone = findViewById(R.id.et_provider_phone);
-        this.etProviderStreet = findViewById(R.id.et_provider_street);
-        this.etProviderNumber = findViewById(R.id.et_provider_number);
-        this.etProviderCity = findViewById(R.id.et_provider_city);
-        this.etProviderState = findViewById(R.id.et_provider_state);
-        this.etProviderZIP = findViewById(R.id.et_provider_zip);
+        this.etProviderAddress = findViewById(R.id.et_provider_address);
+        this.btGetLocation = findViewById(R.id.bt_get_location);
         this.btAddOrEditProvider = findViewById(R.id.bt_add_edit_provider);
 
-        this.btSearchZip = findViewById(R.id.bt_search_zip);
-        this.btSearchZip.setOnClickListener(new View.OnClickListener() {
+        this.btGetLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestZipCodeSearch();
+                getCurrentLocation();
             }
         });
 
         configureToolbar();
         defineOperation();
+        checkLocationAccessPermission();
     }
 
     private void configureToolbar() {
@@ -130,12 +128,7 @@ public class ProviderActivity extends AppCompatActivity {
     private void fillInputFields() {
         this.etProviderName.setText(this.editingProvider.getName());
         this.acTvProviderEmail.setText(this.editingProvider.getEmail());
-        this.etProviderPhone.setText(this.editingProvider.getPhoneNumber());
-        this.etProviderStreet.setText(this.editingProvider.getStreet());
-        this.etProviderCity.setText(this.editingProvider.getCity());
-        this.etProviderState.setText(this.editingProvider.getState());
-        this.etProviderNumber.setText(this.editingProvider.getNumber());
-        this.etProviderZIP.setText(this.editingProvider.getZipCode());
+        this.etProviderAddress.setText(this.editingProvider.getAddress());
     }
 
     private void editProvider() {
@@ -144,48 +137,91 @@ public class ProviderActivity extends AppCompatActivity {
     private void addProvider() {
     }
 
-    private void requestZipCodeSearch() {
-        String zipCode = this.etProviderZIP.getText().toString();
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        Response.Listener<JSONObject> responseListener = searchZipCode();
-        Response.ErrorListener errorListener = createErrorResponseListener();
-        String zipWebService = ZipCodeWebService.getResourceURL(zipCode);
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, zipWebService, null, responseListener, errorListener);
-        requestQueue.add(jsonRequest);
+    @Override
+    public void onLocationChanged(Location location) {
+        this.currentLocation = location;
+        startFetchLocationService();
+        this.locationManager.removeUpdates(this);
     }
 
-    private Response.Listener<JSONObject> searchZipCode() {
-        progressBar.setVisibility(View.VISIBLE);
-        return new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    if (response != null) {
-                        etProviderStreet.setText(response.getString(ZipCodeWebService.STREET));
-                        etProviderState.setText(response.getString(ZipCodeWebService.STATE));
-                        etProviderCity.setText(response.getString(ZipCodeWebService.CITY));
-                    }
-                } catch (JSONException ex) {
-                    etProviderStreet.getText().clear();
-                    etProviderState.getText().clear();
-                    etProviderCity.getText().clear();
-                    etProviderZIP.getText().clear();
-                    Toast.makeText(ProviderActivity.this, getString(R.string.search_zip_error), Toast.LENGTH_LONG).show();
-                    Log.e(LOG_TAG, getString(R.string.search_zip_error), ex);
+    private void startFetchLocationService() {
+        this.addressResultReceiver = new AddressResultReceiver(new Handler());
+        Intent intent = new Intent(this, FetchLocationService.class);
+        intent.putExtra(FetchLocationService.RECEIVER, this.addressResultReceiver);
+        intent.putExtra(FetchLocationService.LOCATION_DATA_EXTRA, this.currentLocation);
+        startService(intent);
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+    }
+
+    private void checkLocationAccessPermission() {
+        this.isLocationAccessGranted = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestLocationAccessPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    this.isLocationAccessGranted = true;
+                    getCurrentLocation();
+                } else {
+                    this.isLocationAccessGranted = false;
                 }
-                progressBar.setVisibility(View.GONE);
+                return;
             }
-        };
+        }
     }
 
-    private Response.ErrorListener createErrorResponseListener() {
-        return new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressBar.setVisibility(View.GONE);
-                Toast.makeText(ProviderActivity.this, getString(R.string.search_zip_error), Toast.LENGTH_LONG).show();
+    private void getCurrentLocation() {
+        this.progressBar.setVisibility(View.VISIBLE);
+        this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (!isLocationAccessGranted) {
+            this.progressBar.setVisibility(View.GONE);
+            requestLocationAccessPermission();
+        } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 5, this);
+            this.locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 15000, 5, this);
+        }
+    }
+
+    class AddressResultReceiver extends ResultReceiver {
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            progressBar.setVisibility(View.GONE);
+
+            if (resultData == null) {
+                return;
             }
-        };
+
+            // Display the address string
+            LocationAddress locationAddress = (LocationAddress) resultData.getSerializable(FetchLocationService.RESULT_DATA_KEY);
+            if (locationAddress != null) {
+                etProviderAddress.setText(LocationUtils.getAddressString(locationAddress));
+            } else {
+                Toast.makeText(ProviderActivity.this, getString(R.string.cannot_fetch_address),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
