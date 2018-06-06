@@ -6,7 +6,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -45,13 +44,13 @@ public class FetchLocationService extends IntentService {
     }
 
     private LocationAddress buildLocationAddress(Address address) {
-        String street = address.getAddressLine(0);
+        String addressLine = address.getAddressLine(0);
         String city = address.getLocality();
         String state = address.getAdminArea();
         String country = address.getCountryName();
         String postalCode = address.getPostalCode();
 
-        LocationAddress locationAddress = new LocationAddress(street,
+        LocationAddress locationAddress = new LocationAddress(addressLine,
                 city, state, country, postalCode);
 
         return locationAddress;

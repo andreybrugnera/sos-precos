@@ -6,27 +6,27 @@ import java.io.Serializable;
  * Created by Andrey R. Brugnera on 23/05/2018.
  */
 public class LocationAddress implements Serializable{
-    private String street;
+    private String address;
     private String city;
     private String state;
     private String country;
     private String zipCode;
 
-    public LocationAddress(String street, String city, String state,
+    public LocationAddress(String address, String city, String state,
                            String country, String zipCode) {
-        this.street = street;
+        this.address = address;
         this.city = city;
         this.state = state;
         this.country = country;
         this.zipCode = zipCode;
     }
 
-    public String getStreet() {
-        return street;
+    public String getAddress() {
+        return address;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getCity() {

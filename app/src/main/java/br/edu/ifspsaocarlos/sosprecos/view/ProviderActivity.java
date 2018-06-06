@@ -23,11 +23,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
+
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.model.Provider;
 import br.edu.ifspsaocarlos.sosprecos.service.FetchLocationService;
 import br.edu.ifspsaocarlos.sosprecos.util.location.LocationAddress;
-import br.edu.ifspsaocarlos.sosprecos.util.location.LocationUtils;
 
 public class ProviderActivity extends AppCompatActivity implements LocationListener {
     private static final String LOG_TAG = "ADD_EDIT_PROVIDER";
@@ -41,12 +44,17 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
     public static final String OPERATION = "operation";
     public static final String PROVIDER = "provider";
 
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
+    private static final int REQUEST_LOCATION_PICKER = 2;
+
     private ProgressBar progressBar;
     private TextView tvTitle;
     private EditText etProviderName;
     private AutoCompleteTextView acTvProviderEmail;
     private EditText etProviderAddress;
-    private Button btGetLocation;
+    private EditText etProviderPhone;
+    private Button btGetCurrentLocation;
+    private Button btGetLocationFromMap;
     private Button btAddOrEditProvider;
 
     private Provider editingProvider;
@@ -54,6 +62,7 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
     private LocationManager locationManager;
     private Location currentLocation;
     private AddressResultReceiver addressResultReceiver;
+    private LatLng providerLatLng;
 
     private boolean isLocationAccessGranted;
 
@@ -67,10 +76,20 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
         this.etProviderName = findViewById(R.id.et_provider_name);
         this.acTvProviderEmail = findViewById(R.id.actv_provider_email);
         this.etProviderAddress = findViewById(R.id.et_provider_address);
-        this.btGetLocation = findViewById(R.id.bt_get_location);
+        this.etProviderPhone = findViewById(R.id.et_provider_phone);
+        this.btGetCurrentLocation = findViewById(R.id.bt_get_current_location);
+        this.btGetLocationFromMap = findViewById(R.id.bt_get_location_from_map);
+
         this.btAddOrEditProvider = findViewById(R.id.bt_add_edit_provider);
 
-        this.btGetLocation.setOnClickListener(new View.OnClickListener() {
+        this.btGetLocationFromMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getLocationFromMap();
+            }
+        });
+
+        this.btGetCurrentLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getCurrentLocation();
@@ -128,6 +147,7 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
     private void fillInputFields() {
         this.etProviderName.setText(this.editingProvider.getName());
         this.acTvProviderEmail.setText(this.editingProvider.getEmail());
+        this.etProviderPhone.setText(this.editingProvider.getPhoneNumber());
         this.etProviderAddress.setText(this.editingProvider.getAddress());
     }
 
@@ -140,7 +160,9 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
     @Override
     public void onLocationChanged(Location location) {
         this.currentLocation = location;
+        this.providerLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         startFetchLocationService();
+        //Stop listening for location updates
         this.locationManager.removeUpdates(this);
     }
 
@@ -169,21 +191,39 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
     }
 
     private void requestLocationAccessPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case 1: {
+            case REQUEST_LOCATION_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     this.isLocationAccessGranted = true;
                     getCurrentLocation();
                 } else {
                     this.isLocationAccessGranted = false;
                 }
-                return;
-            }
+                break;
+            case REQUEST_LOCATION_PICKER:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    this.isLocationAccessGranted = true;
+                    getLocationFromMap();
+                } else {
+                    this.isLocationAccessGranted = false;
+                }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_LOCATION_PICKER:
+                if (resultCode == RESULT_OK) {
+                    Place place = PlacePicker.getPlace(data, this);
+                    etProviderAddress.setText(place.getAddress().toString());
+                    providerLatLng = place.getLatLng();
+                }
         }
     }
 
@@ -198,6 +238,20 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 5, this);
             this.locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 15000, 5, this);
+        }
+    }
+
+    private void getLocationFromMap() {
+        if (!isLocationAccessGranted) {
+            requestLocationAccessPermission();
+        } else {
+            try {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                startActivityForResult(builder.build(this), REQUEST_LOCATION_PICKER);
+            } catch (Exception ex) {
+                Toast.makeText(ProviderActivity.this, getString(R.string.service_not_available),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -217,7 +271,7 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
             // Display the address string
             LocationAddress locationAddress = (LocationAddress) resultData.getSerializable(FetchLocationService.RESULT_DATA_KEY);
             if (locationAddress != null) {
-                etProviderAddress.setText(LocationUtils.getAddressString(locationAddress));
+                etProviderAddress.setText(locationAddress.getAddress());
             } else {
                 Toast.makeText(ProviderActivity.this, getString(R.string.cannot_fetch_address),
                         Toast.LENGTH_SHORT).show();

@@ -62,14 +62,6 @@
     <string name="edit_provider">Editar estabelecimento</string>
     <string name="provider_name">Nome</string>
     <string name="phone">Telefone</string>
-    <string name="street">Rua</string>
-    <string name="number">Número</string>
-    <string name="city">Cidade</string>
-    <string name="state">Estado</string>
-    <string name="country">País</string>
-    <string name="zip_code">CEP</string>
-    <string name="search_zip">Consultar CEP</string>
-    <string name="search_zip_error">Erro ao consultar CEP</string>
     <string name="service_not_available">Serviço não disponível</string>
     <string name="invalid_lat_long_used">Localização inválida</string>
     <string name="address">Endereço</string>

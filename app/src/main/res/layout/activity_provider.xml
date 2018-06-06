@@ -47,6 +47,7 @@
 
             <EditText
                 android:id="@+id/et_provider_name"
+                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/provider_name"
@@ -56,10 +57,22 @@
 
             <AutoCompleteTextView
                 android:id="@+id/actv_provider_email"
+                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/inform_email"
                 android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/label_text_color" />
+
+            <EditText
+                android:id="@+id/et_provider_phone"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/phone"
+                android:inputType="phone"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColor="@color/label_text_color" />
@@ -71,23 +84,42 @@
 
                 <EditText
                     android:id="@+id/et_provider_address"
+                    style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="2"
+                    android:ems="15"
+                    android:enabled="false"
                     android:hint="@string/address"
+                    android:inputType="textMultiLine"
                     android:textColor="@color/label_text_color" />
 
                 <Button
-                    android:id="@+id/bt_get_location"
+                    android:id="@+id/bt_get_current_location"
                     style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginBottom="2dp"
-                    android:layout_marginLeft="18dp"
-                    android:layout_marginRight="18dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_weight="3"
+                    android:layout_height="25dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="4"
                     android:background="@drawable/ic_location"
+                    android:enabled="true" />
+
+                <Button
+                    android:id="@+id/bt_get_location_from_map"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="4"
+                    android:background="@drawable/ic_location_pointer"
                     android:enabled="true" />
 
             </LinearLayout>

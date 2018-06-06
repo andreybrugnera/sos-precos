@@ -2,13 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_color"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/background_color"
     tools:context="br.edu.ifspsaocarlos.sosprecos.view.login.RegisterActivity">
 
     <ProgressBar
@@ -16,8 +16,8 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
     <ScrollView
@@ -33,45 +33,48 @@
 
             <TextView
                 android:id="@+id/tv_register_title"
-                style="?android:textAppearanceLarge"
+                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="15dp"
-                android:textColor="@color/label_text_color"
-                android:text="@string/new_user" />
+                android:text="@string/new_user"
+                android:textColor="@color/label_text_color" />
 
             <AutoCompleteTextView
                 android:id="@+id/actv_email"
+                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/input_text_color"
                 android:hint="@string/inform_email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textColor="@color/input_text_color" />
 
             <EditText
                 android:id="@+id/et_password"
+                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/input_text_color"
                 android:hint="@string/inform_password"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textColor="@color/input_text_color" />
 
             <EditText
                 android:id="@+id/et_confirm_password"
+                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/input_text_color"
                 android:hint="@string/confirm_password"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textColor="@color/input_text_color" />
 
             <Button
                 android:id="@+id/bt_register"
@@ -79,11 +82,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:textColor="@color/button_text_color"
                 android:background="@color/button_background_color"
+                android:onClick="registerUser"
                 android:text="@string/register"
-                android:textStyle="bold"
-                android:onClick="registerUser"/>
+                android:textColor="@color/button_text_color"
+                android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
