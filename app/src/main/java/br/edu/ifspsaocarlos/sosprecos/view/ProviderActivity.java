@@ -14,6 +14,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -26,8 +28,11 @@ import android.widget.Toast;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
+import br.edu.ifspsaocarlos.sosprecos.dao.ProviderDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Provider;
 import br.edu.ifspsaocarlos.sosprecos.service.FetchLocationService;
 import br.edu.ifspsaocarlos.sosprecos.util.location.LocationAddress;
@@ -53,6 +58,7 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
     private AutoCompleteTextView acTvProviderEmail;
     private EditText etProviderAddress;
     private EditText etProviderPhone;
+    private EditText etProviderDescription;
     private Button btGetCurrentLocation;
     private Button btGetLocationFromMap;
     private Button btAddOrEditProvider;
@@ -66,10 +72,14 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
 
     private boolean isLocationAccessGranted;
 
+    private ProviderDao providerDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_provider);
+
+        this.providerDao = new ProviderDao(this);
 
         this.progressBar = findViewById(R.id.progress_bar);
         this.tvTitle = findViewById(R.id.tv_title);
@@ -77,6 +87,7 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
         this.acTvProviderEmail = findViewById(R.id.actv_provider_email);
         this.etProviderAddress = findViewById(R.id.et_provider_address);
         this.etProviderPhone = findViewById(R.id.et_provider_phone);
+        this.etProviderDescription = findViewById(R.id.et_provider_description);
         this.btGetCurrentLocation = findViewById(R.id.bt_get_current_location);
         this.btGetLocationFromMap = findViewById(R.id.bt_get_location_from_map);
 
@@ -123,10 +134,8 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
         int operation = getIntent().getIntExtra(OPERATION, OPERATION_ADD);
         switch (operation) {
             case OPERATION_EDIT:
-                this.tvTitle.setText(R.string.edit_provider);
-                this.btAddOrEditProvider.setText(R.string.edit);
-                this.editingProvider = (Provider) getIntent().getSerializableExtra(PROVIDER);
-                fillInputFields();
+                updateUIWithEditingProviderData();
+                loadEditingProviderLocation();
                 this.btAddOrEditProvider.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -144,17 +153,95 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
         }
     }
 
-    private void fillInputFields() {
+    private void updateUIWithEditingProviderData() {
+        this.tvTitle.setText(R.string.edit_provider);
+        this.btAddOrEditProvider.setText(R.string.edit);
+        this.editingProvider = (Provider) getIntent().getSerializableExtra(PROVIDER);
         this.etProviderName.setText(this.editingProvider.getName());
         this.acTvProviderEmail.setText(this.editingProvider.getEmail());
         this.etProviderPhone.setText(this.editingProvider.getPhoneNumber());
         this.etProviderAddress.setText(this.editingProvider.getAddress());
+        this.etProviderDescription.setText(this.editingProvider.getDescription());
+    }
+
+    private void loadEditingProviderLocation() {
+        this.providerLatLng = new LatLng(editingProvider.getLatitude(), editingProvider.getLongitude());
+    }
+
+    private boolean validateInputFields(Provider provider) {
+        String providerName = this.etProviderName.getText().toString();
+        if (TextUtils.isEmpty(providerName)) {
+            this.etProviderName.setError(getString(R.string.enter_provider_name));
+            this.etProviderName.requestFocus();
+            return false;
+        }
+
+        String providerPhone = this.etProviderPhone.getText().toString();
+        if (TextUtils.isEmpty(providerPhone)) {
+            this.etProviderPhone.setError(getString(R.string.enter_provider_phone));
+            this.etProviderPhone.requestFocus();
+            return false;
+        }
+
+        String providerDescription = this.etProviderDescription.getText().toString();
+        if (TextUtils.isEmpty(providerDescription)) {
+            this.etProviderDescription.setError(getString(R.string.enter_provider_description));
+            this.etProviderDescription.requestFocus();
+            return false;
+        }
+
+        String providerAddress = this.etProviderAddress.getText().toString();
+        if (TextUtils.isEmpty(providerAddress)) {
+            this.etProviderAddress.setError(getString(R.string.enter_provider_address));
+            this.etProviderAddress.requestFocus();
+            return false;
+        }
+
+        provider.setName(providerName);
+        provider.setDescription(providerDescription);
+        provider.setPhoneNumber(providerPhone);
+        provider.setAddress(providerAddress);
+
+        return true;
     }
 
     private void editProvider() {
+        if (validateInputFields(editingProvider)){
+            String providerEmail = this.acTvProviderEmail.getText().toString();
+
+            editingProvider.setEmail(providerEmail);
+            editingProvider.setLatitude(this.providerLatLng.latitude);
+            editingProvider.setLongitude(this.providerLatLng.longitude);
+            try {
+                providerDao.update(editingProvider);
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra(PROVIDER, editingProvider);
+                setResult(OPERATION_STATUS_OK, returnIntent);
+            } catch (DaoException ex) {
+                Log.e(LOG_TAG, getString(R.string.error_editing_provider), ex);
+            }
+            finish();
+        }
     }
 
     private void addProvider() {
+        Provider provider = Provider.getInstance();
+        if (validateInputFields(provider)) {
+            String providerEmail = this.acTvProviderEmail.getText().toString();
+
+            provider.setEmail(providerEmail);
+            provider.setLatitude(this.providerLatLng.latitude);
+            provider.setLongitude(this.providerLatLng.longitude);
+            try {
+                providerDao.add(provider);
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra(PROVIDER, provider);
+                setResult(OPERATION_STATUS_OK, returnIntent);
+            } catch (DaoException ex) {
+                Log.e(LOG_TAG, getString(R.string.error_adding_provider), ex);
+            }
+            finish();
+        }
     }
 
     @Override
@@ -247,6 +334,10 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
         } else {
             try {
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                if (providerLatLng != null){
+                    LatLngBounds latLngBounds = new LatLngBounds(providerLatLng, providerLatLng);
+                    builder.setLatLngBounds(latLngBounds);
+                }
                 startActivityForResult(builder.build(this), REQUEST_LOCATION_PICKER);
             } catch (Exception ex) {
                 Toast.makeText(ProviderActivity.this, getString(R.string.service_not_available),

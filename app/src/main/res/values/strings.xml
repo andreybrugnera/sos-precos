@@ -68,4 +68,14 @@
     <string name="cannot_fetch_address">Não foi possível buscar o endereço</string>
     <string name="no_address_found">Endereço não encontrado</string>
     <string name="address_found">Endereço encontrado</string>
+    <string name="description">Descrição</string>
+    <string name="enter_provider_name">Informe o nome do estabelecimento</string>
+    <string name="enter_provider_phone">Informe o telefone do estabelecimento</string>
+    <string name="enter_provider_description">Informe uma descrição para o estabelecimento</string>
+    <string name="enter_provider_address">Informe o endereço do estabelecimento</string>
+    <string name="error_adding_provider">Erro ao adicionar o estabelecimento</string>
+    <string name="error_editing_provider">Erro ao alterar o estabelecimento</string>
+    <string name="remove_provider">Remover estabelecimento</string>
+    <string name="confirm_remove_provider">Deseja realmente remover o estabelecimento?</string>
+    <string name="error_removing_provider">Erro ao remover o estabelecimento</string>
 </resources>

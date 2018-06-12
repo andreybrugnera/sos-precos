@@ -1,5 +1,7 @@
 package br.edu.ifspsaocarlos.sosprecos.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,6 +32,7 @@ import java.util.List;
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.adapter.ProviderAdapter;
 import br.edu.ifspsaocarlos.sosprecos.dao.ProviderDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Provider;
 
 /**
@@ -113,10 +117,45 @@ public class ProviderListFragment extends Fragment {
 
     private void editSelectedProvider(final AdapterView.AdapterContextMenuInfo info) {
         this.selectedProvider = listAdapter.getItem(info.position);
+        Intent editProviderIntent = new Intent(getContext(), ProviderActivity.class);
+        editProviderIntent.putExtra(ProviderActivity.OPERATION, ProviderActivity.OPERATION_EDIT);
+        editProviderIntent.putExtra(ProviderActivity.PROVIDER, selectedProvider);
+        startActivityForResult(editProviderIntent, EDIT);
     }
 
     private void removeSelectedProvider(final AdapterView.AdapterContextMenuInfo info) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        dialog.setTitle(getString(R.string.remove_provider));
+        dialog.setMessage(getString(R.string.confirm_remove_provider));
+        dialog.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
 
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                progressBar.setVisibility(View.VISIBLE);
+                selectedProvider = listAdapter.getItem(info.position);
+                try {
+                    providerDao.delete(selectedProvider);
+                    providers.remove(selectedProvider);
+                    listAdapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.GONE);
+                } catch (DaoException e) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), getString(R.string.error_removing_provider),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        dialog.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     private void loadProviders() {
@@ -183,6 +222,26 @@ public class ProviderListFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        if (requestCode == ADD) {
+            if (resultCode == ProviderActivity.OPERATION_STATUS_OK) {
+                Provider addedProvider = (Provider) data.getSerializableExtra(ProviderActivity.PROVIDER);
+                providers.add(addedProvider);
+                sortProvidersByName();
+                listAdapter.notifyDataSetChanged();
+            } else if (resultCode == ProviderActivity.OPERATION_STATUS_ERROR) {
+                Toast.makeText(getContext(), getString(R.string.error_adding_provider),
+                        Toast.LENGTH_LONG).show();
+            }
+        } else if (requestCode == EDIT) {
+            if (resultCode == ProviderActivity.OPERATION_STATUS_OK) {
+                Provider editedProvider = (Provider) data.getSerializableExtra(ProviderActivity.PROVIDER);
+                this.selectedProvider.setName(editedProvider.getName());
+                sortProvidersByName();
+                listAdapter.notifyDataSetChanged();
+            } else if (resultCode == ProviderActivity.OPERATION_STATUS_ERROR) {
+                Toast.makeText(getContext(), getString(R.string.error_editing_provider),
+                        Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

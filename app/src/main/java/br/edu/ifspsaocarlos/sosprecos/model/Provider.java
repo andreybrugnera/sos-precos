@@ -1,9 +1,5 @@
 package br.edu.ifspsaocarlos.sosprecos.model;
 
-import android.location.Location;
-
-import com.google.firebase.database.Exclude;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -20,12 +16,17 @@ public class Provider implements Serializable {
     private String address;
     private Double latitude;
     private Double longitude;
-
-    @Exclude
-    private Location location;
     private Date registrationDate;
-    private int qualificationsCount;
-    private float averageScore;
+    private Integer qualificationsCount;
+    private Float averageScore;
+
+    public static Provider getInstance() {
+        Provider provider = new Provider();
+        provider.setRegistrationDate(new Date());
+        provider.setAverageScore(0f);
+        provider.setQualificationsCount(0);
+        return provider;
+    }
 
     public String getId() {
         return id;
@@ -83,19 +84,19 @@ public class Provider implements Serializable {
         this.registrationDate = registrationDate;
     }
 
-    public int getQualificationsCount() {
+    public Integer getQualificationsCount() {
         return qualificationsCount;
     }
 
-    public void setQualificationsCount(int qualificationsCount) {
+    public void setQualificationsCount(Integer qualificationsCount) {
         this.qualificationsCount = qualificationsCount;
     }
 
-    public float getAverageScore() {
+    public Float getAverageScore() {
         return averageScore;
     }
 
-    public void setAverageScore(float averageScore) {
+    public void setAverageScore(Float averageScore) {
         this.averageScore = averageScore;
     }
 
@@ -105,7 +106,6 @@ public class Provider implements Serializable {
 
     public void setLatitude(Double latitude) {
         this.latitude = latitude;
-        getLocation().setLatitude(latitude);
     }
 
     public Double getLongitude() {
@@ -114,18 +114,6 @@ public class Provider implements Serializable {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
-        getLocation().setLongitude(longitude);
-    }
-
-    public Location getLocation() {
-        if (location == null) {
-            if (latitude != null && longitude != null) {
-                location = new Location("");
-                location.setLatitude(latitude);
-                location.setLongitude(longitude);
-            }
-        }
-        return location;
     }
 
     @Override
