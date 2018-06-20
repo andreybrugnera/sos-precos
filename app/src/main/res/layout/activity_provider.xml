@@ -55,6 +55,11 @@
                 android:singleLine="true"
                 android:textColor="@color/label_text_color" />
 
+            <Spinner
+                android:id="@+id/sp_category"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
             <AutoCompleteTextView
                 android:id="@+id/actv_provider_email"
                 style="?android:textAppearanceSmall"

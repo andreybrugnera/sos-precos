@@ -16,8 +16,8 @@ import br.edu.ifspsaocarlos.sosprecos.model.Category;
  * Created by Andrey R. Brugnera on 10/05/2018.
  */
 public class CategoryAdapter extends ArrayAdapter<Category> {
-    private List<Category> categories;
-    private Context context;
+    protected List<Category> categories;
+    protected Context context;
 
     public CategoryAdapter(Context context, int resource, List<Category> objects) {
         super(context, resource, objects);

@@ -15,6 +15,13 @@ public class Category implements Serializable{
     @Exclude
     private Boolean selected;
 
+    public Category() {
+    }
+
+    public Category(String name) {
+        this.name = name;
+    }
+
     public String getId() {
         return id;
     }
@@ -57,7 +64,11 @@ public class Category implements Serializable{
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString(){
+        return this.name;
     }
 }

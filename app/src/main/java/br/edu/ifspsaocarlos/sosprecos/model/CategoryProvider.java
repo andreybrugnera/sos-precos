@@ -11,6 +11,14 @@ public class CategoryProvider implements Serializable {
     private String categoryId;
     private String providerId;
 
+    public CategoryProvider() {
+    }
+
+    public CategoryProvider(String categoryId, String providerId) {
+        this.categoryId = categoryId;
+        this.providerId = providerId;
+    }
+
     public String getId() {
         return id;
     }

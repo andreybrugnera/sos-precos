@@ -22,6 +22,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,10 +30,24 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
+import br.edu.ifspsaocarlos.sosprecos.adapter.CategorySpinnerAdapter;
+import br.edu.ifspsaocarlos.sosprecos.dao.CategoryDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.CategoryProviderDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.ProviderDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
+import br.edu.ifspsaocarlos.sosprecos.model.Category;
+import br.edu.ifspsaocarlos.sosprecos.model.CategoryProvider;
 import br.edu.ifspsaocarlos.sosprecos.model.Provider;
 import br.edu.ifspsaocarlos.sosprecos.service.FetchLocationService;
 import br.edu.ifspsaocarlos.sosprecos.util.location.LocationAddress;
@@ -55,6 +70,7 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
     private ProgressBar progressBar;
     private TextView tvTitle;
     private EditText etProviderName;
+    private Spinner spCategory;
     private AutoCompleteTextView acTvProviderEmail;
     private EditText etProviderAddress;
     private EditText etProviderPhone;
@@ -64,6 +80,10 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
     private Button btAddOrEditProvider;
 
     private Provider editingProvider;
+    private List<Category> categories;
+    private CategoryProvider categoryProvider;
+
+    private CategorySpinnerAdapter categorySpinnerAdapter;
 
     private LocationManager locationManager;
     private Location currentLocation;
@@ -73,6 +93,8 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
     private boolean isLocationAccessGranted;
 
     private ProviderDao providerDao;
+    private CategoryDao categoryDao;
+    private CategoryProviderDao categoryProviderDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,10 +102,14 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
         setContentView(R.layout.activity_provider);
 
         this.providerDao = new ProviderDao(this);
+        this.categoryDao = new CategoryDao(this);
+        this.categoryProviderDao = new CategoryProviderDao(this);
+        this.categories = new ArrayList<>();
 
         this.progressBar = findViewById(R.id.progress_bar);
         this.tvTitle = findViewById(R.id.tv_title);
         this.etProviderName = findViewById(R.id.et_provider_name);
+        this.spCategory = findViewById(R.id.sp_category);
         this.acTvProviderEmail = findViewById(R.id.actv_provider_email);
         this.etProviderAddress = findViewById(R.id.et_provider_address);
         this.etProviderPhone = findViewById(R.id.et_provider_phone);
@@ -107,9 +133,62 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
             }
         });
 
+        loadCategories();
         configureToolbar();
         defineOperation();
         checkLocationAccessPermission();
+    }
+
+    private void configureCategorySpinner() {
+        //Add fake category to be used as spinner hint
+        Category fakeCategory = new Category(getString(R.string.select_category));
+        fakeCategory.setId("fake_id");
+        categories.add(0, fakeCategory);
+        categorySpinnerAdapter = new CategorySpinnerAdapter(this,
+                android.R.layout.simple_spinner_item, categories);
+        categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCategory.setAdapter(categorySpinnerAdapter);
+    }
+
+    private void loadCategories() {
+        Log.d(LOG_TAG, getString(R.string.loading_categories));
+        progressBar.setVisibility(View.VISIBLE);
+
+        categoryDao.getDatabaseReference().addListenerForSingleValueEvent(
+                new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        categories.clear();
+                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                        for (DataSnapshot child : children) {
+                            Category category = child.getValue(Category.class);
+                            categories.add(category);
+                        }
+                        sortCategoriesByName();
+                        configureCategorySpinner();
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(LOG_TAG, databaseError.getMessage());
+                        Log.e(LOG_TAG, databaseError.getDetails());
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    private void sortCategoriesByName() {
+        Comparator comparator = new Comparator<Category>() {
+
+            @Override
+            public int compare(Category cat1, Category cat2) {
+                return cat1.getName().compareTo(cat2.getName());
+            }
+        };
+
+        Collections.sort(categories, comparator);
     }
 
     private void configureToolbar() {
@@ -162,6 +241,46 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
         this.etProviderPhone.setText(this.editingProvider.getPhoneNumber());
         this.etProviderAddress.setText(this.editingProvider.getAddress());
         this.etProviderDescription.setText(this.editingProvider.getDescription());
+        loadProvidersCategory();
+    }
+
+    private void loadProvidersCategory() {
+        Log.d(LOG_TAG, getString(R.string.loading_selected_category));
+        progressBar.setVisibility(View.VISIBLE);
+
+        Query query = categoryProviderDao.getDatabaseReference().orderByChild("providerId").equalTo(editingProvider.getId());
+        query.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                        for (DataSnapshot child : children) {
+                            categoryProvider = child.getValue(CategoryProvider.class);
+                            String categoryId = categoryProvider.getCategoryId();
+                            setSelectedCategory(categoryId);
+                            break;
+                        }
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(LOG_TAG, databaseError.getMessage());
+                        Log.e(LOG_TAG, databaseError.getDetails());
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    private void setSelectedCategory(String categoryId) {
+        for (int i = 0; i < categories.size(); i++) {
+            Category category = categories.get(i);
+            if (category.getId().equals(categoryId)) {
+                spCategory.setSelection(i);
+                break;
+            }
+        }
     }
 
     private void loadEditingProviderLocation() {
@@ -197,6 +316,14 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
             return false;
         }
 
+        //The selected category id must be > 0, as the first one is just a hint
+        if (spCategory.getSelectedItemPosition() == 0) {
+            //show message to user to select a category
+            Toast.makeText(ProviderActivity.this, getString(R.string.select_category),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         provider.setName(providerName);
         provider.setDescription(providerDescription);
         provider.setPhoneNumber(providerPhone);
@@ -206,7 +333,7 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
     }
 
     private void editProvider() {
-        if (validateInputFields(editingProvider)){
+        if (validateInputFields(editingProvider)) {
             String providerEmail = this.acTvProviderEmail.getText().toString();
 
             editingProvider.setEmail(providerEmail);
@@ -214,6 +341,8 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
             editingProvider.setLongitude(this.providerLatLng.longitude);
             try {
                 providerDao.update(editingProvider);
+                updateCategoryProvider();
+                categoryProviderDao.update(categoryProvider);
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra(PROVIDER, editingProvider);
                 setResult(OPERATION_STATUS_OK, returnIntent);
@@ -234,6 +363,8 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
             provider.setLongitude(this.providerLatLng.longitude);
             try {
                 providerDao.add(provider);
+                updateCategoryProvider(provider);
+                categoryProviderDao.add(categoryProvider);
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra(PROVIDER, provider);
                 setResult(OPERATION_STATUS_OK, returnIntent);
@@ -242,6 +373,16 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
             }
             finish();
         }
+    }
+
+    private void updateCategoryProvider(Provider provider) {
+        Category selectedCategory = categorySpinnerAdapter.getItem(spCategory.getSelectedItemPosition());
+        categoryProvider = new CategoryProvider(selectedCategory.getId(), provider.getId());
+    }
+
+    private void updateCategoryProvider() {
+        Category selectedCategory = categorySpinnerAdapter.getItem(spCategory.getSelectedItemPosition());
+        categoryProvider.setCategoryId(selectedCategory.getId());
     }
 
     @Override
@@ -334,7 +475,7 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
         } else {
             try {
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                if (providerLatLng != null){
+                if (providerLatLng != null) {
                     LatLngBounds latLngBounds = new LatLngBounds(providerLatLng, providerLatLng);
                     builder.setLatLngBounds(latLngBounds);
                 }
