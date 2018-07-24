@@ -80,4 +80,5 @@
     <string name="error_removing_provider">Erro ao remover o estabelecimento</string>
     <string name="select_category">Selecione a categoria</string>
     <string name="loading_selected_category">Carregando a categoria selecionada</string>
+    <string name="loading_category">Carregando categoria</string>
 </resources>

@@ -43,7 +43,8 @@
                 android:gravity="center"
                 android:padding="15dp"
                 android:text="@string/new_provider"
-                android:textColor="@color/label_text_color" />
+                android:textColor="@color/label_text_color"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/et_provider_name"

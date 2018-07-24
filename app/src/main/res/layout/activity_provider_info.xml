@@ -5,7 +5,7 @@
     android:background="@color/background_color"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="br.edu.ifspsaocarlos.sosprecos.view.CategoryActivity">
+    tools:context="br.edu.ifspsaocarlos.sosprecos.view.ProviderInfoActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -15,7 +15,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
     <ProgressBar
-        android:id="@+id/pb_category"
+        android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         android:visibility="gone" />
 
     <ScrollView
-        android:id="@+id/category_form"
+        android:id="@+id/provider_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -41,32 +41,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="15dp"
-                android:text="@string/new_category"
+                android:padding="5dp"
                 android:textColor="@color/label_text_color"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/et_category_name"
+            <TextView
+                android:id="@+id/tv_category"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/category_name"
-                android:maxLines="1"
-                android:singleLine="true"
+                android:gravity="center"
+                android:padding="2dp"
                 android:textColor="@color/label_text_color" />
 
-            <Button
-                android:id="@+id/bt_add_edit_category"
+            <TextView
+                android:id="@+id/tv_description"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@color/button_background_color"
-                android:enabled="false"
-                android:text="@string/add"
-                android:textColor="@color/button_text_color"
-                android:textStyle="bold" />
+                android:gravity="left"
+                android:padding="5dp"
+                android:textColor="@color/label_text_color" />
+
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>

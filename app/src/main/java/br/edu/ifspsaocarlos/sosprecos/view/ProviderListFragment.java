@@ -55,7 +55,8 @@ public class ProviderListFragment extends Fragment {
     private static final int ADD = 1;
     private static final int EDIT = 2;
 
-    public ProviderListFragment(){}
+    public ProviderListFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,12 +86,29 @@ public class ProviderListFragment extends Fragment {
             }
         });
 
+        this.providersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Provider provider = listAdapter.getItem(position);
+                if (provider != null) {
+                    openProviderInfo(provider);
+                }
+            }
+        });
+
         configureListAdapter();
         registerForContextMenu(this.providersListView);
         loadProviders();
     }
 
-    private void addProvider(){
+    private void openProviderInfo(Provider provider) {
+        Intent openProviderInfoIntent = new Intent(getContext(), ProviderInfoActivity.class);
+        openProviderInfoIntent.putExtra(ProviderInfoActivity.PROVIDER, provider);
+        startActivity(openProviderInfoIntent);
+    }
+
+    private void addProvider() {
         Intent addProviderIntent = new Intent(getContext(), ProviderActivity.class);
         addProviderIntent.putExtra(ProviderActivity.OPERATION, ProviderActivity.OPERATION_ADD);
         startActivityForResult(addProviderIntent, ADD);
@@ -203,7 +221,7 @@ public class ProviderListFragment extends Fragment {
         this.listAdapter = new ProviderAdapter(getContext(), R.id.list_view, providers);
         this.providersListView.setAdapter(listAdapter);
 
-        this.providersListView.setOnScrollListener(new AbsListView.OnScrollListener(){
+        this.providersListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
                 if (btAddProvider.getVisibility() == View.VISIBLE) {
