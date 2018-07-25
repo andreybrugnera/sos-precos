@@ -1,5 +1,6 @@
 package br.edu.ifspsaocarlos.sosprecos.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -21,6 +23,7 @@ import br.edu.ifspsaocarlos.sosprecos.dao.CategoryProviderDao;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
 import br.edu.ifspsaocarlos.sosprecos.model.CategoryProvider;
 import br.edu.ifspsaocarlos.sosprecos.model.Provider;
+import br.edu.ifspsaocarlos.sosprecos.view.maps.MapActivity;
 
 public class ProviderInfoActivity extends AppCompatActivity {
 
@@ -55,6 +58,18 @@ public class ProviderInfoActivity extends AppCompatActivity {
     private void updateUI(){
         TextView tvTitle = findViewById(R.id.tv_title);
         tvTitle.setText(this.provider.getName());
+
+        TextView tvPhone = findViewById(R.id.tv_phone);
+        tvPhone.setText(this.provider.getPhoneNumber());
+
+        TextView tvAddress = findViewById(R.id.tv_address);
+        tvAddress.setText(this.provider.getAddress());
+
+        RatingBar ratingBar = findViewById(R.id.rating_bar);
+        ratingBar.setRating(provider.getAverageScore());
+
+        TextView tvScore = findViewById(R.id.tv_score);
+        tvScore.setText("("+String.valueOf(provider.getAverageScore())+")");
 
         TextView tvDescription = findViewById(R.id.tv_description);
         tvDescription.setText(provider.getDescription());
@@ -133,5 +148,11 @@ public class ProviderInfoActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showLocation(View v){
+        Intent intentMap = new Intent(this, MapActivity.class);
+        intentMap.putExtra(MapActivity.PROVIDER, provider);
+        startActivity(intentMap);
     }
 }

@@ -5,4 +5,9 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="RatingBar">
+        <item name="colorAccent">#000000</item>
+        <item name="android:colorControlNormal">#c8c8c8</item>
+    </style>
+
 </resources>

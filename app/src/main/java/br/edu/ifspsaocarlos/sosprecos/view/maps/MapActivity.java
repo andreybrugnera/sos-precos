@@ -1,0 +1,53 @@
+package br.edu.ifspsaocarlos.sosprecos.view.maps;
+
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import br.edu.ifspsaocarlos.sosprecos.R;
+import br.edu.ifspsaocarlos.sosprecos.model.Provider;
+
+public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
+
+    private GoogleMap googleMaps;
+
+    private final float MAPS_MIN_ZOOM = 0;
+    private final float MAPS_MAX_ZOOM = 18;
+
+    public static final String PROVIDER = "provider";
+    private Provider provider;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_map);
+
+        this.provider = (Provider) getIntent().getSerializableExtra(PROVIDER);
+
+        // Get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        googleMaps = googleMap;
+
+        LatLng atuaiLocation = new LatLng(provider.getLatitude(), provider.getLongitude());
+        googleMaps.addMarker(new MarkerOptions()
+                .position(atuaiLocation)
+                .title(provider.getName()));
+        googleMaps.moveCamera(CameraUpdateFactory.newLatLng(atuaiLocation));
+        googleMaps.setMinZoomPreference(MAPS_MIN_ZOOM);
+        googleMaps.setMaxZoomPreference(MAPS_MAX_ZOOM);
+        //Aplica zoom
+        googleMaps.animateCamera(CameraUpdateFactory.zoomTo(MAPS_MAX_ZOOM), 1000, null);
+    }
+}
