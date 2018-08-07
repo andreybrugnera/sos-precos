@@ -11,6 +11,7 @@ public class Service implements Serializable {
     private String name;
     private String description;
     private Float price;
+    private String providerId;
 
     public String getId() {
         return id;
@@ -42,6 +43,14 @@ public class Service implements Serializable {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 
     @Override

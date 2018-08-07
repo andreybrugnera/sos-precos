@@ -150,9 +150,23 @@ public class ProviderInfoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Open maps with provider's location
+     * @param v
+     */
     public void showLocation(View v){
         Intent intentMap = new Intent(this, MapActivity.class);
         intentMap.putExtra(MapActivity.PROVIDER, provider);
         startActivity(intentMap);
+    }
+
+    /**
+     * Opens activity with all available services
+     * @param v
+     */
+    public void showServices(View v){
+        Intent intentServices = new Intent(this, ServiceListActivity.class);
+        intentServices.putExtra(ServiceListActivity.PROVIDER, provider);
+        startActivity(intentServices);
     }
 }

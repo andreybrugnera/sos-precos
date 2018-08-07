@@ -142,7 +142,7 @@ public class ProviderListFragment extends Fragment {
     }
 
     private void removeSelectedProvider(final AdapterView.AdapterContextMenuInfo info) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext(), R.style.AlertDialog);
         dialog.setTitle(getString(R.string.remove_provider));
         dialog.setMessage(getString(R.string.confirm_remove_provider));
         dialog.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {

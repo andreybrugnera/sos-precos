@@ -49,7 +49,9 @@
             android:name=".view.ProviderActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".view.ProviderInfoActivity" />
-        <activity android:name=".view.maps.MapActivity"></activity>
+        <activity android:name=".view.maps.MapActivity" />
+        <activity android:name=".view.ServiceListActivity" />
+        <activity android:name=".view.ServiceActivity"></activity>
     </application>
 
 </manifest>

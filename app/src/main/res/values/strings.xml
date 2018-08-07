@@ -82,4 +82,18 @@
     <string name="loading_selected_category">Carregando a categoria selecionada</string>
     <string name="loading_category">Carregando categoria</string>
     <string name="show_location">Exibir localização</string>
+    <string name="location">Localização</string>
+    <string name="loading_services">Carregando serviços</string>
+    <string name="new_service">Novo serviço</string>
+    <string name="edit_service">Editar serviço</string>
+    <string name="service_name">Nome do serviço</string>
+    <string name="price">Preço</string>
+    <string name="enter_service_name">Informe o nome do serviço</string>
+    <string name="enter_service_description">Informe a descrição do serviço</string>
+    <string name="enter_service_price">Informe o preço do serviço</string>
+    <string name="error_editing_service">Erro ao alterar o serviço</string>
+    <string name="error_adding_service">Erro ao adicionar o serviço</string>
+    <string name="remove_service">Remover serviço</string>
+    <string name="confirm_remove_service">Deseja realmente remover o serviço?</string>
+    <string name="error_removing_service">Erro ao remover o serviço</string>
 </resources>

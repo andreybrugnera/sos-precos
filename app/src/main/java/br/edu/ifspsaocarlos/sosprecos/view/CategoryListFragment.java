@@ -123,7 +123,7 @@ public class CategoryListFragment extends Fragment {
     }
 
     private void removeSelectedCategory(final AdapterView.AdapterContextMenuInfo info) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext(), R.style.AlertDialog);
         dialog.setTitle(getString(R.string.remove_category));
         dialog.setMessage(getString(R.string.confirm_remove_category));
         dialog.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {

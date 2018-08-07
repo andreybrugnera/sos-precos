@@ -45,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
 
                         switch (menuItem.getItemId()) {
+                            case R.id.nav_home:
+                                MainFragment mainFragment = new MainFragment();
+                                changeFragment(mainFragment, "main");
+                                break;
                             case R.id.nav_categories:
                                 CategoryListFragment categoryListFragment = new CategoryListFragment();
                                 changeFragment(categoryListFragment, "categories");
@@ -110,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialog);
         builder.setMessage(getString(R.string.are_you_sure))
                 .setPositiveButton(getString(R.string.yes), dialogClickListener)
                 .setNegativeButton(getString(R.string.no), dialogClickListener).show();
