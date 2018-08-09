@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.model.Provider;
+import br.edu.ifspsaocarlos.sosprecos.util.ImageUtils;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -39,10 +40,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         googleMaps = googleMap;
+        googleMaps.clear();
 
         LatLng atuaiLocation = new LatLng(provider.getLatitude(), provider.getLongitude());
         googleMaps.addMarker(new MarkerOptions()
                 .position(atuaiLocation)
+                .icon(ImageUtils.createBitmapDescriptorFromVector(this, R.drawable.ic_location_pointer, 2))
                 .title(provider.getName()));
         googleMaps.moveCamera(CameraUpdateFactory.newLatLng(atuaiLocation));
         googleMaps.setMinZoomPreference(MAPS_MIN_ZOOM);
