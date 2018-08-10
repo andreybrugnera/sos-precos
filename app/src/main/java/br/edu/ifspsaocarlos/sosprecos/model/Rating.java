@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Created by Andrey R. Brugnera on 05/03/2018.
  */
-public class Qualification implements Serializable {
+public class Rating implements Serializable {
     private String id;
     private String userId;
     private String description;
@@ -75,8 +75,8 @@ public class Qualification implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Qualification)) return false;
-        Qualification that = (Qualification) o;
+        if (!(o instanceof Rating)) return false;
+        Rating that = (Rating) o;
         return Objects.equals(id, that.id);
     }
 

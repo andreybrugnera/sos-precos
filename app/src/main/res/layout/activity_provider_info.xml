@@ -84,6 +84,17 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_rate"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:onClick="rateProvider"
+                android:padding="2dp"
+                android:text="@string/rate_link"
+                android:textColor="@color/link_text_color" />
+
+            <TextView
                 android:id="@+id/tv_description"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"

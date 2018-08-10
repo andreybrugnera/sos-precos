@@ -12,6 +12,8 @@ public class Service implements Serializable {
     private String description;
     private Float price;
     private String providerId;
+    private Integer ratingCount;
+    private Float averageScore;
 
     public String getId() {
         return id;
@@ -51,6 +53,22 @@ public class Service implements Serializable {
 
     public void setProviderId(String providerId) {
         this.providerId = providerId;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
+    }
+
+    public Float getAverageScore() {
+        return averageScore;
+    }
+
+    public void setAverageScore(Float averageScore) {
+        this.averageScore = averageScore;
     }
 
     @Override

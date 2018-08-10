@@ -17,14 +17,14 @@ public class Provider implements Serializable {
     private Double latitude;
     private Double longitude;
     private Date registrationDate;
-    private Integer qualificationsCount;
+    private Integer ratingCount;
     private Float averageScore;
 
     public static Provider getInstance() {
         Provider provider = new Provider();
         provider.setRegistrationDate(new Date());
         provider.setAverageScore(0f);
-        provider.setQualificationsCount(0);
+        provider.setRatingCount(0);
         return provider;
     }
 
@@ -84,12 +84,12 @@ public class Provider implements Serializable {
         this.registrationDate = registrationDate;
     }
 
-    public Integer getQualificationsCount() {
-        return qualificationsCount;
+    public Integer getRatingCount() {
+        return ratingCount;
     }
 
-    public void setQualificationsCount(Integer qualificationsCount) {
-        this.qualificationsCount = qualificationsCount;
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
     }
 
     public Float getAverageScore() {

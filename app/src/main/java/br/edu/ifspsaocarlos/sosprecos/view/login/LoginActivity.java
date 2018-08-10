@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
+import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
 import br.edu.ifspsaocarlos.sosprecos.view.MainActivity;
 
 public class LoginActivity extends Activity {
@@ -72,7 +73,8 @@ public class LoginActivity extends Activity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressBar.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
-                            FirebaseUser user = auth.getCurrentUser();
+                            FirebaseUser firebaseUser = auth.getCurrentUser();
+                            SessionUtils.setCurrentUserId(firebaseUser.getUid());
                             startMainActivity();
                         } else if (task.getException() instanceof FirebaseAuthInvalidUserException || task.getException() instanceof FirebaseAuthInvalidCredentialsException){
                             Toast.makeText(LoginActivity.this, getString(R.string.invalid_email_passeord),

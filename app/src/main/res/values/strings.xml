@@ -33,7 +33,7 @@
     <string name="category_id_not_set">O id da categoria não foi definido</string>
     <string name="provider_id_not_set">O id do prestador de serviço não foi definido</string>
     <string name="service_id_not_set">O id do serviço não foi definido</string>
-    <string name="qualification_id_not_set">O id da qualificação não foi definida</string>
+    <string name="rate_id_not_set">O id da avaliação não foi definida</string>
     <string name="home">Início</string>
     <string name="categories">Categorias</string>
     <string name="providers">Estabelecimentos</string>
@@ -96,4 +96,12 @@
     <string name="remove_service">Remover serviço</string>
     <string name="confirm_remove_service">Deseja realmente remover o serviço?</string>
     <string name="error_removing_service">Erro ao remover o serviço</string>
+    <string name="rate_link"><u>Avaliar</u></string>
+    <string name="rating">Avaliar</string>
+    <string name="save_rating">Salvar avaliação</string>
+    <string name="loading_existing_rate">Carregando avaliação existente</string>
+    <string name="loading_existing_rate_by_id">Carregando avaliação existente por id</string>
+    <string name="quality">Qualidade</string>
+    <string name="error_saving_or_updating_rating">Erro ao salvar ou atualizar a avaliação</string>
+    <string name="rating_registration_date">Data da avaliação</string>
 </resources>

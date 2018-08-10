@@ -6,10 +6,12 @@ import java.util.Objects;
 /**
  * Created by Andrey R. Brugnera on 17/04/2018.
  */
-public class ServiceQualification implements Serializable {
+public class ServiceRating implements Serializable {
     private String id;
     private String serviceId;
-    private String qualificationId;
+    private String rateId;
+    private String userId;
+    private String serviceIdUserId;
 
     public String getId() {
         return id;
@@ -27,19 +29,35 @@ public class ServiceQualification implements Serializable {
         this.serviceId = serviceId;
     }
 
-    public String getQualificationId() {
-        return qualificationId;
+    public String getRateId() {
+        return rateId;
     }
 
-    public void setQualificationId(String qualificationId) {
-        this.qualificationId = qualificationId;
+    public void setRateId(String rateId) {
+        this.rateId = rateId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getServiceIdUserId() {
+        return serviceIdUserId;
+    }
+
+    public void setServiceIdUserId(String serviceIdUserId) {
+        this.serviceIdUserId = serviceIdUserId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ServiceQualification)) return false;
-        ServiceQualification that = (ServiceQualification) o;
+        if (!(o instanceof ServiceRating)) return false;
+        ServiceRating that = (ServiceRating) o;
         return Objects.equals(id, that.id);
     }
 

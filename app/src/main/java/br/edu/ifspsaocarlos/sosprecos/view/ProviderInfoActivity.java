@@ -55,7 +55,7 @@ public class ProviderInfoActivity extends AppCompatActivity {
         updateUI();
     }
 
-    private void updateUI(){
+    private void updateUI() {
         TextView tvTitle = findViewById(R.id.tv_title);
         tvTitle.setText(this.provider.getName());
 
@@ -69,7 +69,7 @@ public class ProviderInfoActivity extends AppCompatActivity {
         ratingBar.setRating(provider.getAverageScore());
 
         TextView tvScore = findViewById(R.id.tv_score);
-        tvScore.setText("("+String.valueOf(provider.getAverageScore())+")");
+        tvScore.setText("(" + String.valueOf(provider.getAverageScore()) + ")");
 
         TextView tvDescription = findViewById(R.id.tv_description);
         tvDescription.setText(provider.getDescription());
@@ -104,7 +104,7 @@ public class ProviderInfoActivity extends AppCompatActivity {
                 });
     }
 
-    private void loadCategory(final String categoryId){
+    private void loadCategory(final String categoryId) {
         Log.d(LOG_TAG, getString(R.string.loading_category));
         progressBar.setVisibility(View.VISIBLE);
 
@@ -152,9 +152,10 @@ public class ProviderInfoActivity extends AppCompatActivity {
 
     /**
      * Open maps with provider's location
+     *
      * @param v
      */
-    public void showLocation(View v){
+    public void showLocation(View v) {
         Intent intentMap = new Intent(this, MapActivity.class);
         intentMap.putExtra(MapActivity.PROVIDER, provider);
         startActivity(intentMap);
@@ -162,11 +163,18 @@ public class ProviderInfoActivity extends AppCompatActivity {
 
     /**
      * Opens activity with all available services
+     *
      * @param v
      */
-    public void showServices(View v){
+    public void showServices(View v) {
         Intent intentServices = new Intent(this, ServiceListActivity.class);
         intentServices.putExtra(ServiceListActivity.PROVIDER, provider);
         startActivity(intentServices);
+    }
+
+    public void rateProvider(View V) {
+        Intent intentRateProvider = new Intent(this, RatingProviderActivity.class);
+        intentRateProvider.putExtra(RatingProviderActivity.PROVIDER, provider);
+        startActivity(intentRateProvider);
     }
 }
