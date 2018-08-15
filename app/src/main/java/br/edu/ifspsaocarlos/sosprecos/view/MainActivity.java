@@ -53,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
                                 CategoryListFragment categoryListFragment = new CategoryListFragment();
                                 changeFragment(categoryListFragment, "categories");
                                 break;
-                            case R.id.nav_providers:
-                                ProviderListFragment providerListFragment = new ProviderListFragment();
-                                changeFragment(providerListFragment, "providers");
+                            case R.id.nav_places:
+                                PlaceListFragment placeListFragment = new PlaceListFragment();
+                                changeFragment(placeListFragment, "places");
                                 break;
                             case R.id.nav_logout:
                                 logout();

@@ -26,7 +26,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -43,17 +42,17 @@ import java.util.List;
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.adapter.CategorySpinnerAdapter;
 import br.edu.ifspsaocarlos.sosprecos.dao.CategoryDao;
-import br.edu.ifspsaocarlos.sosprecos.dao.CategoryProviderDao;
-import br.edu.ifspsaocarlos.sosprecos.dao.ProviderDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.CategoryPlaceDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.PlaceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
-import br.edu.ifspsaocarlos.sosprecos.model.CategoryProvider;
-import br.edu.ifspsaocarlos.sosprecos.model.Provider;
+import br.edu.ifspsaocarlos.sosprecos.model.CategoryPlace;
+import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.service.FetchLocationService;
 import br.edu.ifspsaocarlos.sosprecos.util.location.LocationAddress;
 
-public class ProviderActivity extends AppCompatActivity implements LocationListener {
-    private static final String LOG_TAG = "ADD_EDIT_PROVIDER";
+public class PlaceActivity extends AppCompatActivity implements LocationListener {
+    private static final String LOG_TAG = "ADD_EDIT_PLACE";
 
     public static final int OPERATION_STATUS_ERROR = -1;
     public static final int OPERATION_STATUS_OK = 1;
@@ -62,62 +61,62 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
     public static final int OPERATION_EDIT = 3;
 
     public static final String OPERATION = "operation";
-    public static final String PROVIDER = "provider";
+    public static final String PLACE = "place";
 
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private static final int REQUEST_LOCATION_PICKER = 2;
 
     private ProgressBar progressBar;
     private TextView tvTitle;
-    private EditText etProviderName;
+    private EditText etPlaceName;
     private Spinner spCategory;
-    private AutoCompleteTextView acTvProviderEmail;
-    private EditText etProviderAddress;
-    private EditText etProviderPhone;
-    private EditText etProviderDescription;
+    private AutoCompleteTextView acTvPlaceEmail;
+    private EditText etPlaceAddress;
+    private EditText etPlacePhone;
+    private EditText etPlaceDescription;
     private Button btGetCurrentLocation;
     private Button btGetLocationFromMap;
-    private Button btAddOrEditProvider;
+    private Button btAddOrEditPlace;
 
-    private Provider editingProvider;
+    private Place editingPlace;
     private List<Category> categories;
-    private CategoryProvider categoryProvider;
+    private CategoryPlace categoryPlace;
 
     private CategorySpinnerAdapter categorySpinnerAdapter;
 
     private LocationManager locationManager;
     private Location currentLocation;
     private AddressResultReceiver addressResultReceiver;
-    private LatLng providerLatLng;
+    private LatLng placeLatLng;
 
     private boolean isLocationAccessGranted;
 
-    private ProviderDao providerDao;
+    private PlaceDao placeDao;
     private CategoryDao categoryDao;
-    private CategoryProviderDao categoryProviderDao;
+    private CategoryPlaceDao categoryPlaceDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_provider);
+        setContentView(R.layout.activity_place);
 
-        this.providerDao = new ProviderDao(this);
+        this.placeDao = new PlaceDao(this);
         this.categoryDao = new CategoryDao(this);
-        this.categoryProviderDao = new CategoryProviderDao(this);
+        this.categoryPlaceDao = new CategoryPlaceDao(this);
         this.categories = new ArrayList<>();
 
         this.progressBar = findViewById(R.id.progress_bar);
         this.tvTitle = findViewById(R.id.tv_title);
-        this.etProviderName = findViewById(R.id.et_provider_name);
+        this.etPlaceName = findViewById(R.id.et_place_name);
         this.spCategory = findViewById(R.id.sp_category);
-        this.acTvProviderEmail = findViewById(R.id.actv_provider_email);
-        this.etProviderAddress = findViewById(R.id.et_provider_address);
-        this.etProviderPhone = findViewById(R.id.et_provider_phone);
-        this.etProviderDescription = findViewById(R.id.et_provider_description);
+        this.acTvPlaceEmail = findViewById(R.id.actv_place_email);
+        this.etPlaceAddress = findViewById(R.id.et_place_address);
+        this.etPlacePhone = findViewById(R.id.et_place_phone);
+        this.etPlaceDescription = findViewById(R.id.et_place_description);
         this.btGetCurrentLocation = findViewById(R.id.bt_get_current_location);
         this.btGetLocationFromMap = findViewById(R.id.bt_get_location_from_map);
 
-        this.btAddOrEditProvider = findViewById(R.id.bt_add_edit_provider);
+        this.btAddOrEditPlace = findViewById(R.id.bt_add_edit_place);
 
         this.btGetLocationFromMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,42 +212,42 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
         int operation = getIntent().getIntExtra(OPERATION, OPERATION_ADD);
         switch (operation) {
             case OPERATION_EDIT:
-                updateUIWithEditingProviderData();
-                loadEditingProviderLocation();
-                this.btAddOrEditProvider.setOnClickListener(new View.OnClickListener() {
+                updateUIWithEditingPlaceData();
+                loadEditingPlaceLocation();
+                this.btAddOrEditPlace.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        editProvider();
+                        editPlace();
                     }
                 });
                 break;
             case OPERATION_ADD:
-                this.btAddOrEditProvider.setOnClickListener(new View.OnClickListener() {
+                this.btAddOrEditPlace.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        addProvider();
+                        addPlace();
                     }
                 });
         }
     }
 
-    private void updateUIWithEditingProviderData() {
-        this.tvTitle.setText(R.string.edit_provider);
-        this.btAddOrEditProvider.setText(R.string.edit);
-        this.editingProvider = (Provider) getIntent().getSerializableExtra(PROVIDER);
-        this.etProviderName.setText(this.editingProvider.getName());
-        this.acTvProviderEmail.setText(this.editingProvider.getEmail());
-        this.etProviderPhone.setText(this.editingProvider.getPhoneNumber());
-        this.etProviderAddress.setText(this.editingProvider.getAddress());
-        this.etProviderDescription.setText(this.editingProvider.getDescription());
-        loadProvidersCategory();
+    private void updateUIWithEditingPlaceData() {
+        this.tvTitle.setText(R.string.edit_place);
+        this.btAddOrEditPlace.setText(R.string.edit);
+        this.editingPlace = (Place) getIntent().getSerializableExtra(PLACE);
+        this.etPlaceName.setText(this.editingPlace.getName());
+        this.acTvPlaceEmail.setText(this.editingPlace.getEmail());
+        this.etPlacePhone.setText(this.editingPlace.getPhoneNumber());
+        this.etPlaceAddress.setText(this.editingPlace.getAddress());
+        this.etPlaceDescription.setText(this.editingPlace.getDescription());
+        loadPlacesCategory();
     }
 
-    private void loadProvidersCategory() {
+    private void loadPlacesCategory() {
         Log.d(LOG_TAG, getString(R.string.loading_selected_category));
         progressBar.setVisibility(View.VISIBLE);
 
-        Query query = categoryProviderDao.getDatabaseReference().orderByChild("providerId").equalTo(editingProvider.getId());
+        Query query = categoryPlaceDao.getDatabaseReference().orderByChild("placeId").equalTo(editingPlace.getId());
         query.addListenerForSingleValueEvent(
                 new ValueEventListener() {
 
@@ -256,8 +255,8 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
-                            categoryProvider = child.getValue(CategoryProvider.class);
-                            String categoryId = categoryProvider.getCategoryId();
+                            categoryPlace = child.getValue(CategoryPlace.class);
+                            String categoryId = categoryPlace.getCategoryId();
                             setSelectedCategory(categoryId);
                             break;
                         }
@@ -283,112 +282,112 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
         }
     }
 
-    private void loadEditingProviderLocation() {
-        this.providerLatLng = new LatLng(editingProvider.getLatitude(), editingProvider.getLongitude());
+    private void loadEditingPlaceLocation() {
+        this.placeLatLng = new LatLng(editingPlace.getLatitude(), editingPlace.getLongitude());
     }
 
-    private boolean validateInputFields(Provider provider) {
-        String providerName = this.etProviderName.getText().toString();
-        if (TextUtils.isEmpty(providerName)) {
-            this.etProviderName.setError(getString(R.string.enter_provider_name));
-            this.etProviderName.requestFocus();
+    private boolean validateInputFields(Place place) {
+        String placeName = this.etPlaceName.getText().toString();
+        if (TextUtils.isEmpty(placeName)) {
+            this.etPlaceName.setError(getString(R.string.enter_place_name));
+            this.etPlaceName.requestFocus();
             return false;
         }
 
-        String providerPhone = this.etProviderPhone.getText().toString();
-        if (TextUtils.isEmpty(providerPhone)) {
-            this.etProviderPhone.setError(getString(R.string.enter_provider_phone));
-            this.etProviderPhone.requestFocus();
+        String placePhone = this.etPlacePhone.getText().toString();
+        if (TextUtils.isEmpty(placePhone)) {
+            this.etPlacePhone.setError(getString(R.string.enter_place_phone));
+            this.etPlacePhone.requestFocus();
             return false;
         }
 
-        String providerDescription = this.etProviderDescription.getText().toString();
-        if (TextUtils.isEmpty(providerDescription)) {
-            this.etProviderDescription.setError(getString(R.string.enter_provider_description));
-            this.etProviderDescription.requestFocus();
+        String placeDescription = this.etPlaceDescription.getText().toString();
+        if (TextUtils.isEmpty(placeDescription)) {
+            this.etPlaceDescription.setError(getString(R.string.enter_place_description));
+            this.etPlaceDescription.requestFocus();
             return false;
         }
 
-        String providerAddress = this.etProviderAddress.getText().toString();
-        if (TextUtils.isEmpty(providerAddress)) {
-            this.etProviderAddress.setError(getString(R.string.enter_provider_address));
-            this.etProviderAddress.requestFocus();
+        String placeAddress = this.etPlaceAddress.getText().toString();
+        if (TextUtils.isEmpty(placeAddress)) {
+            this.etPlaceAddress.setError(getString(R.string.enter_place_address));
+            this.etPlaceAddress.requestFocus();
             return false;
         }
 
         //The selected category id must be > 0, as the first one is just a hint
         if (spCategory.getSelectedItemPosition() == 0) {
             //show message to user to select a category
-            Toast.makeText(ProviderActivity.this, getString(R.string.select_category),
+            Toast.makeText(PlaceActivity.this, getString(R.string.select_category),
                     Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        provider.setName(providerName);
-        provider.setDescription(providerDescription);
-        provider.setPhoneNumber(providerPhone);
-        provider.setAddress(providerAddress);
+        place.setName(placeName);
+        place.setDescription(placeDescription);
+        place.setPhoneNumber(placePhone);
+        place.setAddress(placeAddress);
 
         return true;
     }
 
-    private void editProvider() {
-        if (validateInputFields(editingProvider)) {
-            String providerEmail = this.acTvProviderEmail.getText().toString();
+    private void editPlace() {
+        if (validateInputFields(editingPlace)) {
+            String placeEmail = this.acTvPlaceEmail.getText().toString();
 
-            editingProvider.setEmail(providerEmail);
-            editingProvider.setLatitude(this.providerLatLng.latitude);
-            editingProvider.setLongitude(this.providerLatLng.longitude);
+            editingPlace.setEmail(placeEmail);
+            editingPlace.setLatitude(this.placeLatLng.latitude);
+            editingPlace.setLongitude(this.placeLatLng.longitude);
             try {
-                providerDao.update(editingProvider);
-                updateCategoryProvider();
-                categoryProviderDao.update(categoryProvider);
+                placeDao.update(editingPlace);
+                updateCategoryPlace();
+                categoryPlaceDao.update(categoryPlace);
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(PROVIDER, editingProvider);
+                returnIntent.putExtra(PLACE, editingPlace);
                 setResult(OPERATION_STATUS_OK, returnIntent);
             } catch (DaoException ex) {
-                Log.e(LOG_TAG, getString(R.string.error_editing_provider), ex);
+                Log.e(LOG_TAG, getString(R.string.error_editing_place), ex);
             }
             finish();
         }
     }
 
-    private void addProvider() {
-        Provider provider = Provider.getInstance();
-        if (validateInputFields(provider)) {
-            String providerEmail = this.acTvProviderEmail.getText().toString();
+    private void addPlace() {
+        Place place = Place.getInstance();
+        if (validateInputFields(place)) {
+            String placeEmail = this.acTvPlaceEmail.getText().toString();
 
-            provider.setEmail(providerEmail);
-            provider.setLatitude(this.providerLatLng.latitude);
-            provider.setLongitude(this.providerLatLng.longitude);
+            place.setEmail(placeEmail);
+            place.setLatitude(this.placeLatLng.latitude);
+            place.setLongitude(this.placeLatLng.longitude);
             try {
-                providerDao.add(provider);
-                updateCategoryProvider(provider);
-                categoryProviderDao.add(categoryProvider);
+                placeDao.add(place);
+                updateCategoryPlace(place);
+                categoryPlaceDao.add(categoryPlace);
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(PROVIDER, provider);
+                returnIntent.putExtra(PLACE, place);
                 setResult(OPERATION_STATUS_OK, returnIntent);
             } catch (DaoException ex) {
-                Log.e(LOG_TAG, getString(R.string.error_adding_provider), ex);
+                Log.e(LOG_TAG, getString(R.string.error_adding_place), ex);
             }
             finish();
         }
     }
 
-    private void updateCategoryProvider(Provider provider) {
+    private void updateCategoryPlace(Place place) {
         Category selectedCategory = categorySpinnerAdapter.getItem(spCategory.getSelectedItemPosition());
-        categoryProvider = new CategoryProvider(selectedCategory.getId(), provider.getId());
+        categoryPlace = new CategoryPlace(selectedCategory.getId(), place.getId());
     }
 
-    private void updateCategoryProvider() {
+    private void updateCategoryPlace() {
         Category selectedCategory = categorySpinnerAdapter.getItem(spCategory.getSelectedItemPosition());
-        categoryProvider.setCategoryId(selectedCategory.getId());
+        categoryPlace.setCategoryId(selectedCategory.getId());
     }
 
     @Override
     public void onLocationChanged(Location location) {
         this.currentLocation = location;
-        this.providerLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        this.placeLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         startFetchLocationService();
         //Stop listening for location updates
         this.locationManager.removeUpdates(this);
@@ -448,9 +447,9 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
         switch (requestCode) {
             case REQUEST_LOCATION_PICKER:
                 if (resultCode == RESULT_OK) {
-                    Place place = PlacePicker.getPlace(data, this);
-                    etProviderAddress.setText(place.getAddress().toString());
-                    providerLatLng = place.getLatLng();
+                    com.google.android.gms.location.places.Place place = PlacePicker.getPlace(data, this);
+                    etPlaceAddress.setText(place.getAddress().toString());
+                    placeLatLng = place.getLatLng();
                 }
         }
     }
@@ -475,13 +474,13 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
         } else {
             try {
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                if (providerLatLng != null) {
-                    LatLngBounds latLngBounds = new LatLngBounds(providerLatLng, providerLatLng);
+                if (placeLatLng != null) {
+                    LatLngBounds latLngBounds = new LatLngBounds(placeLatLng, placeLatLng);
                     builder.setLatLngBounds(latLngBounds);
                 }
                 startActivityForResult(builder.build(this), REQUEST_LOCATION_PICKER);
             } catch (Exception ex) {
-                Toast.makeText(ProviderActivity.this, getString(R.string.service_not_available),
+                Toast.makeText(PlaceActivity.this, getString(R.string.service_not_available),
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -503,9 +502,9 @@ public class ProviderActivity extends AppCompatActivity implements LocationListe
             // Display the address string
             LocationAddress locationAddress = (LocationAddress) resultData.getSerializable(FetchLocationService.RESULT_DATA_KEY);
             if (locationAddress != null) {
-                etProviderAddress.setText(locationAddress.getAddress());
+                etPlaceAddress.setText(locationAddress.getAddress());
             } else {
-                Toast.makeText(ProviderActivity.this, getString(R.string.cannot_fetch_address),
+                Toast.makeText(PlaceActivity.this, getString(R.string.cannot_fetch_address),
                         Toast.LENGTH_SHORT).show();
             }
         }

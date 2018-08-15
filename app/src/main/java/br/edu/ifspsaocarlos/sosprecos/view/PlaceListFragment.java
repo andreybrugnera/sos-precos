@@ -30,39 +30,39 @@ import java.util.Comparator;
 import java.util.List;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
-import br.edu.ifspsaocarlos.sosprecos.adapter.ProviderAdapter;
-import br.edu.ifspsaocarlos.sosprecos.dao.ProviderDao;
+import br.edu.ifspsaocarlos.sosprecos.adapter.PlaceAdapter;
+import br.edu.ifspsaocarlos.sosprecos.dao.PlaceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
-import br.edu.ifspsaocarlos.sosprecos.model.Provider;
+import br.edu.ifspsaocarlos.sosprecos.model.Place;
 
 /**
  * Created by Andrey R. Brugnera on 16/05/2018.
  */
-public class ProviderListFragment extends Fragment {
+public class PlaceListFragment extends Fragment {
 
-    private static final String LOG_TAG = "SERVICE_PROVIDERS";
+    private static final String LOG_TAG = "SERVICE_PLACES";
 
     private ProgressBar progressBar;
-    private Button btAddProvider;
-    private ListView providersListView;
-    private ProviderAdapter listAdapter;
+    private Button btAddPlace;
+    private ListView placesListView;
+    private PlaceAdapter listAdapter;
     private TextView viewTitle;
 
-    private ProviderDao providerDao;
-    private List<Provider> providers;
-    private Provider selectedProvider;
+    private PlaceDao placeDao;
+    private List<Place> places;
+    private Place selectedPlace;
 
     private static final int ADD = 1;
     private static final int EDIT = 2;
 
-    public ProviderListFragment() {
+    public PlaceListFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.providerDao = new ProviderDao(getContext());
-        this.providers = new ArrayList<>();
+        this.placeDao = new PlaceDao(getContext());
+        this.places = new ArrayList<>();
     }
 
     @Override
@@ -74,44 +74,44 @@ public class ProviderListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         this.progressBar = getView().findViewById(R.id.progress_bar);
-        this.providersListView = getView().findViewById(R.id.list_view);
+        this.placesListView = getView().findViewById(R.id.list_view);
         this.viewTitle = getView().findViewById(R.id.list_title);
-        this.viewTitle.setText(getString(R.string.providers));
+        this.viewTitle.setText(getString(R.string.places));
 
-        this.btAddProvider = getView().findViewById(R.id.bt_add_edit_item);
-        this.btAddProvider.setOnClickListener(new View.OnClickListener() {
+        this.btAddPlace = getView().findViewById(R.id.bt_add_edit_item);
+        this.btAddPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addProvider();
+                addPlace();
             }
         });
 
-        this.providersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        this.placesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Provider provider = listAdapter.getItem(position);
-                if (provider != null) {
-                    openProviderInfo(provider);
+                Place place = listAdapter.getItem(position);
+                if (place != null) {
+                    openPlaceInfo(place);
                 }
             }
         });
 
         configureListAdapter();
-        registerForContextMenu(this.providersListView);
-        loadProviders();
+        registerForContextMenu(this.placesListView);
+        loadPlaces();
     }
 
-    private void openProviderInfo(Provider provider) {
-        Intent openProviderInfoIntent = new Intent(getContext(), ProviderInfoActivity.class);
-        openProviderInfoIntent.putExtra(ProviderInfoActivity.PROVIDER, provider);
-        startActivity(openProviderInfoIntent);
+    private void openPlaceInfo(Place place) {
+        Intent openPlaceInfoIntent = new Intent(getContext(), PlaceInfoActivity.class);
+        openPlaceInfoIntent.putExtra(PlaceInfoActivity.PLACE, place);
+        startActivity(openPlaceInfoIntent);
     }
 
-    private void addProvider() {
-        Intent addProviderIntent = new Intent(getContext(), ProviderActivity.class);
-        addProviderIntent.putExtra(ProviderActivity.OPERATION, ProviderActivity.OPERATION_ADD);
-        startActivityForResult(addProviderIntent, ADD);
+    private void addPlace() {
+        Intent addPlaceIntent = new Intent(getContext(), PlaceActivity.class);
+        addPlaceIntent.putExtra(PlaceActivity.OPERATION, PlaceActivity.OPERATION_ADD);
+        startActivityForResult(addPlaceIntent, ADD);
     }
 
     @Override
@@ -124,42 +124,42 @@ public class ProviderListFragment extends Fragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.menu_edit:
-                editSelectedProvider(info);
+                editSelectedPlace(info);
                 return true;
             case R.id.menu_remove:
-                removeSelectedProvider(info);
+                removeSelectedPlace(info);
                 return true;
         }
         return super.onContextItemSelected(item);
     }
 
-    private void editSelectedProvider(final AdapterView.AdapterContextMenuInfo info) {
-        this.selectedProvider = listAdapter.getItem(info.position);
-        Intent editProviderIntent = new Intent(getContext(), ProviderActivity.class);
-        editProviderIntent.putExtra(ProviderActivity.OPERATION, ProviderActivity.OPERATION_EDIT);
-        editProviderIntent.putExtra(ProviderActivity.PROVIDER, selectedProvider);
-        startActivityForResult(editProviderIntent, EDIT);
+    private void editSelectedPlace(final AdapterView.AdapterContextMenuInfo info) {
+        this.selectedPlace = listAdapter.getItem(info.position);
+        Intent editPlaceIntent = new Intent(getContext(), PlaceActivity.class);
+        editPlaceIntent.putExtra(PlaceActivity.OPERATION, PlaceActivity.OPERATION_EDIT);
+        editPlaceIntent.putExtra(PlaceActivity.PLACE, selectedPlace);
+        startActivityForResult(editPlaceIntent, EDIT);
     }
 
-    private void removeSelectedProvider(final AdapterView.AdapterContextMenuInfo info) {
+    private void removeSelectedPlace(final AdapterView.AdapterContextMenuInfo info) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext(), R.style.AlertDialog);
-        dialog.setTitle(getString(R.string.remove_provider));
-        dialog.setMessage(getString(R.string.confirm_remove_provider));
+        dialog.setTitle(getString(R.string.remove_place));
+        dialog.setMessage(getString(R.string.confirm_remove_place));
         dialog.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 progressBar.setVisibility(View.VISIBLE);
-                selectedProvider = listAdapter.getItem(info.position);
+                selectedPlace = listAdapter.getItem(info.position);
                 try {
-                    providerDao.delete(selectedProvider);
-                    providers.remove(selectedProvider);
+                    placeDao.delete(selectedPlace);
+                    places.remove(selectedPlace);
                     listAdapter.notifyDataSetChanged();
                     progressBar.setVisibility(View.GONE);
                 } catch (DaoException e) {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), getString(R.string.error_removing_provider),
+                    Toast.makeText(getContext(), getString(R.string.error_removing_place),
                             Toast.LENGTH_LONG).show();
                 }
             }
@@ -176,22 +176,22 @@ public class ProviderListFragment extends Fragment {
         dialog.show();
     }
 
-    private void loadProviders() {
-        Log.d(LOG_TAG, getString(R.string.loading_providers));
+    private void loadPlaces() {
+        Log.d(LOG_TAG, getString(R.string.loading_places));
         progressBar.setVisibility(View.VISIBLE);
 
-        providerDao.getDatabaseReference().addListenerForSingleValueEvent(
+        placeDao.getDatabaseReference().addListenerForSingleValueEvent(
                 new ValueEventListener() {
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        providers.clear();
+                        places.clear();
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
-                            Provider provider = child.getValue(Provider.class);
-                            providers.add(provider);
+                            Place place = child.getValue(Place.class);
+                            places.add(place);
                         }
-                        sortProvidersByName();
+                        sortPlacesByName();
                         listAdapter.notifyDataSetChanged();
                         progressBar.setVisibility(View.GONE);
                     }
@@ -205,29 +205,29 @@ public class ProviderListFragment extends Fragment {
                 });
     }
 
-    private void sortProvidersByName() {
-        Comparator comparator = new Comparator<Provider>() {
+    private void sortPlacesByName() {
+        Comparator comparator = new Comparator<Place>() {
 
             @Override
-            public int compare(Provider prov1, Provider prov2) {
+            public int compare(Place prov1, Place prov2) {
                 return prov1.getName().compareTo(prov2.getName());
             }
         };
 
-        Collections.sort(providers, comparator);
+        Collections.sort(places, comparator);
     }
 
     private void configureListAdapter() {
-        this.listAdapter = new ProviderAdapter(getContext(), R.id.list_view, providers);
-        this.providersListView.setAdapter(listAdapter);
+        this.listAdapter = new PlaceAdapter(getContext(), R.id.list_view, places);
+        this.placesListView.setAdapter(listAdapter);
 
-        this.providersListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        this.placesListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
-                if (btAddProvider.getVisibility() == View.VISIBLE) {
-                    btAddProvider.setVisibility(View.GONE);
+                if (btAddPlace.getVisibility() == View.VISIBLE) {
+                    btAddPlace.setVisibility(View.GONE);
                 } else {
-                    btAddProvider.setVisibility(View.VISIBLE);
+                    btAddPlace.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -241,23 +241,23 @@ public class ProviderListFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD) {
-            if (resultCode == ProviderActivity.OPERATION_STATUS_OK) {
-                Provider addedProvider = (Provider) data.getSerializableExtra(ProviderActivity.PROVIDER);
-                providers.add(addedProvider);
-                sortProvidersByName();
+            if (resultCode == PlaceActivity.OPERATION_STATUS_OK) {
+                Place addedPlace = (Place) data.getSerializableExtra(PlaceActivity.PLACE);
+                places.add(addedPlace);
+                sortPlacesByName();
                 listAdapter.notifyDataSetChanged();
-            } else if (resultCode == ProviderActivity.OPERATION_STATUS_ERROR) {
-                Toast.makeText(getContext(), getString(R.string.error_adding_provider),
+            } else if (resultCode == PlaceActivity.OPERATION_STATUS_ERROR) {
+                Toast.makeText(getContext(), getString(R.string.error_adding_place),
                         Toast.LENGTH_LONG).show();
             }
         } else if (requestCode == EDIT) {
-            if (resultCode == ProviderActivity.OPERATION_STATUS_OK) {
-                Provider editedProvider = (Provider) data.getSerializableExtra(ProviderActivity.PROVIDER);
-                this.selectedProvider.setName(editedProvider.getName());
-                sortProvidersByName();
+            if (resultCode == PlaceActivity.OPERATION_STATUS_OK) {
+                Place editedPlace = (Place) data.getSerializableExtra(PlaceActivity.PLACE);
+                this.selectedPlace.setName(editedPlace.getName());
+                sortPlacesByName();
                 listAdapter.notifyDataSetChanged();
-            } else if (resultCode == ProviderActivity.OPERATION_STATUS_ERROR) {
-                Toast.makeText(getContext(), getString(R.string.error_editing_provider),
+            } else if (resultCode == PlaceActivity.OPERATION_STATUS_ERROR) {
+                Toast.makeText(getContext(), getString(R.string.error_editing_place),
                         Toast.LENGTH_LONG).show();
             }
         }

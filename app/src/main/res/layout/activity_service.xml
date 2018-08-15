@@ -24,7 +24,7 @@
         android:visibility="gone" />
 
     <ScrollView
-        android:id="@+id/provider_form"
+        android:id="@+id/place_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

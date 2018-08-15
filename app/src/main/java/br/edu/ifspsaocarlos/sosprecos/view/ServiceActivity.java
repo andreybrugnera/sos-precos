@@ -19,7 +19,7 @@ import java.util.List;
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dao.ServiceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
-import br.edu.ifspsaocarlos.sosprecos.model.Provider;
+import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
 
 public class ServiceActivity extends AppCompatActivity {
@@ -32,7 +32,7 @@ public class ServiceActivity extends AppCompatActivity {
     public static final int OPERATION_EDIT = 3;
 
     public static final String OPERATION = "operation";
-    public static final String PROVIDER = "provider";
+    public static final String PLACE = "place";
     public static final String SERVICE = "service";
 
     private ProgressBar progressBar;
@@ -43,7 +43,7 @@ public class ServiceActivity extends AppCompatActivity {
     private EditText etServiceDescription;
 
     private ServiceDao serviceDao;
-    private Provider provider;
+    private Place place;
     private Service editingService;
     private List<Service> services;
 
@@ -52,7 +52,8 @@ public class ServiceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service);
 
-        this.provider = (Provider) getIntent().getSerializableExtra(PROVIDER);
+        this.place = (Place) getIntent().getSerializableExtra(PLACE);
+        this.editingService = (Service) getIntent().getSerializableExtra(SERVICE);
         this.serviceDao = new ServiceDao(this);
 
         this.tvTitle = findViewById(R.id.tv_title);
@@ -85,7 +86,6 @@ public class ServiceActivity extends AppCompatActivity {
     }
 
     private void updateUIWithEditingServiceData() {
-        this.editingService = (Service) getIntent().getSerializableExtra(SERVICE);
         this.tvTitle.setText(getString(R.string.edit_service));
         this.btAddOrEditService.setText(getString(R.string.edit));
         this.etServiceName.setText(editingService.getName());
@@ -118,18 +118,20 @@ public class ServiceActivity extends AppCompatActivity {
         service.setName(serviceName);
         service.setDescription(serviceDescription);
         service.setPrice(Float.valueOf(servicePrice));
-        service.setProviderId(provider.getId());
+        service.setPlaceId(place.getId());
 
         return true;
     }
 
     private void editService() {
+        progressBar.setVisibility(View.VISIBLE);
         if (validateInputFields(editingService)) {
             try {
                 serviceDao.update(editingService);
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra(SERVICE, editingService);
                 setResult(OPERATION_STATUS_OK, returnIntent);
+                progressBar.setVisibility(View.GONE);
             } catch (DaoException ex) {
                 Log.e(LOG_TAG, getString(R.string.error_editing_service), ex);
             }
@@ -138,6 +140,7 @@ public class ServiceActivity extends AppCompatActivity {
     }
 
     private void addService() {
+        progressBar.setVisibility(View.VISIBLE);
         Service service = new Service();
         if (validateInputFields(service)) {
             try {
@@ -145,6 +148,7 @@ public class ServiceActivity extends AppCompatActivity {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra(SERVICE, service);
                 setResult(OPERATION_STATUS_OK, returnIntent);
+                progressBar.setVisibility(View.GONE);
             } catch (DaoException ex) {
                 Log.e(LOG_TAG, getString(R.string.error_adding_service), ex);
             }

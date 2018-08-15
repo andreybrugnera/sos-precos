@@ -11,7 +11,7 @@ public class Service implements Serializable {
     private String name;
     private String description;
     private Float price;
-    private String providerId;
+    private String placeId;
     private Integer ratingCount;
     private Float averageScore;
 
@@ -47,12 +47,12 @@ public class Service implements Serializable {
         this.price = price;
     }
 
-    public String getProviderId() {
-        return providerId;
+    public String getPlaceId() {
+        return placeId;
     }
 
-    public void setProviderId(String providerId) {
-        this.providerId = providerId;
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
     public Integer getRatingCount() {

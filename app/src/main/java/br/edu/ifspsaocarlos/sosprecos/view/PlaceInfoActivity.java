@@ -19,37 +19,37 @@ import com.google.firebase.database.ValueEventListener;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dao.CategoryDao;
-import br.edu.ifspsaocarlos.sosprecos.dao.CategoryProviderDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.CategoryPlaceDao;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
-import br.edu.ifspsaocarlos.sosprecos.model.CategoryProvider;
-import br.edu.ifspsaocarlos.sosprecos.model.Provider;
+import br.edu.ifspsaocarlos.sosprecos.model.CategoryPlace;
+import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.view.maps.MapActivity;
 
-public class ProviderInfoActivity extends AppCompatActivity {
+public class PlaceInfoActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = "PROVIDER_INFO";
+    private static final String LOG_TAG = "PLACE_INFO";
 
-    public static final String PROVIDER = "provider";
+    public static final String PLACE = "place";
 
     private ProgressBar progressBar;
     private TextView tvCategory;
 
-    private Provider provider;
-    private CategoryProviderDao categoryProviderDao;
+    private Place place;
+    private CategoryPlaceDao categoryPlaceDao;
     private CategoryDao categoryDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_provider_info);
+        setContentView(R.layout.activity_place_info);
 
         this.progressBar = findViewById(R.id.progress_bar);
         this.tvCategory = findViewById(R.id.tv_category);
 
-        this.categoryProviderDao = new CategoryProviderDao(this);
+        this.categoryPlaceDao = new CategoryPlaceDao(this);
         this.categoryDao = new CategoryDao(this);
 
-        this.provider = (Provider) getIntent().getSerializableExtra(PROVIDER);
+        this.place = (Place) getIntent().getSerializableExtra(PLACE);
 
         configureToolbar();
         updateUI();
@@ -57,30 +57,30 @@ public class ProviderInfoActivity extends AppCompatActivity {
 
     private void updateUI() {
         TextView tvTitle = findViewById(R.id.tv_title);
-        tvTitle.setText(this.provider.getName());
+        tvTitle.setText(this.place.getName());
 
         TextView tvPhone = findViewById(R.id.tv_phone);
-        tvPhone.setText(this.provider.getPhoneNumber());
+        tvPhone.setText(this.place.getPhoneNumber());
 
         TextView tvAddress = findViewById(R.id.tv_address);
-        tvAddress.setText(this.provider.getAddress());
+        tvAddress.setText(this.place.getAddress());
 
         RatingBar ratingBar = findViewById(R.id.rating_bar);
-        ratingBar.setRating(provider.getAverageScore());
+        ratingBar.setRating(place.getAverageScore());
 
         TextView tvScore = findViewById(R.id.tv_score);
-        tvScore.setText("(" + String.valueOf(provider.getAverageScore()) + ")");
+        tvScore.setText("(" + String.valueOf(place.getAverageScore()) + ")");
 
         TextView tvDescription = findViewById(R.id.tv_description);
-        tvDescription.setText(provider.getDescription());
-        loadProvidersCategory();
+        tvDescription.setText(place.getDescription());
+        loadPlacesCategory();
     }
 
-    private void loadProvidersCategory() {
+    private void loadPlacesCategory() {
         Log.d(LOG_TAG, getString(R.string.loading_category));
         progressBar.setVisibility(View.VISIBLE);
 
-        Query query = categoryProviderDao.getDatabaseReference().orderByChild("providerId").equalTo(provider.getId());
+        Query query = categoryPlaceDao.getDatabaseReference().orderByChild("placeId").equalTo(place.getId());
         query.addListenerForSingleValueEvent(
                 new ValueEventListener() {
 
@@ -88,8 +88,8 @@ public class ProviderInfoActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
-                            CategoryProvider categoryProvider = child.getValue(CategoryProvider.class);
-                            loadCategory(categoryProvider.getCategoryId());
+                            CategoryPlace categoryPlace = child.getValue(CategoryPlace.class);
+                            loadCategory(categoryPlace.getCategoryId());
                             break;
                         }
                         progressBar.setVisibility(View.GONE);
@@ -151,13 +151,13 @@ public class ProviderInfoActivity extends AppCompatActivity {
     }
 
     /**
-     * Open maps with provider's location
+     * Open maps with place's location
      *
      * @param v
      */
     public void showLocation(View v) {
         Intent intentMap = new Intent(this, MapActivity.class);
-        intentMap.putExtra(MapActivity.PROVIDER, provider);
+        intentMap.putExtra(MapActivity.PLACE, place);
         startActivity(intentMap);
     }
 
@@ -168,13 +168,13 @@ public class ProviderInfoActivity extends AppCompatActivity {
      */
     public void showServices(View v) {
         Intent intentServices = new Intent(this, ServiceListActivity.class);
-        intentServices.putExtra(ServiceListActivity.PROVIDER, provider);
+        intentServices.putExtra(ServiceListActivity.PLACE, place);
         startActivity(intentServices);
     }
 
     public void rateProvider(View V) {
-        Intent intentRateProvider = new Intent(this, RatingProviderActivity.class);
-        intentRateProvider.putExtra(RatingProviderActivity.PROVIDER, provider);
+        Intent intentRateProvider = new Intent(this, RatingPlaceActivity.class);
+        intentRateProvider.putExtra(RatingPlaceActivity.PLACE, place);
         startActivity(intentRateProvider);
     }
 }

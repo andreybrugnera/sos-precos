@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Created by Andrey R. Brugnera on 05/03/2018.
  */
-public class Provider implements Serializable {
+public class Place implements Serializable {
     private String id;
     private String name;
     private String description;
@@ -20,12 +20,12 @@ public class Provider implements Serializable {
     private Integer ratingCount;
     private Float averageScore;
 
-    public static Provider getInstance() {
-        Provider provider = new Provider();
-        provider.setRegistrationDate(new Date());
-        provider.setAverageScore(0f);
-        provider.setRatingCount(0);
-        return provider;
+    public static Place getInstance() {
+        Place place = new Place();
+        place.setRegistrationDate(new Date());
+        place.setAverageScore(0f);
+        place.setRatingCount(0);
+        return place;
     }
 
     public String getId() {
@@ -119,8 +119,8 @@ public class Provider implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Provider)) return false;
-        Provider that = (Provider) o;
+        if (!(o instanceof Place)) return false;
+        Place that = (Place) o;
         return Objects.equals(id, that.id);
     }
 

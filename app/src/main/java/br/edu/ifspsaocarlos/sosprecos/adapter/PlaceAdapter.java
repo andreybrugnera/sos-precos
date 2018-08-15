@@ -10,29 +10,29 @@ import android.widget.TextView;
 import java.util.List;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
-import br.edu.ifspsaocarlos.sosprecos.model.Provider;
+import br.edu.ifspsaocarlos.sosprecos.model.Place;
 
 /**
  * Created by Andrey R. Brugnera on 16/05/2018.
  */
-public class ProviderAdapter extends ArrayAdapter<Provider> {
-    private List<Provider> providers;
+public class PlaceAdapter extends ArrayAdapter<Place> {
+    private List<Place> places;
     private Context context;
 
-    public ProviderAdapter(Context context, int resource, List<Provider> objects) {
+    public PlaceAdapter(Context context, int resource, List<Place> objects) {
         super(context, resource, objects);
-        this.providers = objects;
+        this.places = objects;
         this.context = context;
     }
 
     @Override
     public int getCount() {
-        return providers != null ? providers.size() : 0;
+        return places != null ? places.size() : 0;
     }
 
     @Override
-    public Provider getItem(int position) {
-        return providers != null ? providers.get(position) : null;
+    public Place getItem(int position) {
+        return places != null ? places.get(position) : null;
     }
 
     @Override
@@ -51,8 +51,8 @@ public class ProviderAdapter extends ArrayAdapter<Provider> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Provider provider = providers.get(position);
-        viewHolder.getName().setText(provider.getName());
+        Place place = places.get(position);
+        viewHolder.getName().setText(place.getName());
 
         return convertView;
     }

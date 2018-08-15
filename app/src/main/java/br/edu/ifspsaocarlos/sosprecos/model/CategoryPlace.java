@@ -6,17 +6,17 @@ import java.util.Objects;
 /**
  * Created by Andrey R. Brugnera on 17/04/2018.
  */
-public class CategoryProvider implements Serializable {
+public class CategoryPlace implements Serializable {
     private String id;
     private String categoryId;
-    private String providerId;
+    private String placeId;
 
-    public CategoryProvider() {
+    public CategoryPlace() {
     }
 
-    public CategoryProvider(String categoryId, String providerId) {
+    public CategoryPlace(String categoryId, String placeId) {
         this.categoryId = categoryId;
-        this.providerId = providerId;
+        this.placeId = placeId;
     }
 
     public String getId() {
@@ -35,19 +35,19 @@ public class CategoryProvider implements Serializable {
         this.categoryId = categoryId;
     }
 
-    public String getProviderId() {
-        return providerId;
+    public String getPlaceId() {
+        return placeId;
     }
 
-    public void setProviderId(String providerId) {
-        this.providerId = providerId;
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CategoryProvider)) return false;
-        CategoryProvider that = (CategoryProvider) o;
+        if (!(o instanceof CategoryPlace)) return false;
+        CategoryPlace that = (CategoryPlace) o;
         return Objects.equals(id, that.id);
     }
 

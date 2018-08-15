@@ -11,7 +11,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
-import br.edu.ifspsaocarlos.sosprecos.model.Provider;
+import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.util.ImageUtils;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -21,15 +21,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private final float MAPS_MIN_ZOOM = 0;
     private final float MAPS_MAX_ZOOM = 18;
 
-    public static final String PROVIDER = "provider";
-    private Provider provider;
+    public static final String PLACE = "place";
+    private Place place;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        this.provider = (Provider) getIntent().getSerializableExtra(PROVIDER);
+        this.place = (Place) getIntent().getSerializableExtra(PLACE);
 
         // Get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -42,11 +42,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         googleMaps = googleMap;
         googleMaps.clear();
 
-        LatLng atuaiLocation = new LatLng(provider.getLatitude(), provider.getLongitude());
+        LatLng atuaiLocation = new LatLng(place.getLatitude(), place.getLongitude());
         googleMaps.addMarker(new MarkerOptions()
                 .position(atuaiLocation)
                 .icon(ImageUtils.createBitmapDescriptorFromVector(this, R.drawable.ic_location_pointer, 2))
-                .title(provider.getName()));
+                .title(place.getName()));
         googleMaps.moveCamera(CameraUpdateFactory.newLatLng(atuaiLocation));
         googleMaps.setMinZoomPreference(MAPS_MIN_ZOOM);
         googleMaps.setMaxZoomPreference(MAPS_MAX_ZOOM);

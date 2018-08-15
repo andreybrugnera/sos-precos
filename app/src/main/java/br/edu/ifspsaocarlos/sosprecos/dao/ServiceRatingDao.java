@@ -12,7 +12,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.ServiceRating;
  * Created by Andrey R. Brugnera on 17/04/2018.
  */
 public class ServiceRatingDao extends FirebaseHelper<ServiceRating> {
-    public static final String DATABASE_REFERENCE = "services_rates";
+    public static final String DATABASE_REFERENCE = "services_ratings";
 
     public ServiceRatingDao(Context context) {
         super(context, DATABASE_REFERENCE);

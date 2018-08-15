@@ -5,7 +5,7 @@
     android:background="@color/background_color"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="br.edu.ifspsaocarlos.sosprecos.view.RatingProviderActivity">
+    tools:context="br.edu.ifspsaocarlos.sosprecos.view.RatingPlaceActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -23,7 +23,7 @@
         android:visibility="gone" />
 
     <ScrollView
-        android:id="@+id/provider_form"
+        android:id="@+id/place_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

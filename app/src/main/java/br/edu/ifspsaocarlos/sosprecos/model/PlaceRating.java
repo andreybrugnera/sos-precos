@@ -6,12 +6,12 @@ import java.util.Objects;
 /**
  * Created by Andrey R. Brugnera on 17/04/2018.
  */
-public class ProviderRating implements Serializable {
+public class PlaceRating implements Serializable {
     private String id;
-    private String providerId;
+    private String placeId;
     private String rateId;
     private String userId;
-    private String providerIdUserId;
+    private String placeIdUserId;
 
     public String getId() {
         return id;
@@ -21,12 +21,12 @@ public class ProviderRating implements Serializable {
         this.id = id;
     }
 
-    public String getProviderId() {
-        return providerId;
+    public String getPlaceId() {
+        return placeId;
     }
 
-    public void setProviderId(String providerId) {
-        this.providerId = providerId;
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
     public String getRateId() {
@@ -45,19 +45,19 @@ public class ProviderRating implements Serializable {
         this.userId = userId;
     }
 
-    public String getProviderIdUserId() {
-        return providerIdUserId;
+    public String getPlaceIdUserId() {
+        return placeIdUserId;
     }
 
-    public void setProviderIdUserId(String providerIdUserId) {
-        this.providerIdUserId = providerIdUserId;
+    public void setPlaceIdUserId(String placeIdUserId) {
+        this.placeIdUserId = placeIdUserId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ProviderRating)) return false;
-        ProviderRating that = (ProviderRating) o;
+        if (!(o instanceof PlaceRating)) return false;
+        PlaceRating that = (PlaceRating) o;
         return Objects.equals(id, that.id);
     }
 

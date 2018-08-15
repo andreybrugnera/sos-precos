@@ -21,20 +21,20 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Date;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
-import br.edu.ifspsaocarlos.sosprecos.dao.ProviderRatingDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.PlaceRatingDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.RatingDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
-import br.edu.ifspsaocarlos.sosprecos.model.Provider;
-import br.edu.ifspsaocarlos.sosprecos.model.ProviderRating;
+import br.edu.ifspsaocarlos.sosprecos.model.Place;
+import br.edu.ifspsaocarlos.sosprecos.model.PlaceRating;
 import br.edu.ifspsaocarlos.sosprecos.model.Rating;
 import br.edu.ifspsaocarlos.sosprecos.util.DateTimeUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
 
-public class RatingProviderActivity extends AppCompatActivity {
+public class RatingPlaceActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = "RATING_PROVIDER";
+    private static final String LOG_TAG = "RATING_PLACE";
 
-    public static final String PROVIDER = "provider";
+    public static final String PLACE = "place";
 
     private ProgressBar progressBar;
     private EditText etRateDescription;
@@ -42,18 +42,18 @@ public class RatingProviderActivity extends AppCompatActivity {
     private RatingBar qualityRatingBar;
     private RatingBar locationRatingBar;
 
-    private Provider provider;
+    private Place place;
     private RatingDao ratingDao;
-    private ProviderRatingDao providerRatingDao;
+    private PlaceRatingDao placeRatingDao;
     private Rating existingRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rating_provider);
+        setContentView(R.layout.activity_rating_place);
 
         this.ratingDao = new RatingDao(this);
-        this.providerRatingDao = new ProviderRatingDao(this);
+        this.placeRatingDao = new PlaceRatingDao(this);
 
         this.progressBar = findViewById(R.id.progress_bar);
         this.etRateDescription = findViewById(R.id.et_rate_description);
@@ -61,7 +61,7 @@ public class RatingProviderActivity extends AppCompatActivity {
         this.qualityRatingBar = findViewById(R.id.rating_quality);
         this.locationRatingBar = findViewById(R.id.rating_location);
 
-        this.provider = (Provider) getIntent().getSerializableExtra(PROVIDER);
+        this.place = (Place) getIntent().getSerializableExtra(PLACE);
 
         configureToolbar();
         loadExistingRating();
@@ -88,7 +88,7 @@ public class RatingProviderActivity extends AppCompatActivity {
 
     private void updateUI() {
         TextView tvTitle = findViewById(R.id.tv_title);
-        tvTitle.setText(this.provider.getName());
+        tvTitle.setText(this.place.getName());
 
         if (existingRating != null) {
             etRateDescription.setText(existingRating.getDescription());
@@ -110,8 +110,8 @@ public class RatingProviderActivity extends AppCompatActivity {
         Log.d(LOG_TAG, getString(R.string.loading_existing_rate));
         progressBar.setVisibility(View.VISIBLE);
 
-        Query query = providerRatingDao.getDatabaseReference()
-                .orderByChild("providerIdUserId").equalTo(provider.getId() + "_" + SessionUtils.getCurrentUserId());
+        Query query = placeRatingDao.getDatabaseReference()
+                .orderByChild("placeIdUserId").equalTo(place.getId() + "_" + SessionUtils.getCurrentUserId());
 
         query.addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -120,8 +120,8 @@ public class RatingProviderActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
-                            ProviderRating providerRating = child.getValue(ProviderRating.class);
-                            loadExistingRating(providerRating.getRateId());
+                            PlaceRating placeRating = child.getValue(PlaceRating.class);
+                            loadExistingRating(placeRating.getRateId());
                             break;
                         }
                         progressBar.setVisibility(View.GONE);
@@ -191,13 +191,13 @@ public class RatingProviderActivity extends AppCompatActivity {
                 if (existingRating == null) {
                     ratingDao.add(rating);
 
-                    ProviderRating providerRating = new ProviderRating();
-                    providerRating.setProviderId(provider.getId());
-                    providerRating.setRateId(rating.getId());
-                    providerRating.setUserId(SessionUtils.getCurrentUserId());
-                    providerRating.setProviderIdUserId(provider.getId() + "_" + SessionUtils.getCurrentUserId());
+                    PlaceRating placeRating = new PlaceRating();
+                    placeRating.setPlaceId(place.getId());
+                    placeRating.setRateId(rating.getId());
+                    placeRating.setUserId(SessionUtils.getCurrentUserId());
+                    placeRating.setPlaceIdUserId(place.getId() + "_" + SessionUtils.getCurrentUserId());
 
-                    providerRatingDao.add(providerRating);
+                    placeRatingDao.add(placeRating);
                 } else {
                     ratingDao.update(rating);
                 }

@@ -6,51 +6,51 @@ import android.util.Log;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
-import br.edu.ifspsaocarlos.sosprecos.model.Provider;
+import br.edu.ifspsaocarlos.sosprecos.model.Place;
 
 /**
  * Created by Andrey R. Brugnera on 30/03/2018.
  */
-public class ProviderDao extends FirebaseHelper<Provider> {
-    public static final String DATABASE_REFERENCE = "providers";
+public class PlaceDao extends FirebaseHelper<Place> {
+    public static final String DATABASE_REFERENCE = "places";
 
-    public ProviderDao(Context context) {
+    public PlaceDao(Context context) {
         super(context, DATABASE_REFERENCE);
     }
 
     @Override
-    public void add(Provider provider) throws DaoException {
-        validate(provider, false);
+    public void add(Place place) throws DaoException {
+        validate(place, false);
 
-        String serviceProviderId = getDatabaseReference().push().getKey();
-        provider.setId(serviceProviderId);
-        add(serviceProviderId, provider);
+        String placeId = getDatabaseReference().push().getKey();
+        place.setId(placeId);
+        add(placeId, place);
     }
 
     @Override
-    public void delete(Provider provider) throws DaoException{
-        validate(provider, true);
-        delete(provider.getId());
+    public void delete(Place place) throws DaoException{
+        validate(place, true);
+        delete(place.getId());
     }
 
     @Override
-    public void update(Provider provider) throws DaoException {
-        validate(provider, true);
-        update(provider.getId(), provider);
+    public void update(Place place) throws DaoException {
+        validate(place, true);
+        update(place.getId(), place);
     }
 
-    private void validate(Provider provider, boolean checkId) throws DaoException{
-        if (TextUtils.isEmpty(provider.getName()) && checkId) {
+    private void validate(Place place, boolean checkId) throws DaoException{
+        if (TextUtils.isEmpty(place.getName()) && checkId) {
             Log.d(DATABASE_LOGGER_TAG, getContext().getResources().getString(R.string.id_not_set));
             throw new DaoException(getContext().getResources().getString(R.string.id_not_set));
         }
 
-        if (TextUtils.isEmpty(provider.getName())) {
+        if (TextUtils.isEmpty(place.getName())) {
             Log.d(DATABASE_LOGGER_TAG, getContext().getResources().getString(R.string.name_not_set));
             throw new DaoException(getContext().getResources().getString(R.string.name_not_set));
         }
 
-        if (TextUtils.isEmpty(provider.getAddress())) {
+        if (TextUtils.isEmpty(place.getAddress())) {
             Log.d(DATABASE_LOGGER_TAG, getContext().getResources().getString(R.string.address_not_set));
             throw new DaoException(getContext().getResources().getString(R.string.address_not_set));
         }

@@ -33,14 +33,14 @@ import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.adapter.ServiceAdapter;
 import br.edu.ifspsaocarlos.sosprecos.dao.ServiceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
-import br.edu.ifspsaocarlos.sosprecos.model.Provider;
+import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
 
 public class ServiceListActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "SERVICES";
 
-    public static final String PROVIDER = "provider";
+    public static final String PLACE = "place";
 
     private ProgressBar progressBar;
     private Button btAddService;
@@ -51,7 +51,7 @@ public class ServiceListActivity extends AppCompatActivity {
     private ServiceDao serviceDao;
     private List<Service> services;
     private Service selectedService;
-    private Provider provider;
+    private Place place;
 
     private static final int ADD = 1;
     private static final int EDIT = 2;
@@ -61,7 +61,7 @@ public class ServiceListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_list);
 
-        this.provider = (Provider) getIntent().getSerializableExtra(PROVIDER);
+        this.place = (Place) getIntent().getSerializableExtra(PLACE);
 
         this.serviceDao = new ServiceDao(this);
         this.services = new ArrayList<>();
@@ -93,7 +93,7 @@ public class ServiceListActivity extends AppCompatActivity {
         configureToolbar();
         configureListAdapter();
         registerForContextMenu(this.servicesListView);
-        loadServices(provider.getId());
+        loadServices(place.getId());
     }
 
     private void configureToolbar() {
@@ -117,15 +117,15 @@ public class ServiceListActivity extends AppCompatActivity {
     private void editService(Service service) {
         Intent editServiceIntent = new Intent(this, ServiceActivity.class);
         editServiceIntent.putExtra(ServiceActivity.OPERATION, ServiceActivity.OPERATION_EDIT);
-        editServiceIntent.putExtra(ServiceActivity.PROVIDER, provider);
-        editServiceIntent.putExtra(ServiceActivity.SERVICE, selectedService);
+        editServiceIntent.putExtra(ServiceActivity.PLACE, place);
+        editServiceIntent.putExtra(ServiceActivity.SERVICE, service);
         startActivityForResult(editServiceIntent, EDIT);
     }
 
     private void addService() {
         Intent addServiceIntent = new Intent(this, ServiceActivity.class);
         addServiceIntent.putExtra(ServiceActivity.OPERATION, ServiceActivity.OPERATION_ADD);
-        addServiceIntent.putExtra(ServiceActivity.PROVIDER, provider);
+        addServiceIntent.putExtra(ServiceActivity.PLACE, place);
         startActivityForResult(addServiceIntent, ADD);
     }
 
@@ -188,11 +188,11 @@ public class ServiceListActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void loadServices(final String providerId) {
+    private void loadServices(final String placeId) {
         Log.d(LOG_TAG, getString(R.string.loading_services));
         progressBar.setVisibility(View.VISIBLE);
 
-        Query query = serviceDao.getDatabaseReference().orderByChild("providerId").equalTo(providerId);
+        Query query = serviceDao.getDatabaseReference().orderByChild("placeId").equalTo(placeId);
         query.addListenerForSingleValueEvent(
                 new ValueEventListener() {
 

@@ -9,8 +9,8 @@
             android:id="@+id/nav_categories"
             android:title="@string/categories" />
         <item
-            android:id="@+id/nav_providers"
-            android:title="@string/providers" />
+            android:id="@+id/nav_places"
+            android:title="@string/places" />
         <item
             android:id="@+id/nav_setting"
             android:icon="@drawable/ic_settings"
