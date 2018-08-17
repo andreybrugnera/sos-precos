@@ -1,10 +1,17 @@
 package br.edu.ifspsaocarlos.sosprecos.view;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -20,9 +27,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.maps.android.SphericalUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +47,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.Place;
 /**
  * Created by Andrey R. Brugnera on 16/05/2018.
  */
-public class PlaceListFragment extends Fragment {
+public class PlaceListFragment extends Fragment implements LocationListener {
 
     private static final String LOG_TAG = "SERVICE_PLACES";
 
@@ -51,6 +60,12 @@ public class PlaceListFragment extends Fragment {
     private PlaceDao placeDao;
     private List<Place> places;
     private Place selectedPlace;
+
+    private LocationManager locationManager;
+    private Location currentLocation;
+    private boolean isLocationAccessGranted;
+
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
 
     private static final int ADD = 1;
     private static final int EDIT = 2;
@@ -99,6 +114,7 @@ public class PlaceListFragment extends Fragment {
 
         configureListAdapter();
         registerForContextMenu(this.placesListView);
+        checkLocationAccessPermission();
         loadPlaces();
     }
 
@@ -176,6 +192,43 @@ public class PlaceListFragment extends Fragment {
         dialog.show();
     }
 
+    private void getCurrentLocation() {
+        this.progressBar.setVisibility(View.VISIBLE);
+        this.locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        if (!isLocationAccessGranted) {
+            this.progressBar.setVisibility(View.GONE);
+            requestLocationAccessPermission();
+        } else if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 5, this);
+            this.locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 15000, 5, this);
+        }
+    }
+
+    /**
+     * Calculate the places distances from
+     * the current location
+     */
+    private void calculatePlacesDistances() {
+        progressBar.setVisibility(View.VISIBLE);
+        LatLng curLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        for (Place place : places) {
+            LatLng placeLocation = new LatLng(place.getLatitude(), place.getLongitude());
+            Double distance = SphericalUtil.computeDistanceBetween(curLocation, placeLocation) / 1000;
+            place.setDistanceFromCurrentLocation(distance.floatValue());
+        }
+        listAdapter.notifyDataSetChanged();
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void calculatePlaceDistance(Place place){
+        LatLng curLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        LatLng placeLocation = new LatLng(place.getLatitude(), place.getLongitude());
+        Double distance = SphericalUtil.computeDistanceBetween(curLocation, placeLocation) / 1000;
+        place.setDistanceFromCurrentLocation(distance.floatValue());
+    }
+
     private void loadPlaces() {
         Log.d(LOG_TAG, getString(R.string.loading_places));
         progressBar.setVisibility(View.VISIBLE);
@@ -192,6 +245,7 @@ public class PlaceListFragment extends Fragment {
                             places.add(place);
                         }
                         sortPlacesByName();
+                        getCurrentLocation();
                         listAdapter.notifyDataSetChanged();
                         progressBar.setVisibility(View.GONE);
                     }
@@ -245,6 +299,7 @@ public class PlaceListFragment extends Fragment {
                 Place addedPlace = (Place) data.getSerializableExtra(PlaceActivity.PLACE);
                 places.add(addedPlace);
                 sortPlacesByName();
+                calculatePlaceDistance(addedPlace);
                 listAdapter.notifyDataSetChanged();
             } else if (resultCode == PlaceActivity.OPERATION_STATUS_ERROR) {
                 Toast.makeText(getContext(), getString(R.string.error_adding_place),
@@ -253,13 +308,67 @@ public class PlaceListFragment extends Fragment {
         } else if (requestCode == EDIT) {
             if (resultCode == PlaceActivity.OPERATION_STATUS_OK) {
                 Place editedPlace = (Place) data.getSerializableExtra(PlaceActivity.PLACE);
-                this.selectedPlace.setName(editedPlace.getName());
+                updateSelectedPlace(editedPlace);
                 sortPlacesByName();
                 listAdapter.notifyDataSetChanged();
             } else if (resultCode == PlaceActivity.OPERATION_STATUS_ERROR) {
                 Toast.makeText(getContext(), getString(R.string.error_editing_place),
                         Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    private void updateSelectedPlace(Place place) {
+        this.selectedPlace.setName(place.getName());
+        this.selectedPlace.setPhoneNumber(place.getPhoneNumber());
+        this.selectedPlace.setEmail(place.getEmail());
+        this.selectedPlace.setAddress(place.getAddress());
+        this.selectedPlace.setDescription(place.getDescription());
+        this.selectedPlace.setLatitude(place.getLatitude());
+        this.selectedPlace.setLongitude(place.getLongitude());
+        calculatePlaceDistance(this.selectedPlace);
+    }
+
+    private void checkLocationAccessPermission() {
+        this.isLocationAccessGranted = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestLocationAccessPermission() {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        this.currentLocation = location;
+        calculatePlacesDistances();
+        //Stop listening for location updates
+        this.locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOCATION_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    this.isLocationAccessGranted = true;
+                } else {
+                    this.isLocationAccessGranted = false;
+                }
         }
     }
 }

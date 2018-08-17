@@ -58,6 +58,7 @@
     <string name="remove_category">Remover categoria</string>
     <string name="confirm_remove_category">Deseja realmente remover a categoria?</string>
     <string name="loading_places">Carregando locais</string>
+    <string name="loading_places_distances">Carregando distância entre os locais</string>
     <string name="new_place">Novo local</string>
     <string name="edit_place">Editar local</string>
     <string name="place_name">Nome</string>

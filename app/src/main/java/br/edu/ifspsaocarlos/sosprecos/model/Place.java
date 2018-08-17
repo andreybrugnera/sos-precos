@@ -1,5 +1,7 @@
 package br.edu.ifspsaocarlos.sosprecos.model;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -19,6 +21,8 @@ public class Place implements Serializable {
     private Date registrationDate;
     private Integer ratingCount;
     private Float averageScore;
+    @Exclude
+    private Float distanceFromCurrentLocation;
 
     public static Place getInstance() {
         Place place = new Place();
@@ -114,6 +118,14 @@ public class Place implements Serializable {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public Float getDistanceFromCurrentLocation() {
+        return distanceFromCurrentLocation;
+    }
+
+    public void setDistanceFromCurrentLocation(Float distanceFromCurrentLocation) {
+        this.distanceFromCurrentLocation = distanceFromCurrentLocation;
     }
 
     @Override
