@@ -52,7 +52,9 @@
         <activity android:name=".view.maps.MapActivity" />
         <activity android:name=".view.ServiceListActivity" />
         <activity android:name=".view.ServiceActivity" />
-        <activity android:name=".view.RatingPlaceActivity"></activity>
+        <activity android:name=".view.RatingPlaceActivity" />
+        <activity android:name=".view.ServiceInfoActivity" />
+        <activity android:name=".view.RatingServiceActivity"></activity>
     </application>
 
 </manifest>

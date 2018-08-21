@@ -21,47 +21,44 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Date;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
-import br.edu.ifspsaocarlos.sosprecos.dao.PlaceRatingDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.RatingDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.ServiceRatingDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
-import br.edu.ifspsaocarlos.sosprecos.model.Place;
-import br.edu.ifspsaocarlos.sosprecos.model.PlaceRating;
 import br.edu.ifspsaocarlos.sosprecos.model.Rating;
+import br.edu.ifspsaocarlos.sosprecos.model.Service;
+import br.edu.ifspsaocarlos.sosprecos.model.ServiceRating;
 import br.edu.ifspsaocarlos.sosprecos.util.DateTimeUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
 
-public class RatingPlaceActivity extends AppCompatActivity {
+public class RatingServiceActivity extends AppCompatActivity {
+    private static final String LOG_TAG = "RATING_SERVICE";
 
-    private static final String LOG_TAG = "RATING_PLACE";
-
-    public static final String PLACE = "place";
+    public static final String SERVICE = "service";
 
     private ProgressBar progressBar;
     private EditText etRateDescription;
     private RatingBar priceRatingBar;
     private RatingBar qualityRatingBar;
-    private RatingBar locationRatingBar;
 
-    private Place place;
+    private Service service;
     private RatingDao ratingDao;
-    private PlaceRatingDao placeRatingDao;
+    private ServiceRatingDao serviceRatingDao;
     private Rating existingRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rating_place);
+        setContentView(R.layout.activity_rating_service);
 
         this.ratingDao = new RatingDao(this);
-        this.placeRatingDao = new PlaceRatingDao(this);
+        this.serviceRatingDao = new ServiceRatingDao(this);
 
         this.progressBar = findViewById(R.id.progress_bar);
         this.etRateDescription = findViewById(R.id.et_rate_description);
         this.priceRatingBar = findViewById(R.id.rating_price);
         this.qualityRatingBar = findViewById(R.id.rating_quality);
-        this.locationRatingBar = findViewById(R.id.rating_location);
 
-        this.place = (Place) getIntent().getSerializableExtra(PLACE);
+        this.service = (Service) getIntent().getSerializableExtra(SERVICE);
 
         configureToolbar();
         loadExistingRating();
@@ -87,13 +84,12 @@ public class RatingPlaceActivity extends AppCompatActivity {
 
     private void updateUI() {
         TextView tvTitle = findViewById(R.id.tv_title);
-        tvTitle.setText(this.place.getName());
+        tvTitle.setText(this.service.getName());
 
         if (existingRating != null) {
             etRateDescription.setText(existingRating.getDescription());
             priceRatingBar.setRating(existingRating.getPriceScore());
             qualityRatingBar.setRating(existingRating.getQualityScore());
-            locationRatingBar.setRating(existingRating.getLocationScore());
             fillRatingRegistrationDateInformation();
         }
     }
@@ -109,8 +105,8 @@ public class RatingPlaceActivity extends AppCompatActivity {
         Log.d(LOG_TAG, getString(R.string.loading_existing_rate));
         progressBar.setVisibility(View.VISIBLE);
 
-        Query query = placeRatingDao.getDatabaseReference()
-                .orderByChild("placeIdUserId").equalTo(place.getId() + "_" + SessionUtils.getCurrentUserId());
+        Query query = serviceRatingDao.getDatabaseReference()
+                .orderByChild("serviceIdUserId").equalTo(service.getId() + "_" + SessionUtils.getCurrentUserId());
 
         query.addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -119,8 +115,8 @@ public class RatingPlaceActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
-                            PlaceRating placeRating = child.getValue(PlaceRating.class);
-                            loadExistingRating(placeRating.getRateId());
+                            ServiceRating serviceRating = child.getValue(ServiceRating.class);
+                            loadExistingRating(serviceRating.getRateId());
                             break;
                         }
                         progressBar.setVisibility(View.GONE);
@@ -169,12 +165,11 @@ public class RatingPlaceActivity extends AppCompatActivity {
         String description = etRateDescription.getText().toString();
         Float priceRating = priceRatingBar.getRating();
         Float qualityRating = qualityRatingBar.getRating();
-        Float locationRating = locationRatingBar.getRating();
 
-        if (!priceRating.equals(0) || !qualityRating.equals(0) || !locationRating.equals(0)) {
+        if (!priceRating.equals(0) || !qualityRating.equals(0)) {
             rating.setPriceScore(priceRating);
             rating.setQualityScore(qualityRating);
-            rating.setLocationScore(locationRating);
+            rating.setLocationScore(5);
             rating.setDescription(description);
             rating.setRegistrationDate(new Date());
             rating.setUserId(SessionUtils.getCurrentUserId());
@@ -190,13 +185,13 @@ public class RatingPlaceActivity extends AppCompatActivity {
                 if (existingRating == null) {
                     ratingDao.add(rating);
 
-                    PlaceRating placeRating = new PlaceRating();
-                    placeRating.setPlaceId(place.getId());
+                    ServiceRating placeRating = new ServiceRating();
+                    placeRating.setServiceId(service.getId());
                     placeRating.setRateId(rating.getId());
                     placeRating.setUserId(SessionUtils.getCurrentUserId());
-                    placeRating.setPlaceIdUserId(place.getId() + "_" + SessionUtils.getCurrentUserId());
+                    placeRating.setServiceIdUserId(service.getId() + "_" + SessionUtils.getCurrentUserId());
 
-                    placeRatingDao.add(placeRating);
+                    serviceRatingDao.add(placeRating);
                 } else {
                     ratingDao.update(rating);
                 }

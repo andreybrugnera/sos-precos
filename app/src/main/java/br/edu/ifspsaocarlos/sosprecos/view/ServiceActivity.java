@@ -141,7 +141,7 @@ public class ServiceActivity extends AppCompatActivity {
 
     private void addService() {
         progressBar.setVisibility(View.VISIBLE);
-        Service service = new Service();
+        Service service = Service.getInstance();
         if (validateInputFields(service)) {
             try {
                 serviceDao.add(service);

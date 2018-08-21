@@ -15,6 +15,13 @@ public class Service implements Serializable {
     private Integer ratingCount;
     private Float averageScore;
 
+    public static Service getInstance(){
+        Service service = new Service();
+        service.setAverageScore(0f);
+        service.setPrice(0f);
+        return service;
+    }
+
     public String getId() {
         return id;
     }

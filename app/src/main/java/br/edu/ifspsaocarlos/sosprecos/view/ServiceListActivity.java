@@ -90,6 +90,17 @@ public class ServiceListActivity extends AppCompatActivity {
             }
         });
 
+        this.servicesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Service service = listAdapter.getItem(position);
+                if (service != null) {
+                    openServiceInfo(service);
+                }
+            }
+        });
+
         configureToolbar();
         configureListAdapter();
         registerForContextMenu(this.servicesListView);
@@ -280,5 +291,11 @@ public class ServiceListActivity extends AppCompatActivity {
         this.selectedService.setPrice(service.getPrice());
         this.selectedService.setName(service.getName());
         this.selectedService.setDescription(service.getDescription());
+    }
+
+    private void openServiceInfo(Service service) {
+        Intent openServiceInfoIntent = new Intent(this, ServiceInfoActivity.class);
+        openServiceInfoIntent.putExtra(ServiceInfoActivity.SERVICE, service);
+        startActivity(openServiceInfoIntent);
     }
 }
