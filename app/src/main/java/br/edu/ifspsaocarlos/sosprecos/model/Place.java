@@ -1,6 +1,7 @@
 package br.edu.ifspsaocarlos.sosprecos.model;
 
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.Objects;
 /**
  * Created by Andrey R. Brugnera on 05/03/2018.
  */
+@IgnoreExtraProperties
 public class Place implements Serializable {
     private String id;
     private String name;
@@ -29,6 +31,7 @@ public class Place implements Serializable {
         place.setRegistrationDate(new Date());
         place.setAverageScore(0f);
         place.setRatingCount(0);
+        place.setDistanceFromCurrentLocation(0f);
         return place;
     }
 

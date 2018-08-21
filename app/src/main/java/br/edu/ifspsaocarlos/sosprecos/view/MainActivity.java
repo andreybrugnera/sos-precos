@@ -12,7 +12,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.MenuItem;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
 
@@ -102,6 +105,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //Logs out if there are no fragment entries in the stack
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            int backEntries = getSupportFragmentManager().getBackStackEntryCount();
+            if (backEntries == 0) {
+                logout();
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
     private void logout() {
         //Show dialog to confirm logout
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -109,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
+                        FirebaseAuth.getInstance().signOut();
                         finish();
                 }
             }

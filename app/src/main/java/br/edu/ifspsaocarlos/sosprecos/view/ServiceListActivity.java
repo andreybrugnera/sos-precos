@@ -83,9 +83,9 @@ public class ServiceListActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Service service = listAdapter.getItem(position);
-                if (service != null) {
-                    editService(service);
+                selectedService = listAdapter.getItem(position);
+                if (selectedService != null) {
+                    editService(selectedService);
                 }
             }
         });
@@ -264,11 +264,9 @@ public class ServiceListActivity extends AppCompatActivity {
                 }
                 break;
             case EDIT:
-                if (requestCode == ServiceActivity.OPERATION_STATUS_OK) {
+                if (resultCode == ServiceActivity.OPERATION_STATUS_OK) {
                     Service service = (Service) data.getSerializableExtra(ServiceActivity.SERVICE);
-                    this.selectedService.setPrice(service.getPrice());
-                    this.selectedService.setName(service.getName());
-                    this.selectedService.setDescription(service.getDescription());
+                    updateSelectedService(service);
                     sortServicesByName();
                     listAdapter.notifyDataSetChanged();
                 } else if (resultCode == ServiceActivity.OPERATION_STATUS_ERROR) {
@@ -276,5 +274,11 @@ public class ServiceListActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 }
         }
+    }
+
+    private void updateSelectedService(Service service) {
+        this.selectedService.setPrice(service.getPrice());
+        this.selectedService.setName(service.getName());
+        this.selectedService.setDescription(service.getDescription());
     }
 }

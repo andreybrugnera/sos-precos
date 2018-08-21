@@ -24,7 +24,7 @@
             android:textStyle="italic" />
 
         <TextView
-            android:id="@+id/et_distance"
+            android:id="@+id/et_price"
             style="?android:textAppearanceListItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

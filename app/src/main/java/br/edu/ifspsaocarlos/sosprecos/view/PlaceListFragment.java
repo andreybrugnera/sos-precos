@@ -222,7 +222,7 @@ public class PlaceListFragment extends Fragment implements LocationListener {
         progressBar.setVisibility(View.GONE);
     }
 
-    private void calculatePlaceDistance(Place place){
+    private void calculatePlaceDistance(Place place) {
         LatLng curLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         LatLng placeLocation = new LatLng(place.getLatitude(), place.getLongitude());
         Double distance = SphericalUtil.computeDistanceBetween(curLocation, placeLocation) / 1000;
@@ -294,27 +294,29 @@ public class PlaceListFragment extends Fragment implements LocationListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ADD) {
-            if (resultCode == PlaceActivity.OPERATION_STATUS_OK) {
-                Place addedPlace = (Place) data.getSerializableExtra(PlaceActivity.PLACE);
-                places.add(addedPlace);
-                sortPlacesByName();
-                calculatePlaceDistance(addedPlace);
-                listAdapter.notifyDataSetChanged();
-            } else if (resultCode == PlaceActivity.OPERATION_STATUS_ERROR) {
-                Toast.makeText(getContext(), getString(R.string.error_adding_place),
-                        Toast.LENGTH_LONG).show();
-            }
-        } else if (requestCode == EDIT) {
-            if (resultCode == PlaceActivity.OPERATION_STATUS_OK) {
-                Place editedPlace = (Place) data.getSerializableExtra(PlaceActivity.PLACE);
-                updateSelectedPlace(editedPlace);
-                sortPlacesByName();
-                listAdapter.notifyDataSetChanged();
-            } else if (resultCode == PlaceActivity.OPERATION_STATUS_ERROR) {
-                Toast.makeText(getContext(), getString(R.string.error_editing_place),
-                        Toast.LENGTH_LONG).show();
-            }
+        switch (requestCode) {
+            case ADD:
+                if (resultCode == PlaceActivity.OPERATION_STATUS_OK) {
+                    Place addedPlace = (Place) data.getSerializableExtra(PlaceActivity.PLACE);
+                    places.add(addedPlace);
+                    sortPlacesByName();
+                    calculatePlaceDistance(addedPlace);
+                    listAdapter.notifyDataSetChanged();
+                } else if (resultCode == PlaceActivity.OPERATION_STATUS_ERROR) {
+                    Toast.makeText(getContext(), getString(R.string.error_adding_place),
+                            Toast.LENGTH_LONG).show();
+                }
+                break;
+            case EDIT:
+                if (resultCode == PlaceActivity.OPERATION_STATUS_OK) {
+                    Place editedPlace = (Place) data.getSerializableExtra(PlaceActivity.PLACE);
+                    updateSelectedPlace(editedPlace);
+                    sortPlacesByName();
+                    listAdapter.notifyDataSetChanged();
+                } else if (resultCode == PlaceActivity.OPERATION_STATUS_ERROR) {
+                    Toast.makeText(getContext(), getString(R.string.error_editing_place),
+                            Toast.LENGTH_LONG).show();
+                }
         }
     }
 
