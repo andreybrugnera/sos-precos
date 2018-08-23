@@ -12,15 +12,19 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
+import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
 
 public class ServiceInfoActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "SERVICE_INFO";
 
+    public static final String PLACE = "place";
     public static final String SERVICE = "service";
 
     private Service service;
+    private Place place;
+    private TextView tvPlaceName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +32,10 @@ public class ServiceInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_service_info);
 
         this.service = (Service) getIntent().getSerializableExtra(SERVICE);
+        this.place = (Place) getIntent().getSerializableExtra(PLACE);
+
+        this.tvPlaceName = findViewById(R.id.tv_place_name);
+        this.tvPlaceName.setText(place.getName());
 
         configureToolbar();
         updateUI();
@@ -71,6 +79,7 @@ public class ServiceInfoActivity extends AppCompatActivity {
     public void rateService(View v) {
         Intent intentRateService = new Intent(this, RatingServiceActivity.class);
         intentRateService.putExtra(RatingServiceActivity.SERVICE, service);
+        intentRateService.putExtra(RatingServiceActivity.PLACE, place);
         startActivity(intentRateService);
     }
 }

@@ -12,7 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +26,7 @@ import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dao.CategoryDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
+import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class CategoryActivity extends AppCompatActivity {
     private static final String LOG_TAG = "ADD_EDIT_CATEGORY";
@@ -41,7 +42,7 @@ public class CategoryActivity extends AppCompatActivity {
 
     private CategoryDao categoryDao;
 
-    private ProgressBar progressBar;
+    private FrameLayout progressBarHolder;
     private Button btAddOrEditCategory;
     private TextView tvTitle;
     private EditText etCategoryName;
@@ -54,7 +55,7 @@ public class CategoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
 
-        this.progressBar = findViewById(R.id.pb_category);
+        this.progressBarHolder = findViewById(R.id.progress_bar_holder);
         this.btAddOrEditCategory = findViewById(R.id.bt_add_edit_category);
         this.etCategoryName = findViewById(R.id.et_category_name);
         this.tvTitle = findViewById(R.id.tv_title);
@@ -165,7 +166,7 @@ public class CategoryActivity extends AppCompatActivity {
     private void loadCategories() {
         Log.d(LOG_TAG, getString(R.string.loading_categories));
 
-        progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         categoryDao.getDatabaseReference().addValueEventListener(
                 new ValueEventListener() {
@@ -178,7 +179,7 @@ public class CategoryActivity extends AppCompatActivity {
                             Category category = child.getValue(Category.class);
                             categories.add(category);
                         }
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                         btAddOrEditCategory.setEnabled(true);
                     }
 
@@ -186,7 +187,7 @@ public class CategoryActivity extends AppCompatActivity {
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e(LOG_TAG, databaseError.getMessage());
                         Log.e(LOG_TAG, databaseError.getDetails());
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
                 });
     }

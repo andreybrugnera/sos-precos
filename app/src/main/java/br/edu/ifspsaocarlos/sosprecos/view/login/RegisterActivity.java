@@ -9,7 +9,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,13 +23,14 @@ import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dao.UserDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.User;
+import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class RegisterActivity extends Activity {
 
     private AutoCompleteTextView acTvEmail;
     private EditText etPassword;
     private EditText etConfirmPassword;
-    private ProgressBar progressBar;
+    private FrameLayout progressBarHolder;
     private UserDao userDao;
 
     private static final int PASSWORD_MIN_LENGTH = 8;
@@ -44,7 +45,7 @@ public class RegisterActivity extends Activity {
         this.acTvEmail = findViewById(R.id.actv_email);
         this.etPassword = findViewById(R.id.et_password);
         this.etConfirmPassword = findViewById(R.id.et_confirm_password);
-        this.progressBar = findViewById(R.id.pb_register);
+        this.progressBarHolder = findViewById(R.id.progress_bar_holder);
         this.userDao = new UserDao(this);
 
         this.auth = FirebaseAuth.getInstance();
@@ -91,13 +92,13 @@ public class RegisterActivity extends Activity {
             return;
         }
 
-        this.progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
 
                         if (task.isSuccessful()) {
                             FirebaseUser user = auth.getCurrentUser();

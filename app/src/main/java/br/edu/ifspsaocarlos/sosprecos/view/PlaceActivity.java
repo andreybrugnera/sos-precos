@@ -21,7 +21,7 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +49,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.Category;
 import br.edu.ifspsaocarlos.sosprecos.model.CategoryPlace;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.service.FetchLocationService;
+import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.location.LocationAddress;
 
 public class PlaceActivity extends AppCompatActivity implements LocationListener {
@@ -66,7 +67,7 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private static final int REQUEST_LOCATION_PICKER = 2;
 
-    private ProgressBar progressBar;
+    private FrameLayout progressBarHolder;
     private TextView tvTitle;
     private EditText etPlaceName;
     private Spinner spCategory;
@@ -105,7 +106,7 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
         this.categoryPlaceDao = new CategoryPlaceDao(this);
         this.categories = new ArrayList<>();
 
-        this.progressBar = findViewById(R.id.progress_bar);
+        this.progressBarHolder = findViewById(R.id.progress_bar_holder);
         this.tvTitle = findViewById(R.id.tv_title);
         this.etPlaceName = findViewById(R.id.et_place_name);
         this.spCategory = findViewById(R.id.sp_category);
@@ -151,7 +152,7 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
 
     private void loadCategories() {
         Log.d(LOG_TAG, getString(R.string.loading_categories));
-        progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         categoryDao.getDatabaseReference().addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -166,14 +167,14 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
                         }
                         sortCategoriesByName();
                         configureCategorySpinner();
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e(LOG_TAG, databaseError.getMessage());
                         Log.e(LOG_TAG, databaseError.getDetails());
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
                 });
     }
@@ -245,7 +246,7 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
 
     private void loadPlacesCategory() {
         Log.d(LOG_TAG, getString(R.string.loading_selected_category));
-        progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         Query query = categoryPlaceDao.getDatabaseReference().orderByChild("placeId").equalTo(editingPlace.getId());
         query.addListenerForSingleValueEvent(
@@ -260,14 +261,14 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
                             setSelectedCategory(categoryId);
                             break;
                         }
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e(LOG_TAG, databaseError.getMessage());
                         Log.e(LOG_TAG, databaseError.getDetails());
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
                 });
     }
@@ -455,11 +456,11 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
     }
 
     private void getCurrentLocation() {
-        this.progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
         this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (!isLocationAccessGranted) {
-            this.progressBar.setVisibility(View.GONE);
+            ViewUtils.hideProgressBar(progressBarHolder);
             requestLocationAccessPermission();
         } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -493,7 +494,7 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
 
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
-            progressBar.setVisibility(View.GONE);
+            ViewUtils.hideProgressBar(progressBarHolder);
 
             if (resultData == null) {
                 return;

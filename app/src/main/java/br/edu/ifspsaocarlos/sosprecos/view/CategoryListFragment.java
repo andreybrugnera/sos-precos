@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,12 +34,13 @@ import br.edu.ifspsaocarlos.sosprecos.adapter.CategoryAdapter;
 import br.edu.ifspsaocarlos.sosprecos.dao.CategoryDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
+import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class CategoryListFragment extends Fragment {
 
     private static final String LOG_TAG = "CATEGORIES";
 
-    private ProgressBar progressBar;
+    private FrameLayout progressBarHolder;
     private Button btAddCategory;
     private ListView categoriesListView;
     private CategoryAdapter listAdapter;
@@ -71,7 +72,7 @@ public class CategoryListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        this.progressBar = getView().findViewById(R.id.progress_bar);
+        this.progressBarHolder = getView().findViewById(R.id.progress_bar_holder);
         this.categoriesListView = getView().findViewById(R.id.list_view);
         this.viewTitle = getView().findViewById(R.id.list_title);
         this.viewTitle.setText(getString(R.string.categories));
@@ -131,15 +132,15 @@ public class CategoryListFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                progressBar.setVisibility(View.VISIBLE);
+                ViewUtils.showProgressBar(progressBarHolder);
                 selectedCategory = listAdapter.getItem(info.position);
                 try {
                     categoryDao.delete(selectedCategory);
                     categories.remove(selectedCategory);
                     listAdapter.notifyDataSetChanged();
-                    progressBar.setVisibility(View.GONE);
+                    ViewUtils.hideProgressBar(progressBarHolder);
                 } catch (DaoException e) {
-                    progressBar.setVisibility(View.GONE);
+                    ViewUtils.hideProgressBar(progressBarHolder);
                     Toast.makeText(getContext(), getString(R.string.error_removing_category),
                             Toast.LENGTH_LONG).show();
                 }
@@ -159,7 +160,7 @@ public class CategoryListFragment extends Fragment {
 
     private void loadCategories() {
         Log.d(LOG_TAG, getString(R.string.loading_categories));
-        progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         categoryDao.getDatabaseReference().addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -174,14 +175,14 @@ public class CategoryListFragment extends Fragment {
                         }
                         sortCategoriesByName();
                         listAdapter.notifyDataSetChanged();
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e(LOG_TAG, databaseError.getMessage());
                         Log.e(LOG_TAG, databaseError.getDetails());
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
                 });
     }

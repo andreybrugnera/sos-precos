@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.widget.FrameLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -23,6 +23,7 @@ import br.edu.ifspsaocarlos.sosprecos.dao.CategoryPlaceDao;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
 import br.edu.ifspsaocarlos.sosprecos.model.CategoryPlace;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
+import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 import br.edu.ifspsaocarlos.sosprecos.view.maps.MapActivity;
 
 public class PlaceInfoActivity extends AppCompatActivity {
@@ -31,7 +32,7 @@ public class PlaceInfoActivity extends AppCompatActivity {
 
     public static final String PLACE = "place";
 
-    private ProgressBar progressBar;
+    private FrameLayout progressBarHolder;
     private TextView tvCategory;
 
     private Place place;
@@ -43,7 +44,7 @@ public class PlaceInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_info);
 
-        this.progressBar = findViewById(R.id.progress_bar);
+        this.progressBarHolder = findViewById(R.id.progress_bar_holder);
         this.tvCategory = findViewById(R.id.tv_category);
 
         this.categoryPlaceDao = new CategoryPlaceDao(this);
@@ -78,7 +79,7 @@ public class PlaceInfoActivity extends AppCompatActivity {
 
     private void loadPlacesCategory() {
         Log.d(LOG_TAG, getString(R.string.loading_category));
-        progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         Query query = categoryPlaceDao.getDatabaseReference().orderByChild("placeId").equalTo(place.getId());
         query.addListenerForSingleValueEvent(
@@ -92,21 +93,21 @@ public class PlaceInfoActivity extends AppCompatActivity {
                             loadCategory(categoryPlace.getCategoryId());
                             break;
                         }
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e(LOG_TAG, databaseError.getMessage());
                         Log.e(LOG_TAG, databaseError.getDetails());
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
                 });
     }
 
     private void loadCategory(final String categoryId) {
         Log.d(LOG_TAG, getString(R.string.loading_category));
-        progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         Query query = categoryDao.getDatabaseReference().orderByChild("id").equalTo(categoryId);
         query.addListenerForSingleValueEvent(
@@ -120,14 +121,14 @@ public class PlaceInfoActivity extends AppCompatActivity {
                             tvCategory.setText(category.getName());
                             break;
                         }
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e(LOG_TAG, databaseError.getMessage());
                         Log.e(LOG_TAG, databaseError.getDetails());
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
                 });
     }
@@ -175,6 +176,7 @@ public class PlaceInfoActivity extends AppCompatActivity {
     public void rateProvider(View V) {
         Intent intentRateProvider = new Intent(this, RatingPlaceActivity.class);
         intentRateProvider.putExtra(RatingPlaceActivity.PLACE, place);
+        intentRateProvider.putExtra(RatingPlaceActivity.CATEGORY, tvCategory.getText().toString());
         startActivity(intentRateProvider);
     }
 }

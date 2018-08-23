@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
-import android.widget.ProgressBar;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -15,10 +15,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
+import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class ResetPasswordActivity extends Activity {
 
-    private ProgressBar progressBar;
+    private FrameLayout progressBarHolder;
     private AutoCompleteTextView acTvEmail;
     private FirebaseAuth auth;
 
@@ -28,7 +29,7 @@ public class ResetPasswordActivity extends Activity {
         setContentView(R.layout.activity_reset_password);
 
         this.acTvEmail = findViewById(R.id.actv_email);
-        this.progressBar = findViewById(R.id.pb_reset_password);
+        this.progressBarHolder = findViewById(R.id.progress_bar_holder);
 
         this.auth = FirebaseAuth.getInstance();
     }
@@ -49,12 +50,12 @@ public class ResetPasswordActivity extends Activity {
             return;
         }
 
-        this.progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
         auth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                         if (task.isSuccessful()) {
                             Toast.makeText(ResetPasswordActivity.this,
                                     getString(R.string.send_reset_password_email_message),

@@ -14,13 +14,23 @@
         android:background="@color/background_color"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
+    <FrameLayout
+        android:id="@+id/progress_bar_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="1.0"
+        android:animateLayoutChanges="true"
+        android:background="#FFFFFF"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp" />
+    </FrameLayout>
 
     <ScrollView
         android:id="@+id/place_form"

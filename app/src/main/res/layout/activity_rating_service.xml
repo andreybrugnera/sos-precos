@@ -14,13 +14,23 @@
         android:background="@color/background_color"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
+    <FrameLayout
+        android:id="@+id/progress_bar_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="1.0"
+        android:animateLayoutChanges="true"
+        android:background="#FFFFFF"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp" />
+    </FrameLayout>
 
     <ScrollView
         android:id="@+id/service_form"
@@ -52,17 +62,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="5dp"
                 android:textColor="@color/label_text_color"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_place_name"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="5dp"
+                android:textColor="@color/label_text_color"
+                android:textStyle="italic" />
 
             <LinearLayout
                 android:id="@+id/rating_registration_date_information"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/tv_label_date"

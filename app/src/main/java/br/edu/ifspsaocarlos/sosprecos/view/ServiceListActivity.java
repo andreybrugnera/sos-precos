@@ -14,8 +14,8 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +35,7 @@ import br.edu.ifspsaocarlos.sosprecos.dao.ServiceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
+import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class ServiceListActivity extends AppCompatActivity {
 
@@ -42,7 +43,7 @@ public class ServiceListActivity extends AppCompatActivity {
 
     public static final String PLACE = "place";
 
-    private ProgressBar progressBar;
+    private FrameLayout progressBarHolder;
     private Button btAddService;
     private ListView servicesListView;
     private ServiceAdapter listAdapter;
@@ -66,7 +67,7 @@ public class ServiceListActivity extends AppCompatActivity {
         this.serviceDao = new ServiceDao(this);
         this.services = new ArrayList<>();
 
-        this.progressBar = findViewById(R.id.progress_bar);
+        this.progressBarHolder = findViewById(R.id.progress_bar_holder);
         this.servicesListView = findViewById(R.id.list_view);
         this.viewTitle = findViewById(R.id.list_title);
         this.viewTitle.setText(getString(R.string.services));
@@ -173,15 +174,15 @@ public class ServiceListActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                progressBar.setVisibility(View.VISIBLE);
+                ViewUtils.showProgressBar(progressBarHolder);
                 selectedService = listAdapter.getItem(info.position);
                 try {
                     serviceDao.delete(selectedService);
                     services.remove(selectedService);
                     listAdapter.notifyDataSetChanged();
-                    progressBar.setVisibility(View.GONE);
+                    ViewUtils.hideProgressBar(progressBarHolder);
                 } catch (DaoException e) {
-                    progressBar.setVisibility(View.GONE);
+                    ViewUtils.hideProgressBar(progressBarHolder);
                     Toast.makeText(getApplicationContext(), getString(R.string.error_removing_service),
                             Toast.LENGTH_LONG).show();
                 }
@@ -201,7 +202,7 @@ public class ServiceListActivity extends AppCompatActivity {
 
     private void loadServices(final String placeId) {
         Log.d(LOG_TAG, getString(R.string.loading_services));
-        progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         Query query = serviceDao.getDatabaseReference().orderByChild("placeId").equalTo(placeId);
         query.addListenerForSingleValueEvent(
@@ -215,14 +216,14 @@ public class ServiceListActivity extends AppCompatActivity {
                             services.add(service);
                         }
                         sortServicesByName();
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e(LOG_TAG, databaseError.getMessage());
                         Log.e(LOG_TAG, databaseError.getDetails());
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
                 });
     }
@@ -296,6 +297,7 @@ public class ServiceListActivity extends AppCompatActivity {
     private void openServiceInfo(Service service) {
         Intent openServiceInfoIntent = new Intent(this, ServiceInfoActivity.class);
         openServiceInfoIntent.putExtra(ServiceInfoActivity.SERVICE, service);
+        openServiceInfoIntent.putExtra(ServiceInfoActivity.PLACE, place);
         startActivity(openServiceInfoIntent);
     }
 }

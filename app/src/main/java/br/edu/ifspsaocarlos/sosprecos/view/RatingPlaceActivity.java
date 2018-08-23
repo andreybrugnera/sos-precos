@@ -8,8 +8,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -29,20 +29,24 @@ import br.edu.ifspsaocarlos.sosprecos.model.PlaceRating;
 import br.edu.ifspsaocarlos.sosprecos.model.Rating;
 import br.edu.ifspsaocarlos.sosprecos.util.DateTimeUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
+import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class RatingPlaceActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "RATING_PLACE";
 
     public static final String PLACE = "place";
+    public static final String CATEGORY = "category";
 
-    private ProgressBar progressBar;
+    private FrameLayout progressBarHolder;
     private EditText etRateDescription;
+    private TextView tvCategoryName;
     private RatingBar priceRatingBar;
     private RatingBar qualityRatingBar;
     private RatingBar locationRatingBar;
 
     private Place place;
+    private String categoryName;
     private RatingDao ratingDao;
     private PlaceRatingDao placeRatingDao;
     private Rating existingRating;
@@ -55,16 +59,21 @@ public class RatingPlaceActivity extends AppCompatActivity {
         this.ratingDao = new RatingDao(this);
         this.placeRatingDao = new PlaceRatingDao(this);
 
-        this.progressBar = findViewById(R.id.progress_bar);
+        this.progressBarHolder = findViewById(R.id.progress_bar_holder);
         this.etRateDescription = findViewById(R.id.et_rate_description);
+        this.tvCategoryName = findViewById(R.id.tv_category_name);
         this.priceRatingBar = findViewById(R.id.rating_price);
         this.qualityRatingBar = findViewById(R.id.rating_quality);
         this.locationRatingBar = findViewById(R.id.rating_location);
 
         this.place = (Place) getIntent().getSerializableExtra(PLACE);
 
+        this.categoryName = getIntent().getStringExtra(CATEGORY);
+        tvCategoryName.setText(categoryName);
+
         configureToolbar();
         loadExistingRating();
+        updateUI();
     }
 
     private void configureToolbar() {
@@ -107,7 +116,7 @@ public class RatingPlaceActivity extends AppCompatActivity {
 
     private void loadExistingRating() {
         Log.d(LOG_TAG, getString(R.string.loading_existing_rate));
-        progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         Query query = placeRatingDao.getDatabaseReference()
                 .orderByChild("placeIdUserId").equalTo(place.getId() + "_" + SessionUtils.getCurrentUserId());
@@ -123,21 +132,21 @@ public class RatingPlaceActivity extends AppCompatActivity {
                             loadExistingRating(placeRating.getRateId());
                             break;
                         }
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e(LOG_TAG, databaseError.getMessage());
                         Log.e(LOG_TAG, databaseError.getDetails());
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
                 });
     }
 
     private void loadExistingRating(String rateId) {
         Log.d(LOG_TAG, getString(R.string.loading_existing_rate_by_id));
-        progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         Query query = ratingDao.getDatabaseReference().orderByChild("id").equalTo(rateId);
 
@@ -153,14 +162,14 @@ public class RatingPlaceActivity extends AppCompatActivity {
                             updateUI();
                             break;
                         }
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e(LOG_TAG, databaseError.getMessage());
                         Log.e(LOG_TAG, databaseError.getDetails());
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
                 });
     }

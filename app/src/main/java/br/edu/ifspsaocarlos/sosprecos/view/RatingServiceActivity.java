@@ -8,8 +8,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -24,23 +24,28 @@ import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dao.RatingDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.ServiceRatingDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
+import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.model.Rating;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
 import br.edu.ifspsaocarlos.sosprecos.model.ServiceRating;
 import br.edu.ifspsaocarlos.sosprecos.util.DateTimeUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
+import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class RatingServiceActivity extends AppCompatActivity {
     private static final String LOG_TAG = "RATING_SERVICE";
 
     public static final String SERVICE = "service";
+    public static final String PLACE = "place";
 
-    private ProgressBar progressBar;
+    private FrameLayout progressBarHolder;
+    private TextView tvPlaceName;
     private EditText etRateDescription;
     private RatingBar priceRatingBar;
     private RatingBar qualityRatingBar;
 
     private Service service;
+    private Place place;
     private RatingDao ratingDao;
     private ServiceRatingDao serviceRatingDao;
     private Rating existingRating;
@@ -53,15 +58,20 @@ public class RatingServiceActivity extends AppCompatActivity {
         this.ratingDao = new RatingDao(this);
         this.serviceRatingDao = new ServiceRatingDao(this);
 
-        this.progressBar = findViewById(R.id.progress_bar);
+        this.progressBarHolder = findViewById(R.id.progress_bar_holder);
         this.etRateDescription = findViewById(R.id.et_rate_description);
         this.priceRatingBar = findViewById(R.id.rating_price);
         this.qualityRatingBar = findViewById(R.id.rating_quality);
+        this.tvPlaceName = findViewById(R.id.tv_place_name);
 
         this.service = (Service) getIntent().getSerializableExtra(SERVICE);
 
+        this.place = (Place) getIntent().getSerializableExtra(PLACE);
+        this.tvPlaceName.setText(place.getName());
+
         configureToolbar();
         loadExistingRating();
+        updateUI();
     }
 
     private void configureToolbar() {
@@ -103,7 +113,7 @@ public class RatingServiceActivity extends AppCompatActivity {
 
     private void loadExistingRating() {
         Log.d(LOG_TAG, getString(R.string.loading_existing_rate));
-        progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         Query query = serviceRatingDao.getDatabaseReference()
                 .orderByChild("serviceIdUserId").equalTo(service.getId() + "_" + SessionUtils.getCurrentUserId());
@@ -119,21 +129,21 @@ public class RatingServiceActivity extends AppCompatActivity {
                             loadExistingRating(serviceRating.getRateId());
                             break;
                         }
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e(LOG_TAG, databaseError.getMessage());
                         Log.e(LOG_TAG, databaseError.getDetails());
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
                 });
     }
 
     private void loadExistingRating(String rateId) {
         Log.d(LOG_TAG, getString(R.string.loading_existing_rate_by_id));
-        progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         Query query = ratingDao.getDatabaseReference().orderByChild("id").equalTo(rateId);
 
@@ -149,14 +159,14 @@ public class RatingServiceActivity extends AppCompatActivity {
                             updateUI();
                             break;
                         }
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e(LOG_TAG, databaseError.getMessage());
                         Log.e(LOG_TAG, databaseError.getDetails());
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
                 });
     }

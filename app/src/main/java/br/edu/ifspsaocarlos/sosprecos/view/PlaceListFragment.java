@@ -22,8 +22,8 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +43,7 @@ import br.edu.ifspsaocarlos.sosprecos.adapter.PlaceAdapter;
 import br.edu.ifspsaocarlos.sosprecos.dao.PlaceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
+import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 /**
  * Created by Andrey R. Brugnera on 16/05/2018.
@@ -51,7 +52,7 @@ public class PlaceListFragment extends Fragment implements LocationListener {
 
     private static final String LOG_TAG = "SERVICE_PLACES";
 
-    private ProgressBar progressBar;
+    private FrameLayout progressBarHolder;
     private Button btAddPlace;
     private ListView placesListView;
     private PlaceAdapter listAdapter;
@@ -88,7 +89,7 @@ public class PlaceListFragment extends Fragment implements LocationListener {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        this.progressBar = getView().findViewById(R.id.progress_bar);
+        this.progressBarHolder = getView().findViewById(R.id.progress_bar_holder);
         this.placesListView = getView().findViewById(R.id.list_view);
         this.viewTitle = getView().findViewById(R.id.list_title);
         this.viewTitle.setText(getString(R.string.places));
@@ -166,15 +167,15 @@ public class PlaceListFragment extends Fragment implements LocationListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                progressBar.setVisibility(View.VISIBLE);
+                ViewUtils.showProgressBar(progressBarHolder);
                 selectedPlace = listAdapter.getItem(info.position);
                 try {
                     placeDao.delete(selectedPlace);
                     places.remove(selectedPlace);
                     listAdapter.notifyDataSetChanged();
-                    progressBar.setVisibility(View.GONE);
+                    ViewUtils.hideProgressBar(progressBarHolder);
                 } catch (DaoException e) {
-                    progressBar.setVisibility(View.GONE);
+                    ViewUtils.hideProgressBar(progressBarHolder);
                     Toast.makeText(getContext(), getString(R.string.error_removing_place),
                             Toast.LENGTH_LONG).show();
                 }
@@ -193,11 +194,11 @@ public class PlaceListFragment extends Fragment implements LocationListener {
     }
 
     private void getCurrentLocation() {
-        this.progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
         this.locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         if (!isLocationAccessGranted) {
-            this.progressBar.setVisibility(View.GONE);
+            ViewUtils.hideProgressBar(progressBarHolder);
             requestLocationAccessPermission();
         } else if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -211,7 +212,7 @@ public class PlaceListFragment extends Fragment implements LocationListener {
      * the current location
      */
     private void calculatePlacesDistances() {
-        progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
         LatLng curLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         for (Place place : places) {
             LatLng placeLocation = new LatLng(place.getLatitude(), place.getLongitude());
@@ -219,7 +220,7 @@ public class PlaceListFragment extends Fragment implements LocationListener {
             place.setDistanceFromCurrentLocation(distance.floatValue());
         }
         listAdapter.notifyDataSetChanged();
-        progressBar.setVisibility(View.GONE);
+        ViewUtils.hideProgressBar(progressBarHolder);
     }
 
     private void calculatePlaceDistance(Place place) {
@@ -231,7 +232,7 @@ public class PlaceListFragment extends Fragment implements LocationListener {
 
     private void loadPlaces() {
         Log.d(LOG_TAG, getString(R.string.loading_places));
-        progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         placeDao.getDatabaseReference().addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -247,14 +248,14 @@ public class PlaceListFragment extends Fragment implements LocationListener {
                         sortPlacesByName();
                         getCurrentLocation();
                         listAdapter.notifyDataSetChanged();
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e(LOG_TAG, databaseError.getMessage());
                         Log.e(LOG_TAG, databaseError.getDetails());
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
                 });
     }

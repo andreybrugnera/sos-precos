@@ -9,7 +9,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,13 +22,14 @@ import com.google.firebase.auth.FirebaseUser;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
+import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 import br.edu.ifspsaocarlos.sosprecos.view.MainActivity;
 
 public class LoginActivity extends Activity {
 
     private AutoCompleteTextView acTvEmail;
     private EditText etPassword;
-    private ProgressBar progressBar;
+    private FrameLayout progressBarHolder;
 
     private FirebaseAuth auth;
 
@@ -39,8 +40,7 @@ public class LoginActivity extends Activity {
 
         this.acTvEmail = findViewById(R.id.actv_email);
         this.etPassword = findViewById(R.id.et_password);
-        this.progressBar = findViewById(R.id.pb_login);
-
+        this.progressBarHolder = findViewById(R.id.progress_bar_holder);
         this.auth = FirebaseAuth.getInstance();
     }
 
@@ -65,13 +65,13 @@ public class LoginActivity extends Activity {
             return;
         }
 
-        this.progressBar.setVisibility(View.VISIBLE);
+        ViewUtils.showProgressBar(progressBarHolder);
 
         auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressBar.setVisibility(View.GONE);
+                        ViewUtils.hideProgressBar(progressBarHolder);
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = auth.getCurrentUser();
                             SessionUtils.setCurrentUserId(firebaseUser.getUid());
