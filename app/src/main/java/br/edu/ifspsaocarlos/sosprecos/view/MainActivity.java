@@ -60,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
                                 PlaceListFragment placeListFragment = new PlaceListFragment();
                                 changeFragment(placeListFragment, "places");
                                 break;
+                            case R.id.nav_settings:
+                                SettingsFragment settingsFragment = new SettingsFragment();
+                                changeFragment(settingsFragment, "settings");
+                                break;
                             case R.id.nav_logout:
                                 logout();
                         }

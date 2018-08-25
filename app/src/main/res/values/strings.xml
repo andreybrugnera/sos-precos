@@ -105,4 +105,6 @@
     <string name="quality">Qualidade</string>
     <string name="error_saving_or_updating_rating">Erro ao salvar ou atualizar a avaliação</string>
     <string name="rating_registration_date">Data da avaliação</string>
+    <string name="max_distance_kilometers_to_search">Distância máxima em KM para buscar</string>
+    <string name="saving_application_settings">Salvando configurações da aplicação</string>
 </resources>
