@@ -54,7 +54,8 @@
         <activity android:name=".view.ServiceActivity" />
         <activity android:name=".view.RatingPlaceActivity" />
         <activity android:name=".view.ServiceInfoActivity" />
-        <activity android:name=".view.RatingServiceActivity"></activity>
+        <activity android:name=".view.RatingServiceActivity" />
+        <activity android:name=".view.SearchActivity"></activity>
     </application>
 
 </manifest>

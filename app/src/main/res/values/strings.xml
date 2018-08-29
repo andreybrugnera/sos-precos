@@ -107,4 +107,8 @@
     <string name="rating_registration_date">Data da avaliação</string>
     <string name="max_distance_kilometers_to_search">Distância máxima em KM para buscar</string>
     <string name="saving_application_settings">Salvando configurações da aplicação</string>
+    <string name="what_to_search_question">O que você procura?</string>
+    <string name="order_results_by">Ordenar resultados por</string>
+    <string name="searching">Buscando...</string>
+    <string name="enter_valid_search_text">Informe um valor válido</string>
 </resources>
