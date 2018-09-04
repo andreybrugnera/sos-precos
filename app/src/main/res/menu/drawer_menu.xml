@@ -1,21 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/group_1" android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home"
             android:title="@string/home" />
         <item
-            android:id="@+id/nav_categories"
-            android:title="@string/categories" />
+            android:id="@+id/nav_search"
+            android:icon="@drawable/ic_search_black"
+            android:title="@string/search" />
+    </group>
+    <group android:id="@+id/group_2" android:checkableBehavior="single">
         <item
             android:id="@+id/nav_places"
             android:icon="@drawable/ic_place"
             android:title="@string/places" />
         <item
+            android:id="@+id/nav_categories"
+            android:title="@string/categories" />
+        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings"
             android:title="@string/settings" />
+    </group>
+    <group android:id="@+id/group_3" android:checkableBehavior="single">
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_exit"

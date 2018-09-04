@@ -108,6 +108,27 @@ public class SearchActivity extends AppCompatActivity implements LocationListene
             }
         });
 
+        this.rbOrderByPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                orderResults();
+            }
+        });
+
+        this.rbOrderByQuality.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                orderResults();
+            }
+        });
+
+        this.rbOrderByLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                orderResults();
+            }
+        });
+
         this.placeDao = new PlaceDao(this);
         this.serviceDao = new ServiceDao(this);
 

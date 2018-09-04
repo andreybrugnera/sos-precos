@@ -1,6 +1,7 @@
 package br.edu.ifspsaocarlos.sosprecos.view;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -36,6 +37,11 @@ public class MainActivity extends AppCompatActivity {
         changeFragment(mainFragment, null);
     }
 
+    private void openSearchActivity() {
+        Intent searchIntent = new Intent(this, SearchActivity.class);
+        startActivity(searchIntent);
+    }
+
     private void configureDrawer() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
@@ -59,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.nav_places:
                                 PlaceListFragment placeListFragment = new PlaceListFragment();
                                 changeFragment(placeListFragment, "places");
+                                break;
+                            case R.id.nav_search:
+                                openSearchActivity();
                                 break;
                             case R.id.nav_settings:
                                 SettingsFragment settingsFragment = new SettingsFragment();
