@@ -111,4 +111,8 @@
     <string name="order_results_by">Ordenar resultados por</string>
     <string name="searching">Buscando...</string>
     <string name="enter_valid_search_text">Informe um valor válido</string>
+    <string name="geolocation_not_set">GeoLocation não configurado</string>
+    <string name="geofire_update_place_error">Erro ao atualizar o local com GeoFire</string>
+    <string name="geofire_remove_place_error">Erro ao remover o local com GeoFire</string>
+    <string name="geofire_error_fetching_location_data">Erro ao buscar os locais com GeoFire</string>
 </resources>

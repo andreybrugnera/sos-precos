@@ -26,6 +26,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -43,6 +45,7 @@ import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.adapter.CategorySpinnerAdapter;
 import br.edu.ifspsaocarlos.sosprecos.dao.CategoryDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.CategoryPlaceDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.GeoFireHelper;
 import br.edu.ifspsaocarlos.sosprecos.dao.PlaceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
@@ -343,6 +346,7 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
                 placeDao.update(editingPlace);
                 updateCategoryPlace();
                 categoryPlaceDao.update(categoryPlace);
+                updatePlaceLocation(editingPlace);
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra(PLACE, editingPlace);
                 setResult(OPERATION_STATUS_OK, returnIntent);
@@ -365,6 +369,7 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
                 placeDao.add(place);
                 updateCategoryPlace(place);
                 categoryPlaceDao.add(categoryPlace);
+                updatePlaceLocation(place);
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra(PLACE, place);
                 setResult(OPERATION_STATUS_OK, returnIntent);
@@ -373,6 +378,18 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
             }
             finish();
         }
+    }
+
+    private void updatePlaceLocation(Place place) {
+        GeoFireHelper.getGeoFire().setLocation(place.getId(), new GeoLocation(place.getLatitude(), place.getLongitude()), new GeoFire.CompletionListener() {
+
+            @Override
+            public void onComplete(String key, DatabaseError error) {
+                if (error != null) {
+                    Log.e(LOG_TAG, getString(R.string.geofire_update_place_error));
+                }
+            }
+        });
     }
 
     private void updateCategoryPlace(Place place) {

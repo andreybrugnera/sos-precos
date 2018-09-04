@@ -59,7 +59,7 @@ public class PlaceAdapter extends ArrayAdapter<Place> {
         Place place = places.get(position);
         viewHolder.getName().setText(place.getName());
         if (place.getDistanceFromCurrentLocation() != null) {
-            viewHolder.getDistance().setText(decimalFormat.format(place.getDistanceFromCurrentLocation()) + " KM");
+            viewHolder.getDistance().setText(decimalFormat.format(place.getDistanceFromCurrentLocation()) + " Km");
         }
         return convertView;
     }

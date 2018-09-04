@@ -27,6 +27,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +41,7 @@ import java.util.List;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.adapter.PlaceAdapter;
+import br.edu.ifspsaocarlos.sosprecos.dao.GeoFireHelper;
 import br.edu.ifspsaocarlos.sosprecos.dao.PlaceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
@@ -172,6 +174,7 @@ public class PlaceListFragment extends Fragment implements LocationListener {
                 try {
                     placeDao.delete(selectedPlace);
                     places.remove(selectedPlace);
+                    removePlaceLocation(selectedPlace);
                     listAdapter.notifyDataSetChanged();
                     ViewUtils.hideProgressBar(progressBarHolder);
                 } catch (DaoException e) {
@@ -193,7 +196,19 @@ public class PlaceListFragment extends Fragment implements LocationListener {
         dialog.show();
     }
 
-    private void getCurrentLocation() {
+    private void removePlaceLocation(Place place){
+        GeoFireHelper.getGeoFire().removeLocation(place.getId(), new GeoFire.CompletionListener() {
+
+            @Override
+            public void onComplete(String key, DatabaseError error) {
+                if (error != null) {
+                    Log.e(LOG_TAG, getString(R.string.geofire_remove_place_error));
+                }
+            }
+        });
+    }
+
+    private void loadCurrentLocation() {
         ViewUtils.showProgressBar(progressBarHolder);
         this.locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
@@ -246,7 +261,7 @@ public class PlaceListFragment extends Fragment implements LocationListener {
                             places.add(place);
                         }
                         sortPlacesByName();
-                        getCurrentLocation();
+                        loadCurrentLocation();
                         listAdapter.notifyDataSetChanged();
                         ViewUtils.hideProgressBar(progressBarHolder);
                     }

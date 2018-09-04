@@ -6,4 +6,7 @@ package br.edu.ifspsaocarlos.sosprecos.util;
 public interface SystemConstants {
     int MAX_DISTANCE_IN_KILOMETERS = 100;
     String SHARED_PREFERENCES_FILE = "application_preferences";
+
+    //GeoFire
+    String GEOFIRE_DATABASE_REFERENCE = "geolocations";
 }
