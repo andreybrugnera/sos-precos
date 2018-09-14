@@ -32,6 +32,7 @@ public class Place implements Serializable {
         place.setAverageScore(0f);
         place.setRatingCount(0);
         place.setDistanceFromCurrentLocation(0f);
+        place.setAverageScore(5f);
         return place;
     }
 

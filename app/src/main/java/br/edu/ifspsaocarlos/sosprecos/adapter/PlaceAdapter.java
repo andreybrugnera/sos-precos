@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
+import br.edu.ifspsaocarlos.sosprecos.util.NumberUtils;
 
 /**
  * Created by Andrey R. Brugnera on 16/05/2018.
@@ -19,15 +19,11 @@ import br.edu.ifspsaocarlos.sosprecos.model.Place;
 public class PlaceAdapter extends ArrayAdapter<Place> {
     private List<Place> places;
     private Context context;
-    private DecimalFormat decimalFormat;
-
 
     public PlaceAdapter(Context context, int resource, List<Place> objects) {
         super(context, resource, objects);
         this.places = objects;
         this.context = context;
-        this.decimalFormat = new DecimalFormat();
-        this.decimalFormat.setMaximumFractionDigits(2);
     }
 
     @Override
@@ -59,7 +55,7 @@ public class PlaceAdapter extends ArrayAdapter<Place> {
         Place place = places.get(position);
         viewHolder.getName().setText(place.getName());
         if (place.getDistanceFromCurrentLocation() != null) {
-            viewHolder.getDistance().setText(decimalFormat.format(place.getDistanceFromCurrentLocation()) + " Km");
+            viewHolder.getDistance().setText(NumberUtils.format(place.getDistanceFromCurrentLocation()) + " Km");
         }
         return convertView;
     }

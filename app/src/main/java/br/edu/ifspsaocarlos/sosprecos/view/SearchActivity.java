@@ -376,7 +376,7 @@ public class SearchActivity extends AppCompatActivity implements LocationListene
                 Service service = child.getValue(Service.class);
                 String serviceName = service.getName().toUpperCase();
                 String serviceDescription = service.getDescription().toUpperCase();
-                if (serviceName.contains(searchText) || serviceDescription.contains(searchText)) {
+                if (serviceName.contains(searchText) || (serviceDescription != null && serviceDescription.contains(searchText))) {
                     Place place = placeMap.get(service.getPlaceId());
                     SearchServiceResultDto resultDto = new SearchServiceResultDto(place, service);
                     results.add(resultDto);

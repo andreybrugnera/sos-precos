@@ -8,11 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dto.SearchServiceResultDto;
+import br.edu.ifspsaocarlos.sosprecos.util.NumberUtils;
 
 /**
  * Created by Andrey R. Brugnera on 03/09/2018.
@@ -20,14 +20,11 @@ import br.edu.ifspsaocarlos.sosprecos.dto.SearchServiceResultDto;
 public class SearchServiceResultAdapter extends ArrayAdapter<SearchServiceResultDto> {
     protected List<SearchServiceResultDto> results;
     protected Context context;
-    private DecimalFormat decimalFormat;
 
     public SearchServiceResultAdapter(Context context, int resource, List<SearchServiceResultDto> objects) {
         super(context, resource, objects);
         this.results = objects;
         this.context = context;
-        this.decimalFormat = new DecimalFormat();
-        this.decimalFormat.setMaximumFractionDigits(2);
     }
 
     @Override
@@ -50,11 +47,12 @@ public class SearchServiceResultAdapter extends ArrayAdapter<SearchServiceResult
 
             TextView placeName = convertView.findViewById(R.id.et_place_name);
             TextView serviceName = convertView.findViewById(R.id.et_service_name);
+            TextView servicePrice = convertView.findViewById(R.id.et_service_price);
             TextView distance = convertView.findViewById(R.id.et_place_distance);
             RatingBar ratingBar = convertView.findViewById(R.id.rb_place_avg_score);
 
 
-            viewHolder = new SearchServiceResultAdapter.ViewHolder(placeName, serviceName, distance, ratingBar);
+            viewHolder = new SearchServiceResultAdapter.ViewHolder(placeName, serviceName, servicePrice, distance, ratingBar);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (SearchServiceResultAdapter.ViewHolder) convertView.getTag();
@@ -63,7 +61,8 @@ public class SearchServiceResultAdapter extends ArrayAdapter<SearchServiceResult
         SearchServiceResultDto searchResult = results.get(position);
         viewHolder.getPlaceName().setText(searchResult.getPlace().getName());
         viewHolder.getServiceName().setText(searchResult.getService().getName());
-        viewHolder.getDistance().setText(decimalFormat.format(searchResult.getDistanceFromCurrentLocation()) + " Km");
+        viewHolder.getServicePrice().setText("$ " + NumberUtils.formatCurrency(searchResult.getService().getPrice(), context.getResources().getConfiguration().locale));
+        viewHolder.getDistance().setText(NumberUtils.format(searchResult.getDistanceFromCurrentLocation()) + " Km");
         viewHolder.getRatingBar().setRating(searchResult.getPlaceAverageScore());
 
         return convertView;
@@ -72,12 +71,14 @@ public class SearchServiceResultAdapter extends ArrayAdapter<SearchServiceResult
     private class ViewHolder {
         private TextView placeName;
         private TextView serviceName;
+        private TextView servicePrice;
         private TextView distance;
         private RatingBar ratingBar;
 
-        public ViewHolder(TextView placeName, TextView serviceName, TextView distance, RatingBar ratingBar) {
+        public ViewHolder(TextView placeName, TextView serviceName, TextView servicePrice, TextView distance, RatingBar ratingBar) {
             this.placeName = placeName;
             this.serviceName = serviceName;
+            this.servicePrice = servicePrice;
             this.distance = distance;
             this.ratingBar = ratingBar;
         }
@@ -88,6 +89,10 @@ public class SearchServiceResultAdapter extends ArrayAdapter<SearchServiceResult
 
         public TextView getServiceName() {
             return serviceName;
+        }
+
+        public TextView getServicePrice() {
+            return servicePrice;
         }
 
         public TextView getDistance() {

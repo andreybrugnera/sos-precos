@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
+import br.edu.ifspsaocarlos.sosprecos.util.NumberUtils;
 
 /**
  * Created by Andrey R. Brugnera on 30/07/2018.
@@ -19,14 +19,11 @@ import br.edu.ifspsaocarlos.sosprecos.model.Service;
 public class ServiceAdapter extends ArrayAdapter<Service> {
     private List<Service> services;
     private Context context;
-    private DecimalFormat decimalFormat;
 
     public ServiceAdapter(Context context, int resource, List<Service> objects) {
         super(context, resource, objects);
         this.services = objects;
         this.context = context;
-        this.decimalFormat = new DecimalFormat();
-        this.decimalFormat.setMaximumFractionDigits(2);
     }
 
     @Override
@@ -58,7 +55,7 @@ public class ServiceAdapter extends ArrayAdapter<Service> {
 
         Service service = services.get(position);
         viewHolder.getName().setText(service.getName());
-        viewHolder.getPrice().setText("$" + decimalFormat.format(service.getPrice()));
+        viewHolder.getPrice().setText("$" + NumberUtils.format(service.getPrice()));
 
         return convertView;
     }

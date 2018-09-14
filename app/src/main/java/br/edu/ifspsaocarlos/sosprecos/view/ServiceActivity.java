@@ -11,8 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -22,7 +20,6 @@ import br.edu.ifspsaocarlos.sosprecos.dao.ServiceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
-import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class ServiceActivity extends AppCompatActivity {
     private static final String LOG_TAG = "ADD_EDIT_SERVICE";
@@ -37,7 +34,6 @@ public class ServiceActivity extends AppCompatActivity {
     public static final String PLACE = "place";
     public static final String SERVICE = "service";
 
-    private FrameLayout progressBarHolder;
     private TextView tvTitle;
     private EditText etServiceName;
     private Button btAddOrEditService;
@@ -60,7 +56,6 @@ public class ServiceActivity extends AppCompatActivity {
         this.serviceDao = new ServiceDao(this);
 
         this.tvTitle = findViewById(R.id.tv_title);
-        this.progressBarHolder = findViewById(R.id.progress_bar_holder);
         this.etServiceName = findViewById(R.id.et_service_name);
         this.etServiceDescription = findViewById(R.id.et_service_description);
         this.etServicePrice = findViewById(R.id.et_service_price);
@@ -130,14 +125,12 @@ public class ServiceActivity extends AppCompatActivity {
     }
 
     private void editService() {
-        ViewUtils.showProgressBar(progressBarHolder);
         if (validateInputFields(editingService)) {
             try {
                 serviceDao.update(editingService);
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra(SERVICE, editingService);
                 setResult(OPERATION_STATUS_OK, returnIntent);
-                ViewUtils.hideProgressBar(progressBarHolder);
             } catch (DaoException ex) {
                 Log.e(LOG_TAG, getString(R.string.error_editing_service), ex);
             }
@@ -146,7 +139,6 @@ public class ServiceActivity extends AppCompatActivity {
     }
 
     private void addService() {
-        ViewUtils.showProgressBar(progressBarHolder);
         Service service = Service.getInstance();
         if (validateInputFields(service)) {
             try {
@@ -154,7 +146,6 @@ public class ServiceActivity extends AppCompatActivity {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra(SERVICE, service);
                 setResult(OPERATION_STATUS_OK, returnIntent);
-                ViewUtils.hideProgressBar(progressBarHolder);
             } catch (DaoException ex) {
                 Log.e(LOG_TAG, getString(R.string.error_adding_service), ex);
             }

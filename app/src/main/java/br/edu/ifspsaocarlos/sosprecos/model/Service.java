@@ -19,6 +19,7 @@ public class Service implements Serializable {
         Service service = new Service();
         service.setAverageScore(0f);
         service.setPrice(0f);
+        service.setAverageScore(5f);
         return service;
     }
 
