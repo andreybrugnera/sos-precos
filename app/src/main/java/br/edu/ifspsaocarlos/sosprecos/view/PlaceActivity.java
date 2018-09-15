@@ -52,23 +52,15 @@ import br.edu.ifspsaocarlos.sosprecos.model.Category;
 import br.edu.ifspsaocarlos.sosprecos.model.CategoryPlace;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.service.FetchLocationService;
+import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.location.LocationAddress;
 
 public class PlaceActivity extends AppCompatActivity implements LocationListener {
     private static final String LOG_TAG = "ADD_EDIT_PLACE";
 
-    public static final int OPERATION_STATUS_ERROR = -1;
-    public static final int OPERATION_STATUS_OK = 1;
-
     public static final int OPERATION_ADD = 2;
     public static final int OPERATION_EDIT = 3;
-
-    public static final String OPERATION = "operation";
-    public static final String PLACE = "place";
-
-    private static final int REQUEST_LOCATION_PERMISSION = 1;
-    private static final int REQUEST_LOCATION_PICKER = 2;
 
     private FrameLayout progressBarHolder;
     private TextView tvTitle;
@@ -213,7 +205,7 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
     }
 
     private void defineOperation() {
-        int operation = getIntent().getIntExtra(OPERATION, OPERATION_ADD);
+        int operation = getIntent().getIntExtra(SystemConstants.OPERATION, OPERATION_ADD);
         switch (operation) {
             case OPERATION_EDIT:
                 updateUIWithEditingPlaceData();
@@ -238,7 +230,7 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
     private void updateUIWithEditingPlaceData() {
         this.tvTitle.setText(R.string.edit_place);
         this.btAddOrEditPlace.setText(R.string.edit);
-        this.editingPlace = (Place) getIntent().getSerializableExtra(PLACE);
+        this.editingPlace = (Place) getIntent().getSerializableExtra(SystemConstants.PLACE);
         this.etPlaceName.setText(this.editingPlace.getName());
         this.acTvPlaceEmail.setText(this.editingPlace.getEmail());
         this.etPlacePhone.setText(this.editingPlace.getPhoneNumber());
@@ -348,8 +340,8 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
                 categoryPlaceDao.update(categoryPlace);
                 updatePlaceLocation(editingPlace);
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(PLACE, editingPlace);
-                setResult(OPERATION_STATUS_OK, returnIntent);
+                returnIntent.putExtra(SystemConstants.PLACE, editingPlace);
+                setResult(SystemConstants.OPERATION_STATUS_OK, returnIntent);
             } catch (DaoException ex) {
                 Log.e(LOG_TAG, getString(R.string.error_editing_place), ex);
             }
@@ -371,8 +363,8 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
                 categoryPlaceDao.add(categoryPlace);
                 updatePlaceLocation(place);
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(PLACE, place);
-                setResult(OPERATION_STATUS_OK, returnIntent);
+                returnIntent.putExtra(SystemConstants.PLACE, place);
+                setResult(SystemConstants.OPERATION_STATUS_OK, returnIntent);
             } catch (DaoException ex) {
                 Log.e(LOG_TAG, getString(R.string.error_adding_place), ex);
             }
@@ -436,13 +428,13 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
     }
 
     private void requestLocationAccessPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, SystemConstants.REQUEST_LOCATION_PERMISSION);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_LOCATION_PERMISSION:
+            case SystemConstants.REQUEST_LOCATION_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     this.isLocationAccessGranted = true;
                     getCurrentLocation();
@@ -450,7 +442,7 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
                     this.isLocationAccessGranted = false;
                 }
                 break;
-            case REQUEST_LOCATION_PICKER:
+            case SystemConstants.REQUEST_LOCATION_PICKER:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     this.isLocationAccessGranted = true;
                     getLocationFromMap();
@@ -463,7 +455,7 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case REQUEST_LOCATION_PICKER:
+            case SystemConstants.REQUEST_LOCATION_PICKER:
                 if (resultCode == RESULT_OK) {
                     com.google.android.gms.location.places.Place place = PlacePicker.getPlace(data, this);
                     etPlaceAddress.setText(place.getAddress().toString());
@@ -496,7 +488,7 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
                     LatLngBounds latLngBounds = new LatLngBounds(placeLatLng, placeLatLng);
                     builder.setLatLngBounds(latLngBounds);
                 }
-                startActivityForResult(builder.build(this), REQUEST_LOCATION_PICKER);
+                startActivityForResult(builder.build(this), SystemConstants.REQUEST_LOCATION_PICKER);
             } catch (Exception ex) {
                 Toast.makeText(PlaceActivity.this, getString(R.string.service_not_available),
                         Toast.LENGTH_SHORT).show();

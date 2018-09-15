@@ -29,14 +29,12 @@ import br.edu.ifspsaocarlos.sosprecos.model.PlaceRating;
 import br.edu.ifspsaocarlos.sosprecos.model.Rating;
 import br.edu.ifspsaocarlos.sosprecos.util.DateTimeUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
+import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class RatingPlaceActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "RATING_PLACE";
-
-    public static final String PLACE = "place";
-    public static final String CATEGORY = "category";
 
     private FrameLayout progressBarHolder;
     private EditText etRateDescription;
@@ -66,9 +64,9 @@ public class RatingPlaceActivity extends AppCompatActivity {
         this.qualityRatingBar = findViewById(R.id.rating_quality);
         this.locationRatingBar = findViewById(R.id.rating_location);
 
-        this.place = (Place) getIntent().getSerializableExtra(PLACE);
+        this.place = (Place) getIntent().getSerializableExtra(SystemConstants.PLACE);
 
-        this.categoryName = getIntent().getStringExtra(CATEGORY);
+        this.categoryName = getIntent().getStringExtra(SystemConstants.CATEGORY);
         tvCategoryName.setText(categoryName);
 
         configureToolbar();

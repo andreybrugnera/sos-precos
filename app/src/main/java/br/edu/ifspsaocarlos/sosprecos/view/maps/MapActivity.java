@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.util.ImageUtils;
+import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -21,7 +22,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private final float MAPS_MIN_ZOOM = 0;
     private final float MAPS_MAX_ZOOM = 18;
 
-    public static final String PLACE = "place";
     private Place place;
 
     @Override
@@ -29,7 +29,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        this.place = (Place) getIntent().getSerializableExtra(PLACE);
+        this.place = (Place) getIntent().getSerializableExtra(SystemConstants.PLACE);
 
         // Get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()

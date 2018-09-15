@@ -14,13 +14,11 @@ import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
 import br.edu.ifspsaocarlos.sosprecos.util.NumberUtils;
+import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 
 public class ServiceInfoActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "SERVICE_INFO";
-
-    public static final String PLACE = "place";
-    public static final String SERVICE = "service";
 
     private Service service;
     private Place place;
@@ -31,8 +29,8 @@ public class ServiceInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_info);
 
-        this.service = (Service) getIntent().getSerializableExtra(SERVICE);
-        this.place = (Place) getIntent().getSerializableExtra(PLACE);
+        this.service = (Service) getIntent().getSerializableExtra(SystemConstants.SERVICE);
+        this.place = (Place) getIntent().getSerializableExtra(SystemConstants.PLACE);
 
         this.tvPlaceName = findViewById(R.id.tv_place_name);
         this.tvPlaceName.setText(place.getName());
@@ -86,8 +84,8 @@ public class ServiceInfoActivity extends AppCompatActivity {
 
     public void rateService(View v) {
         Intent intentRateService = new Intent(this, RatingServiceActivity.class);
-        intentRateService.putExtra(RatingServiceActivity.SERVICE, service);
-        intentRateService.putExtra(RatingServiceActivity.PLACE, place);
+        intentRateService.putExtra(SystemConstants.SERVICE, service);
+        intentRateService.putExtra(SystemConstants.PLACE, place);
         startActivity(intentRateService);
     }
 }

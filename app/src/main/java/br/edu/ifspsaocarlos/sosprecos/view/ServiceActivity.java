@@ -20,19 +20,13 @@ import br.edu.ifspsaocarlos.sosprecos.dao.ServiceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
+import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 
 public class ServiceActivity extends AppCompatActivity {
     private static final String LOG_TAG = "ADD_EDIT_SERVICE";
 
-    public static final int OPERATION_STATUS_ERROR = -1;
-    public static final int OPERATION_STATUS_OK = 1;
-
     public static final int OPERATION_ADD = 2;
     public static final int OPERATION_EDIT = 3;
-
-    public static final String OPERATION = "operation";
-    public static final String PLACE = "place";
-    public static final String SERVICE = "service";
 
     private TextView tvTitle;
     private EditText etServiceName;
@@ -51,8 +45,8 @@ public class ServiceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service);
 
-        this.place = (Place) getIntent().getSerializableExtra(PLACE);
-        this.editingService = (Service) getIntent().getSerializableExtra(SERVICE);
+        this.place = (Place) getIntent().getSerializableExtra(SystemConstants.PLACE);
+        this.editingService = (Service) getIntent().getSerializableExtra(SystemConstants.SERVICE);
         this.serviceDao = new ServiceDao(this);
 
         this.tvTitle = findViewById(R.id.tv_title);
@@ -129,8 +123,8 @@ public class ServiceActivity extends AppCompatActivity {
             try {
                 serviceDao.update(editingService);
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(SERVICE, editingService);
-                setResult(OPERATION_STATUS_OK, returnIntent);
+                returnIntent.putExtra(SystemConstants.SERVICE, editingService);
+                setResult(SystemConstants.OPERATION_STATUS_OK, returnIntent);
             } catch (DaoException ex) {
                 Log.e(LOG_TAG, getString(R.string.error_editing_service), ex);
             }
@@ -144,8 +138,8 @@ public class ServiceActivity extends AppCompatActivity {
             try {
                 serviceDao.add(service);
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(SERVICE, service);
-                setResult(OPERATION_STATUS_OK, returnIntent);
+                returnIntent.putExtra(SystemConstants.SERVICE, service);
+                setResult(SystemConstants.OPERATION_STATUS_OK, returnIntent);
             } catch (DaoException ex) {
                 Log.e(LOG_TAG, getString(R.string.error_adding_service), ex);
             }
@@ -154,7 +148,7 @@ public class ServiceActivity extends AppCompatActivity {
     }
 
     private void defineOperation() {
-        int operation = getIntent().getIntExtra(OPERATION, OPERATION_ADD);
+        int operation = getIntent().getIntExtra(SystemConstants.OPERATION, OPERATION_ADD);
         switch (operation) {
             case OPERATION_EDIT:
                 updateUIWithEditingServiceData();

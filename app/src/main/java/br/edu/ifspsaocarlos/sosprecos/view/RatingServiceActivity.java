@@ -30,13 +30,11 @@ import br.edu.ifspsaocarlos.sosprecos.model.Service;
 import br.edu.ifspsaocarlos.sosprecos.model.ServiceRating;
 import br.edu.ifspsaocarlos.sosprecos.util.DateTimeUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
+import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class RatingServiceActivity extends AppCompatActivity {
     private static final String LOG_TAG = "RATING_SERVICE";
-
-    public static final String SERVICE = "service";
-    public static final String PLACE = "place";
 
     private FrameLayout progressBarHolder;
     private TextView tvPlaceName;
@@ -64,9 +62,9 @@ public class RatingServiceActivity extends AppCompatActivity {
         this.qualityRatingBar = findViewById(R.id.rating_quality);
         this.tvPlaceName = findViewById(R.id.tv_place_name);
 
-        this.service = (Service) getIntent().getSerializableExtra(SERVICE);
+        this.service = (Service) getIntent().getSerializableExtra(SystemConstants.SERVICE);
 
-        this.place = (Place) getIntent().getSerializableExtra(PLACE);
+        this.place = (Place) getIntent().getSerializableExtra(SystemConstants.PLACE);
         this.tvPlaceName.setText(place.getName());
 
         configureToolbar();

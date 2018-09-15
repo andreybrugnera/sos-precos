@@ -22,8 +22,6 @@ public class SettingsFragment extends Fragment {
 
     private static final String LOG_TAG = "SETTINGS";
 
-    private static final String MAX_DIST_KM = "MAX_DIST_KM";
-
     private SharedPreferences sharedPreferences;
     private Integer maximumDistanteInKilometers;
 
@@ -70,7 +68,7 @@ public class SettingsFragment extends Fragment {
     private void updateUI() {
         tvTitle.setText(getString(R.string.settings));
 
-        maximumDistanteInKilometers = sharedPreferences.getInt(MAX_DIST_KM, SystemConstants.MAX_DISTANCE_IN_KILOMETERS);
+        maximumDistanteInKilometers = sharedPreferences.getInt(SystemConstants.MAX_DIST_KM, SystemConstants.MAX_DISTANCE_IN_KILOMETERS);
         etMaxDistanceInKilometersToSearch.setText(maximumDistanteInKilometers.toString());
     }
 
@@ -80,7 +78,7 @@ public class SettingsFragment extends Fragment {
         Log.i(LOG_TAG, getString(R.string.saving_application_settings));
 
         SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-        sharedPreferencesEditor.putInt(MAX_DIST_KM, Integer.valueOf(etMaxDistanceInKilometersToSearch.getText().toString()));
+        sharedPreferencesEditor.putInt(SystemConstants.MAX_DIST_KM, Integer.valueOf(etMaxDistanceInKilometersToSearch.getText().toString()));
         sharedPreferencesEditor.commit();
 
         ViewUtils.hideProgressBar(progressBarHolder);

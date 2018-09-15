@@ -26,19 +26,14 @@ import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dao.CategoryDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
+import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class CategoryActivity extends AppCompatActivity {
     private static final String LOG_TAG = "ADD_EDIT_CATEGORY";
 
-    public static final int OPERATION_STATUS_ERROR = -1;
-    public static final int OPERATION_STATUS_OK = 1;
-
     public static final int OPERATION_ADD = 2;
     public static final int OPERATION_EDIT = 3;
-
-    public static final String OPERATION = "operation";
-    public static final String CATEGORY = "category";
 
     private CategoryDao categoryDao;
 
@@ -87,12 +82,12 @@ public class CategoryActivity extends AppCompatActivity {
     }
 
     private void defineOperation() {
-        int operation = getIntent().getIntExtra(OPERATION, OPERATION_ADD);
+        int operation = getIntent().getIntExtra(SystemConstants.OPERATION, OPERATION_ADD);
         switch (operation) {
             case OPERATION_EDIT:
                 this.tvTitle.setText(R.string.edit_category);
                 this.btAddOrEditCategory.setText(R.string.edit);
-                this.editingCategory = (Category) getIntent().getSerializableExtra(CATEGORY);
+                this.editingCategory = (Category) getIntent().getSerializableExtra(SystemConstants.CATEGORY);
                 this.etCategoryName.setText(this.editingCategory.getName());
                 this.btAddOrEditCategory.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -119,8 +114,8 @@ public class CategoryActivity extends AppCompatActivity {
             editingCategory.setName(categoryName);
             this.categoryDao.update(editingCategory);
             Intent returnIntent = new Intent();
-            returnIntent.putExtra(CATEGORY, editingCategory);
-            setResult(OPERATION_STATUS_OK, returnIntent);
+            returnIntent.putExtra(SystemConstants.CATEGORY, editingCategory);
+            setResult(SystemConstants.OPERATION_STATUS_OK, returnIntent);
         } catch (DaoException ex) {
             Log.e(LOG_TAG, getString(R.string.error_editing_category), ex);
         }
@@ -137,8 +132,8 @@ public class CategoryActivity extends AppCompatActivity {
             this.categoryDao.add(category);
 
             Intent returnIntent = new Intent();
-            returnIntent.putExtra(CATEGORY, category);
-            setResult(OPERATION_STATUS_OK, returnIntent);
+            returnIntent.putExtra(SystemConstants.CATEGORY, category);
+            setResult(SystemConstants.OPERATION_STATUS_OK, returnIntent);
         } catch (DaoException ex) {
             Log.e(LOG_TAG, getString(R.string.error_adding_category), ex);
         }

@@ -23,14 +23,13 @@ import br.edu.ifspsaocarlos.sosprecos.dao.CategoryPlaceDao;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
 import br.edu.ifspsaocarlos.sosprecos.model.CategoryPlace;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
+import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 import br.edu.ifspsaocarlos.sosprecos.view.maps.MapActivity;
 
 public class PlaceInfoActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "PLACE_INFO";
-
-    public static final String PLACE = "place";
 
     private FrameLayout progressBarHolder;
     private TextView tvCategory;
@@ -50,7 +49,7 @@ public class PlaceInfoActivity extends AppCompatActivity {
         this.categoryPlaceDao = new CategoryPlaceDao(this);
         this.categoryDao = new CategoryDao(this);
 
-        this.place = (Place) getIntent().getSerializableExtra(PLACE);
+        this.place = (Place) getIntent().getSerializableExtra(SystemConstants.PLACE);
 
         configureToolbar();
         updateUI();
@@ -158,7 +157,7 @@ public class PlaceInfoActivity extends AppCompatActivity {
      */
     public void showLocation(View v) {
         Intent intentMap = new Intent(this, MapActivity.class);
-        intentMap.putExtra(MapActivity.PLACE, place);
+        intentMap.putExtra(SystemConstants.PLACE, place);
         startActivity(intentMap);
     }
 
@@ -169,14 +168,14 @@ public class PlaceInfoActivity extends AppCompatActivity {
      */
     public void showServices(View v) {
         Intent intentServices = new Intent(this, ServiceListActivity.class);
-        intentServices.putExtra(ServiceListActivity.PLACE, place);
+        intentServices.putExtra(SystemConstants.PLACE, place);
         startActivity(intentServices);
     }
 
     public void rateProvider(View V) {
         Intent intentRateProvider = new Intent(this, RatingPlaceActivity.class);
-        intentRateProvider.putExtra(RatingPlaceActivity.PLACE, place);
-        intentRateProvider.putExtra(RatingPlaceActivity.CATEGORY, tvCategory.getText().toString());
+        intentRateProvider.putExtra(SystemConstants.PLACE, place);
+        intentRateProvider.putExtra(SystemConstants.CATEGORY, tvCategory.getText().toString());
         startActivity(intentRateProvider);
     }
 }

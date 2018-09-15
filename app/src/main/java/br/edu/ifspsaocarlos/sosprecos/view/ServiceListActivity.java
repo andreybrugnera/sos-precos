@@ -35,13 +35,12 @@ import br.edu.ifspsaocarlos.sosprecos.dao.ServiceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
+import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class ServiceListActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "SERVICES";
-
-    public static final String PLACE = "place";
 
     private FrameLayout progressBarHolder;
     private Button btAddService;
@@ -62,7 +61,7 @@ public class ServiceListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_list);
 
-        this.place = (Place) getIntent().getSerializableExtra(PLACE);
+        this.place = (Place) getIntent().getSerializableExtra(SystemConstants.PLACE);
 
         this.serviceDao = new ServiceDao(this);
         this.services = new ArrayList<>();
@@ -128,16 +127,16 @@ public class ServiceListActivity extends AppCompatActivity {
 
     private void editService(Service service) {
         Intent editServiceIntent = new Intent(this, ServiceActivity.class);
-        editServiceIntent.putExtra(ServiceActivity.OPERATION, ServiceActivity.OPERATION_EDIT);
-        editServiceIntent.putExtra(ServiceActivity.PLACE, place);
-        editServiceIntent.putExtra(ServiceActivity.SERVICE, service);
+        editServiceIntent.putExtra(SystemConstants.OPERATION, ServiceActivity.OPERATION_EDIT);
+        editServiceIntent.putExtra(SystemConstants.PLACE, place);
+        editServiceIntent.putExtra(SystemConstants.SERVICE, service);
         startActivityForResult(editServiceIntent, EDIT);
     }
 
     private void addService() {
         Intent addServiceIntent = new Intent(this, ServiceActivity.class);
-        addServiceIntent.putExtra(ServiceActivity.OPERATION, ServiceActivity.OPERATION_ADD);
-        addServiceIntent.putExtra(ServiceActivity.PLACE, place);
+        addServiceIntent.putExtra(SystemConstants.OPERATION, ServiceActivity.OPERATION_ADD);
+        addServiceIntent.putExtra(SystemConstants.PLACE, place);
         startActivityForResult(addServiceIntent, ADD);
     }
 
@@ -265,23 +264,23 @@ public class ServiceListActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case ADD:
-                if (resultCode == ServiceActivity.OPERATION_STATUS_OK) {
-                    Service service = (Service) data.getSerializableExtra(ServiceActivity.SERVICE);
+                if (resultCode == SystemConstants.OPERATION_STATUS_OK) {
+                    Service service = (Service) data.getSerializableExtra(SystemConstants.SERVICE);
                     services.add(service);
                     sortServicesByName();
                     listAdapter.notifyDataSetChanged();
-                } else if (resultCode == ServiceActivity.OPERATION_STATUS_ERROR) {
+                } else if (resultCode == SystemConstants.OPERATION_STATUS_ERROR) {
                     Toast.makeText(this, getString(R.string.error_adding_service),
                             Toast.LENGTH_LONG).show();
                 }
                 break;
             case EDIT:
-                if (resultCode == ServiceActivity.OPERATION_STATUS_OK) {
-                    Service service = (Service) data.getSerializableExtra(ServiceActivity.SERVICE);
+                if (resultCode == SystemConstants.OPERATION_STATUS_OK) {
+                    Service service = (Service) data.getSerializableExtra(SystemConstants.SERVICE);
                     updateSelectedService(service);
                     sortServicesByName();
                     listAdapter.notifyDataSetChanged();
-                } else if (resultCode == ServiceActivity.OPERATION_STATUS_ERROR) {
+                } else if (resultCode == SystemConstants.OPERATION_STATUS_ERROR) {
                     Toast.makeText(this, getString(R.string.error_editing_service),
                             Toast.LENGTH_LONG).show();
                 }
@@ -296,8 +295,8 @@ public class ServiceListActivity extends AppCompatActivity {
 
     private void openServiceInfo(Service service) {
         Intent openServiceInfoIntent = new Intent(this, ServiceInfoActivity.class);
-        openServiceInfoIntent.putExtra(ServiceInfoActivity.SERVICE, service);
-        openServiceInfoIntent.putExtra(ServiceInfoActivity.PLACE, place);
+        openServiceInfoIntent.putExtra(SystemConstants.SERVICE, service);
+        openServiceInfoIntent.putExtra(SystemConstants.PLACE, place);
         startActivity(openServiceInfoIntent);
     }
 }

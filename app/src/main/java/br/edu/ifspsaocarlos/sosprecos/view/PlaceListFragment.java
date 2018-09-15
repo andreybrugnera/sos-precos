@@ -45,6 +45,7 @@ import br.edu.ifspsaocarlos.sosprecos.dao.GeoFireHelper;
 import br.edu.ifspsaocarlos.sosprecos.dao.PlaceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
+import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 /**
@@ -67,8 +68,6 @@ public class PlaceListFragment extends Fragment implements LocationListener {
     private LocationManager locationManager;
     private Location currentLocation;
     private boolean isLocationAccessGranted;
-
-    private static final int REQUEST_LOCATION_PERMISSION = 1;
 
     private static final int ADD = 1;
     private static final int EDIT = 2;
@@ -123,13 +122,13 @@ public class PlaceListFragment extends Fragment implements LocationListener {
 
     private void openPlaceInfo(Place place) {
         Intent openPlaceInfoIntent = new Intent(getContext(), PlaceInfoActivity.class);
-        openPlaceInfoIntent.putExtra(PlaceInfoActivity.PLACE, place);
+        openPlaceInfoIntent.putExtra(SystemConstants.PLACE, place);
         startActivity(openPlaceInfoIntent);
     }
 
     private void addPlace() {
         Intent addPlaceIntent = new Intent(getContext(), PlaceActivity.class);
-        addPlaceIntent.putExtra(PlaceActivity.OPERATION, PlaceActivity.OPERATION_ADD);
+        addPlaceIntent.putExtra(SystemConstants.OPERATION, PlaceActivity.OPERATION_ADD);
         startActivityForResult(addPlaceIntent, ADD);
     }
 
@@ -155,8 +154,8 @@ public class PlaceListFragment extends Fragment implements LocationListener {
     private void editSelectedPlace(final AdapterView.AdapterContextMenuInfo info) {
         this.selectedPlace = listAdapter.getItem(info.position);
         Intent editPlaceIntent = new Intent(getContext(), PlaceActivity.class);
-        editPlaceIntent.putExtra(PlaceActivity.OPERATION, PlaceActivity.OPERATION_EDIT);
-        editPlaceIntent.putExtra(PlaceActivity.PLACE, selectedPlace);
+        editPlaceIntent.putExtra(SystemConstants.OPERATION, PlaceActivity.OPERATION_EDIT);
+        editPlaceIntent.putExtra(SystemConstants.PLACE, selectedPlace);
         startActivityForResult(editPlaceIntent, EDIT);
     }
 
@@ -312,24 +311,24 @@ public class PlaceListFragment extends Fragment implements LocationListener {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case ADD:
-                if (resultCode == PlaceActivity.OPERATION_STATUS_OK) {
-                    Place addedPlace = (Place) data.getSerializableExtra(PlaceActivity.PLACE);
+                if (resultCode == SystemConstants.OPERATION_STATUS_OK) {
+                    Place addedPlace = (Place) data.getSerializableExtra(SystemConstants.PLACE);
                     places.add(addedPlace);
                     sortPlacesByName();
                     calculatePlaceDistance(addedPlace);
                     listAdapter.notifyDataSetChanged();
-                } else if (resultCode == PlaceActivity.OPERATION_STATUS_ERROR) {
+                } else if (resultCode == SystemConstants.OPERATION_STATUS_ERROR) {
                     Toast.makeText(getContext(), getString(R.string.error_adding_place),
                             Toast.LENGTH_LONG).show();
                 }
                 break;
             case EDIT:
-                if (resultCode == PlaceActivity.OPERATION_STATUS_OK) {
-                    Place editedPlace = (Place) data.getSerializableExtra(PlaceActivity.PLACE);
+                if (resultCode == SystemConstants.OPERATION_STATUS_OK) {
+                    Place editedPlace = (Place) data.getSerializableExtra(SystemConstants.PLACE);
                     updateSelectedPlace(editedPlace);
                     sortPlacesByName();
                     listAdapter.notifyDataSetChanged();
-                } else if (resultCode == PlaceActivity.OPERATION_STATUS_ERROR) {
+                } else if (resultCode == SystemConstants.OPERATION_STATUS_ERROR) {
                     Toast.makeText(getContext(), getString(R.string.error_editing_place),
                             Toast.LENGTH_LONG).show();
                 }
@@ -352,7 +351,7 @@ public class PlaceListFragment extends Fragment implements LocationListener {
     }
 
     private void requestLocationAccessPermission() {
-        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, SystemConstants.REQUEST_LOCATION_PERMISSION);
     }
 
     @Override
@@ -381,7 +380,7 @@ public class PlaceListFragment extends Fragment implements LocationListener {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_LOCATION_PERMISSION:
+            case SystemConstants.REQUEST_LOCATION_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     this.isLocationAccessGranted = true;
                 } else {

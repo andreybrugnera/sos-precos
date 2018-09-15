@@ -34,6 +34,7 @@ import br.edu.ifspsaocarlos.sosprecos.adapter.CategoryAdapter;
 import br.edu.ifspsaocarlos.sosprecos.dao.CategoryDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
+import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class CategoryListFragment extends Fragment {
@@ -92,7 +93,7 @@ public class CategoryListFragment extends Fragment {
 
     private void addCategory() {
         Intent addCategoryIntent = new Intent(getContext(), CategoryActivity.class);
-        addCategoryIntent.putExtra(CategoryActivity.OPERATION, CategoryActivity.OPERATION_ADD);
+        addCategoryIntent.putExtra(SystemConstants.OPERATION, CategoryActivity.OPERATION_ADD);
         startActivityForResult(addCategoryIntent, ADD);
     }
 
@@ -118,8 +119,8 @@ public class CategoryListFragment extends Fragment {
     private void editSelectedCategory(final AdapterView.AdapterContextMenuInfo info) {
         this.selectedCategory = listAdapter.getItem(info.position);
         Intent editCategoryIntent = new Intent(getContext(), CategoryActivity.class);
-        editCategoryIntent.putExtra(CategoryActivity.OPERATION, CategoryActivity.OPERATION_EDIT);
-        editCategoryIntent.putExtra(CategoryActivity.CATEGORY, selectedCategory);
+        editCategoryIntent.putExtra(SystemConstants.OPERATION, CategoryActivity.OPERATION_EDIT);
+        editCategoryIntent.putExtra(SystemConstants.CATEGORY, selectedCategory);
         startActivityForResult(editCategoryIntent, EDIT);
     }
 
@@ -223,22 +224,22 @@ public class CategoryListFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD) {
-            if (resultCode == CategoryActivity.OPERATION_STATUS_OK) {
-                Category addedCategory = (Category) data.getSerializableExtra(CategoryActivity.CATEGORY);
+            if (resultCode == SystemConstants.OPERATION_STATUS_OK) {
+                Category addedCategory = (Category) data.getSerializableExtra(SystemConstants.CATEGORY);
                 categories.add(addedCategory);
                 sortCategoriesByName();
                 listAdapter.notifyDataSetChanged();
-            } else if (resultCode == CategoryActivity.OPERATION_STATUS_ERROR) {
+            } else if (resultCode == SystemConstants.OPERATION_STATUS_ERROR) {
                 Toast.makeText(getContext(), getString(R.string.error_adding_category),
                         Toast.LENGTH_LONG).show();
             }
         } else if (requestCode == EDIT) {
-            if (resultCode == CategoryActivity.OPERATION_STATUS_OK) {
-                Category editedCategory = (Category) data.getSerializableExtra(CategoryActivity.CATEGORY);
+            if (resultCode == SystemConstants.OPERATION_STATUS_OK) {
+                Category editedCategory = (Category) data.getSerializableExtra(SystemConstants.CATEGORY);
                 this.selectedCategory.setName(editedCategory.getName());
                 sortCategoriesByName();
                 listAdapter.notifyDataSetChanged();
-            } else if (resultCode == CategoryActivity.OPERATION_STATUS_ERROR) {
+            } else if (resultCode == SystemConstants.OPERATION_STATUS_ERROR) {
                 Toast.makeText(getContext(), getString(R.string.error_editing_category),
                         Toast.LENGTH_LONG).show();
             }

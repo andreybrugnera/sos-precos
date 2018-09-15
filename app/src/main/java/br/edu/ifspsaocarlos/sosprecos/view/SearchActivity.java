@@ -55,7 +55,6 @@ import br.edu.ifspsaocarlos.sosprecos.util.comparator.SearchServiceResultCompara
 public class SearchActivity extends AppCompatActivity implements LocationListener {
 
     private static final String LOG_TAG = "SEARCH";
-    private static final String MAX_DIST_KM = "MAX_DIST_KM";
 
     private PlaceDao placeDao;
     private ServiceDao serviceDao;
@@ -77,8 +76,6 @@ public class SearchActivity extends AppCompatActivity implements LocationListene
     private Location currentLocation;
     private boolean isLocationAccessGranted;
     private boolean isCurrentLocationLoaded = false;
-
-    private static final int REQUEST_LOCATION_PERMISSION = 1;
 
     private SharedPreferences sharedPreferences;
     private Integer maxRangeInKilometersToSearch;
@@ -146,7 +143,7 @@ public class SearchActivity extends AppCompatActivity implements LocationListene
         this.serviceDao = new ServiceDao(this);
 
         this.sharedPreferences = getSharedPreferences(SystemConstants.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
-        maxRangeInKilometersToSearch = sharedPreferences.getInt(MAX_DIST_KM, SystemConstants.MAX_DISTANCE_IN_KILOMETERS);
+        maxRangeInKilometersToSearch = sharedPreferences.getInt(SystemConstants.MAX_DIST_KM, SystemConstants.MAX_DISTANCE_IN_KILOMETERS);
 
         this.results = new ArrayList<>();
         this.placeMap = new HashMap<>();
@@ -159,8 +156,8 @@ public class SearchActivity extends AppCompatActivity implements LocationListene
 
     private void openServiceInfo(SearchServiceResultDto item) {
         Intent openServiceInfoIntent = new Intent(this, ServiceInfoActivity.class);
-        openServiceInfoIntent.putExtra(ServiceInfoActivity.PLACE, item.getPlace());
-        openServiceInfoIntent.putExtra(ServiceInfoActivity.SERVICE, item.getService());
+        openServiceInfoIntent.putExtra(SystemConstants.PLACE, item.getPlace());
+        openServiceInfoIntent.putExtra(SystemConstants.SERVICE, item.getService());
         startActivity(openServiceInfoIntent);
     }
 
@@ -311,7 +308,7 @@ public class SearchActivity extends AppCompatActivity implements LocationListene
     }
 
     private void requestLocationAccessPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, SystemConstants.REQUEST_LOCATION_PERMISSION);
     }
 
     @Override
@@ -340,7 +337,7 @@ public class SearchActivity extends AppCompatActivity implements LocationListene
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_LOCATION_PERMISSION:
+            case SystemConstants.REQUEST_LOCATION_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     this.isLocationAccessGranted = true;
                 } else {
