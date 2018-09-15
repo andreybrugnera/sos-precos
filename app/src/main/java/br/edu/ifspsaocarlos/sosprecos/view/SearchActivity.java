@@ -2,6 +2,7 @@ package br.edu.ifspsaocarlos.sosprecos.view;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -16,6 +17,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -108,6 +110,17 @@ public class SearchActivity extends AppCompatActivity implements LocationListene
             }
         });
 
+        this.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SearchServiceResultDto item = listAdapter.getItem(position);
+                if (item != null) {
+                    openServiceInfo(item);
+                }
+            }
+        });
+
         this.rbOrderByPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,6 +155,13 @@ public class SearchActivity extends AppCompatActivity implements LocationListene
         checkLocationAccessPermission();
         configureListAdapter();
         loadCurrentLocation();
+    }
+
+    private void openServiceInfo(SearchServiceResultDto item) {
+        Intent openServiceInfoIntent = new Intent(this, ServiceInfoActivity.class);
+        openServiceInfoIntent.putExtra(ServiceInfoActivity.PLACE, item.getPlace());
+        openServiceInfoIntent.putExtra(ServiceInfoActivity.SERVICE, item.getService());
+        startActivity(openServiceInfoIntent);
     }
 
     private void configureListAdapter() {

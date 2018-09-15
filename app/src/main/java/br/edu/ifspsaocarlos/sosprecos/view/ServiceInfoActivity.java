@@ -1,6 +1,7 @@
 package br.edu.ifspsaocarlos.sosprecos.view;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,11 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
-
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
+import br.edu.ifspsaocarlos.sosprecos.util.NumberUtils;
 
 public class ServiceInfoActivity extends AppCompatActivity {
 
@@ -39,6 +39,17 @@ public class ServiceInfoActivity extends AppCompatActivity {
 
         configureToolbar();
         updateUI();
+    }
+
+    /**
+     * Trace route to the place location
+     * @param v
+     */
+    public void traceRoute(View v) {
+        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + place.getLatitude() + "," + place.getLongitude());
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
     }
 
     private void configureToolbar() {
@@ -69,11 +80,8 @@ public class ServiceInfoActivity extends AppCompatActivity {
         TextView tvScore = findViewById(R.id.tv_score);
         tvScore.setText("(" + String.valueOf(service.getAverageScore()) + ")");
 
-        DecimalFormat decimalFormat = new DecimalFormat();
-        decimalFormat.setMaximumFractionDigits(2);
-
         TextView tvPrice = findViewById(R.id.tv_price);
-        tvPrice.setText("$" + decimalFormat.format(this.service.getPrice()));
+        tvPrice.setText("$" + NumberUtils.format(this.service.getPrice()));
     }
 
     public void rateService(View v) {

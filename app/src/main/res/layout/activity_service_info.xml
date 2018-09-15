@@ -96,6 +96,22 @@
                 android:textColor="@color/label_text_color"
                 android:textStyle="bold|italic" />
 
+            <Button
+                android:id="@+id/bt_trace_route"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="12dp"
+                android:layout_gravity="center"
+                android:background="@color/button_background_color"
+                android:onClick="traceRoute"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="@string/trace_route"
+                android:textColor="@color/button_text_color" />
+
             <View
                 android:id="@+id/divider"
                 android:layout_width="match_parent"

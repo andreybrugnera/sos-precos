@@ -84,6 +84,7 @@
     <string name="loading_category">Carregando categoria</string>
     <string name="show_location">Exibir localização</string>
     <string name="location">Localização</string>
+    <string name="trace_route">Traçar rota</string>
     <string name="loading_services">Carregando serviços</string>
     <string name="new_service">Novo serviço</string>
     <string name="edit_service">Editar serviço</string>
