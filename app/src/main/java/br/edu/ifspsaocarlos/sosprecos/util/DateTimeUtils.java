@@ -13,8 +13,13 @@ import br.edu.ifspsaocarlos.sosprecos.R;
  */
 public class DateTimeUtils {
 
-    public static String formatDate(Date date){
+    public static String formatDateTimestamp(Date date){
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return dateFormat.format(date);
+    }
+
+    public static String formatDate(Date date){
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.format(date);
     }
 }

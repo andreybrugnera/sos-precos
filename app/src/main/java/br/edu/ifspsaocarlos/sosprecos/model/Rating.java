@@ -9,9 +9,12 @@ import java.util.Objects;
  */
 public class Rating implements Serializable {
     private String id;
+    private String userName;
     private String userId;
     private String description;
     private Date registrationDate;
+    //Combined index (key + registrationDate)
+    private String keyRegistrationDate;
     private float priceScore;
     private float qualityScore;
     private float locationScore;
@@ -32,6 +35,14 @@ public class Rating implements Serializable {
         this.userId = userId;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -46,6 +57,14 @@ public class Rating implements Serializable {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public String getKeyRegistrationDate() {
+        return keyRegistrationDate;
+    }
+
+    public void setKeyRegistrationDate(String keyRegistrationDate) {
+        this.keyRegistrationDate = keyRegistrationDate;
     }
 
     public float getPriceScore() {

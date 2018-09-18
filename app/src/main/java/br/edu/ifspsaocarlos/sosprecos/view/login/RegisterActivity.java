@@ -28,6 +28,7 @@ import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 public class RegisterActivity extends Activity {
 
     private AutoCompleteTextView acTvEmail;
+    private EditText etName;
     private EditText etPassword;
     private EditText etConfirmPassword;
     private FrameLayout progressBarHolder;
@@ -42,6 +43,7 @@ public class RegisterActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        this.etName = findViewById(R.id.et_name);
         this.acTvEmail = findViewById(R.id.actv_email);
         this.etPassword = findViewById(R.id.et_password);
         this.etConfirmPassword = findViewById(R.id.et_confirm_password);
@@ -57,9 +59,16 @@ public class RegisterActivity extends Activity {
      * @param v
      */
     public void registerUser(View v) {
+        String name = this.etName.getText().toString().trim();
         String email = this.acTvEmail.getText().toString().trim();
         String password = this.etPassword.getText().toString().trim();
         String confirmPassword = this.etConfirmPassword.getText().toString().trim();
+
+        if (TextUtils.isEmpty(name)) {
+            this.etName.setError(getString(R.string.enter_valid_name));
+            this.etName.requestFocus();
+            return;
+        }
 
         /* Check if is a valid email address */
         if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -92,9 +101,11 @@ public class RegisterActivity extends Activity {
             return;
         }
 
+        final User newUser = new User(name, email);
+
         ViewUtils.showProgressBar(progressBarHolder);
 
-        auth.createUserWithEmailAndPassword(email, password)
+        auth.createUserWithEmailAndPassword(newUser.getEmail(),  password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -103,9 +114,10 @@ public class RegisterActivity extends Activity {
                         if (task.isSuccessful()) {
                             FirebaseUser user = auth.getCurrentUser();
                             //Register user into firebase app database
-                            try{
-                                userDao.add(User.getInstance(user));
-                            }catch(DaoException ex){
+                            try {
+                                newUser.setUuid(user.getUid());
+                                userDao.add(newUser);
+                            } catch (DaoException ex) {
                                 Log.e(getString(R.string.firebase_error), ex.getMessage());
                             }
                             //Go back to login

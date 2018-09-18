@@ -5,9 +5,11 @@
     <string name="new_user">Novo usuário</string>
     <string name="new_user_register">Novo usuário? <u>Registre-se</u></string>
     <string name="inform_email">Endereço de e-mail</string>
+    <string name="inform_name">Informe o nome</string>
     <string name="inform_password">Informe sua senha</string>
     <string name="confirm_password">Repita sua senha</string>
     <string name="enter_valid_email">Informe um e-mail válido</string>
+    <string name="enter_valid_name">Informe um nome</string>
     <string name="enter_password">Informe uma senha</string>
     <string name="password_mismatch">As senhas não conferem</string>
     <string name="password_length_error">A senha deve possuir pelo menos 8 caracteres</string>
@@ -100,6 +102,7 @@
     <string name="error_removing_service">Erro ao remover o serviço</string>
     <string name="rate_link"><u>Avaliar</u></string>
     <string name="rating">Avaliar</string>
+    <string name="ratings">Avaliações</string>
     <string name="save_rating">Salvar avaliação</string>
     <string name="loading_existing_rate">Carregando avaliação existente</string>
     <string name="loading_existing_rate_by_id">Carregando avaliação existente por id</string>

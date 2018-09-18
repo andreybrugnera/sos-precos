@@ -6,13 +6,29 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import br.edu.ifspsaocarlos.sosprecos.R;
+import br.edu.ifspsaocarlos.sosprecos.adapter.RatingInformationAdapter;
+import br.edu.ifspsaocarlos.sosprecos.dao.RatingDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.ServiceRatingDao;
+import br.edu.ifspsaocarlos.sosprecos.dto.RatingInformationDto;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
+import br.edu.ifspsaocarlos.sosprecos.model.Rating;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
+import br.edu.ifspsaocarlos.sosprecos.model.ServiceRating;
 import br.edu.ifspsaocarlos.sosprecos.util.NumberUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 
@@ -23,6 +39,14 @@ public class ServiceInfoActivity extends AppCompatActivity {
     private Service service;
     private Place place;
     private TextView tvPlaceName;
+
+    private ListView listView;
+    private RatingInformationAdapter listAdapter;
+    private List<RatingInformationDto> ratingsList;
+
+    private RatingDao ratingDao;
+    private ServiceRatingDao serviceRatingDao;
+    private int totalRatingsLoaded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +59,26 @@ public class ServiceInfoActivity extends AppCompatActivity {
         this.tvPlaceName = findViewById(R.id.tv_place_name);
         this.tvPlaceName.setText(place.getName());
 
+        this.ratingDao = new RatingDao(this);
+        this.serviceRatingDao = new ServiceRatingDao(this);
+
+        this.listView = findViewById(R.id.list_view);
+        this.ratingsList = new ArrayList<>();
+
         configureToolbar();
+        configureListAdapter();
         updateUI();
+        loadRatings();
+    }
+
+    private void configureListAdapter() {
+        this.listAdapter = new RatingInformationAdapter(this, R.id.list_view, ratingsList);
+        this.listView.setAdapter(listAdapter);
     }
 
     /**
      * Trace route to the place location
+     *
      * @param v
      */
     public void traceRoute(View v) {
@@ -87,5 +125,78 @@ public class ServiceInfoActivity extends AppCompatActivity {
         intentRateService.putExtra(SystemConstants.SERVICE, service);
         intentRateService.putExtra(SystemConstants.PLACE, place);
         startActivity(intentRateService);
+    }
+
+    private void loadRatings() {
+        final List<ServiceRating> serviceRatings = new ArrayList<>();
+
+        Query query = serviceRatingDao.getDatabaseReference().orderByChild("serviceId").equalTo(service.getId());
+        query.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                        for (DataSnapshot child : children) {
+                            ServiceRating serviceRating = child.getValue(ServiceRating.class);
+                            serviceRatings.add(serviceRating);
+                        }
+                        loadRatings(serviceRatings);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(LOG_TAG, databaseError.getMessage());
+                        Log.e(LOG_TAG, databaseError.getDetails());
+                    }
+                });
+    }
+
+    private int getTotalRatingsLoaded() {
+        return totalRatingsLoaded;
+    }
+
+    private void loadRatings(final List<ServiceRating> serviceRatings) {
+        this.ratingsList.clear();
+        this.totalRatingsLoaded = 0;
+        for (ServiceRating serviceRating : serviceRatings) {
+            Query query = ratingDao.getDatabaseReference()
+                    .orderByChild("keyRegistrationDate")
+                    .startAt(serviceRating.getRateId() + "_0")
+                    .limitToLast(5);
+
+            query.addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            totalRatingsLoaded++;
+                            Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                            for (DataSnapshot child : children) {
+                                Rating rating = child.getValue(Rating.class);
+                                RatingInformationDto ratingInformationDto = RatingInformationDto.getInstance(rating);
+                                if (!ratingsList.contains(ratingInformationDto)){
+                                    ratingsList.add(ratingInformationDto);
+                                }
+                                if (getTotalRatingsLoaded() == serviceRatings.size()) {
+                                    //All ratings loaded
+                                    listAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.e(LOG_TAG, databaseError.getMessage());
+                            Log.e(LOG_TAG, databaseError.getDetails());
+                        }
+                    });
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadRatings();
     }
 }

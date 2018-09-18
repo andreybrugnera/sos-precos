@@ -20,6 +20,12 @@ public class User implements Serializable{
     public User() {
     }
 
+    public User(String name, String email) {
+        this.name = name;
+        this.email = email;
+        this.setRegistrationDate(new Date(System.currentTimeMillis()));
+    }
+
     public static User getInstance(FirebaseUser user){
         User u = new User();
         u.setUuid(user.getUid());

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -19,19 +20,27 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
+import br.edu.ifspsaocarlos.sosprecos.dao.UserDao;
+import br.edu.ifspsaocarlos.sosprecos.model.User;
 import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 import br.edu.ifspsaocarlos.sosprecos.view.MainActivity;
 
 public class LoginActivity extends Activity {
+    private String LOG_TAG = "LOGIN";
 
     private AutoCompleteTextView acTvEmail;
     private EditText etPassword;
     private FrameLayout progressBarHolder;
 
     private FirebaseAuth auth;
+    private UserDao userDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,8 @@ public class LoginActivity extends Activity {
         this.etPassword = findViewById(R.id.et_password);
         this.progressBarHolder = findViewById(R.id.progress_bar_holder);
         this.auth = FirebaseAuth.getInstance();
+
+        this.userDao = new UserDao(this);
     }
 
     /**
@@ -71,11 +82,9 @@ public class LoginActivity extends Activity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        ViewUtils.hideProgressBar(progressBarHolder);
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = auth.getCurrentUser();
-                            SessionUtils.setCurrentUserId(firebaseUser.getUid());
-                            startMainActivity();
+                            loadCurrentUser(firebaseUser.getUid());
                         } else if (task.getException() instanceof FirebaseAuthInvalidUserException || task.getException() instanceof FirebaseAuthInvalidCredentialsException){
                             Toast.makeText(LoginActivity.this, getString(R.string.invalid_email_passeord),
                                     Toast.LENGTH_SHORT).show();
@@ -83,6 +92,33 @@ public class LoginActivity extends Activity {
                             Toast.makeText(LoginActivity.this, getString(R.string.login_failure),
                                     Toast.LENGTH_SHORT).show();
                         }
+                    }
+                });
+    }
+
+    private void loadCurrentUser(String uuid){
+        Query query = userDao.getDatabaseReference().orderByChild("uuid").equalTo(uuid);
+
+        query.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                        for (DataSnapshot child : children) {
+                            User user = child.getValue(User.class);
+                            SessionUtils.setCurrentUser(user);
+                            break;
+                        }
+                        ViewUtils.hideProgressBar(progressBarHolder);
+                        startMainActivity();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(LOG_TAG, databaseError.getMessage());
+                        Log.e(LOG_TAG, databaseError.getDetails());
+                        ViewUtils.hideProgressBar(progressBarHolder);
                     }
                 });
     }

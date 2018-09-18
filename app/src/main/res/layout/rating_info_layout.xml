@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/et_name"
+            style="?android:textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:paddingBottom="0dp"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            android:paddingTop="10dp"
+            android:text="Andrey Brugnera"
+            android:textColor="@color/input_text_color"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/tv_rating_registration_date"
+            style="?android:textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="end"
+            android:paddingBottom="0dp"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            android:paddingTop="10dp"
+            android:text="24/04/54"
+            android:textColor="@color/label_text_color"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RatingBar
+            android:id="@+id/rating_bar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_weight="2"
+            android:numStars="5"
+            android:stepSize="0.5"
+            android:rating="5"
+            android:textColor="@color/label_text_color"
+            android:theme="@style/RatingBar" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/et_rating_description"
+        style="?android:textAppearanceListItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:paddingBottom="5dp"
+        android:paddingEnd="4dp"
+        android:paddingStart="4dp"
+        android:paddingTop="10dp"
+        android:text="Uma porcaria"
+        android:textColor="@color/input_text_color"
+        android:textStyle="italic" />
+
+</LinearLayout>

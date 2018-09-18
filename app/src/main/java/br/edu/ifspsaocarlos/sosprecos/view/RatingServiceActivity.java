@@ -105,7 +105,7 @@ public class RatingServiceActivity extends AppCompatActivity {
     private void fillRatingRegistrationDateInformation() {
         LinearLayout registrationDateInformation = findViewById(R.id.rating_registration_date_information);
         TextView tvRatingRegistrationDate = findViewById(R.id.tv_rating_registration_date);
-        tvRatingRegistrationDate.setText(DateTimeUtils.formatDate(existingRating.getRegistrationDate()));
+        tvRatingRegistrationDate.setText(DateTimeUtils.formatDateTimestamp(existingRating.getRegistrationDate()));
         registrationDateInformation.setVisibility(View.VISIBLE);
     }
 
@@ -114,7 +114,7 @@ public class RatingServiceActivity extends AppCompatActivity {
         ViewUtils.showProgressBar(progressBarHolder);
 
         Query query = serviceRatingDao.getDatabaseReference()
-                .orderByChild("serviceIdUserId").equalTo(service.getId() + "_" + SessionUtils.getCurrentUserId());
+                .orderByChild("serviceIdUserId").equalTo(service.getId() + "_" + SessionUtils.getCurrentUser().getUuid());
 
         query.addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -180,7 +180,8 @@ public class RatingServiceActivity extends AppCompatActivity {
             rating.setLocationScore(5);
             rating.setDescription(description);
             rating.setRegistrationDate(new Date());
-            rating.setUserId(SessionUtils.getCurrentUserId());
+            rating.setUserName(SessionUtils.getCurrentUser().getName());
+            rating.setUserId(SessionUtils.getCurrentUser().getUuid());
             return true;
         }
         return false;
@@ -196,8 +197,8 @@ public class RatingServiceActivity extends AppCompatActivity {
                     ServiceRating placeRating = new ServiceRating();
                     placeRating.setServiceId(service.getId());
                     placeRating.setRateId(rating.getId());
-                    placeRating.setUserId(SessionUtils.getCurrentUserId());
-                    placeRating.setServiceIdUserId(service.getId() + "_" + SessionUtils.getCurrentUserId());
+                    placeRating.setUserId(SessionUtils.getCurrentUser().getUuid());
+                    placeRating.setServiceIdUserId(service.getId() + "_" + SessionUtils.getCurrentUser().getUuid());
 
                     serviceRatingDao.add(placeRating);
                 } else {

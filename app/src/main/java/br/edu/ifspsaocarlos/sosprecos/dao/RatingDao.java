@@ -24,6 +24,7 @@ public class RatingDao extends FirebaseHelper<Rating> {
 
         String ratingId = getDatabaseReference().push().getKey();
         rating.setId(ratingId);
+        rating.setKeyRegistrationDate(ratingId + "_" + rating.getRegistrationDate().getTime());
         add(ratingId, rating);
     }
 
@@ -36,6 +37,7 @@ public class RatingDao extends FirebaseHelper<Rating> {
     @Override
     public void update(Rating rating) throws DaoException {
         validate(rating, true);
+        rating.setKeyRegistrationDate(rating.getId() + "_" + rating.getRegistrationDate().getTime());
         update(rating.getId(), rating);
     }
 

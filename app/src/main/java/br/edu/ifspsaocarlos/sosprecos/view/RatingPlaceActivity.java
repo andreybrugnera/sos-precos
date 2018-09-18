@@ -108,7 +108,7 @@ public class RatingPlaceActivity extends AppCompatActivity {
     private void fillRatingRegistrationDateInformation() {
         LinearLayout registrationDateInformation = findViewById(R.id.rating_registration_date_information);
         TextView tvRatingRegistrationDate = findViewById(R.id.tv_rating_registration_date);
-        tvRatingRegistrationDate.setText(DateTimeUtils.formatDate(existingRating.getRegistrationDate()));
+        tvRatingRegistrationDate.setText(DateTimeUtils.formatDateTimestamp(existingRating.getRegistrationDate()));
         registrationDateInformation.setVisibility(View.VISIBLE);
     }
 
@@ -117,7 +117,7 @@ public class RatingPlaceActivity extends AppCompatActivity {
         ViewUtils.showProgressBar(progressBarHolder);
 
         Query query = placeRatingDao.getDatabaseReference()
-                .orderByChild("placeIdUserId").equalTo(place.getId() + "_" + SessionUtils.getCurrentUserId());
+                .orderByChild("placeIdUserId").equalTo(place.getId() + "_" + SessionUtils.getCurrentUser().getUuid());
 
         query.addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -184,7 +184,8 @@ public class RatingPlaceActivity extends AppCompatActivity {
             rating.setLocationScore(locationRating);
             rating.setDescription(description);
             rating.setRegistrationDate(new Date());
-            rating.setUserId(SessionUtils.getCurrentUserId());
+            rating.setUserId(SessionUtils.getCurrentUser().getUuid());
+            rating.setUserName(SessionUtils.getCurrentUser().getName());
             return true;
         }
         return false;
@@ -200,8 +201,8 @@ public class RatingPlaceActivity extends AppCompatActivity {
                     PlaceRating placeRating = new PlaceRating();
                     placeRating.setPlaceId(place.getId());
                     placeRating.setRateId(rating.getId());
-                    placeRating.setUserId(SessionUtils.getCurrentUserId());
-                    placeRating.setPlaceIdUserId(place.getId() + "_" + SessionUtils.getCurrentUserId());
+                    placeRating.setUserId(SessionUtils.getCurrentUser().getUuid());
+                    placeRating.setPlaceIdUserId(place.getId() + "_" + SessionUtils.getCurrentUser().getUuid());
 
                     placeRatingDao.add(placeRating);
                 } else {
