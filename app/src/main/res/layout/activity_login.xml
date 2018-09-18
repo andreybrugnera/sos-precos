@@ -77,7 +77,6 @@
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="andreybrugnera@gmail.com"
                 android:textColor="@color/label_text_color" />
 
             <EditText
@@ -90,7 +89,6 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="123456789"
                 android:textColor="@color/label_text_color" />
 
             <Button

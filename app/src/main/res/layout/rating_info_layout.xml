@@ -20,7 +20,6 @@
             android:paddingEnd="4dp"
             android:paddingStart="4dp"
             android:paddingTop="10dp"
-            android:text="Andrey Brugnera"
             android:textColor="@color/input_text_color"
             android:textStyle="italic" />
 
@@ -35,7 +34,6 @@
             android:paddingEnd="4dp"
             android:paddingStart="4dp"
             android:paddingTop="10dp"
-            android:text="24/04/54"
             android:textColor="@color/label_text_color"
             android:textStyle="bold" />
     </LinearLayout>
@@ -54,7 +52,6 @@
             android:layout_weight="2"
             android:numStars="5"
             android:stepSize="0.5"
-            android:rating="5"
             android:textColor="@color/label_text_color"
             android:theme="@style/RatingBar" />
     </LinearLayout>
@@ -69,7 +66,6 @@
         android:paddingEnd="4dp"
         android:paddingStart="4dp"
         android:paddingTop="10dp"
-        android:text="Uma porcaria"
         android:textColor="@color/input_text_color"
         android:textStyle="italic" />
 

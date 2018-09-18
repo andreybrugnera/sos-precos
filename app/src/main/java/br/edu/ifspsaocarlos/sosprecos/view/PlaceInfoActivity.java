@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -17,12 +18,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.edu.ifspsaocarlos.sosprecos.R;
+import br.edu.ifspsaocarlos.sosprecos.adapter.RatingInformationAdapter;
 import br.edu.ifspsaocarlos.sosprecos.dao.CategoryDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.CategoryPlaceDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.PlaceRatingDao;
+import br.edu.ifspsaocarlos.sosprecos.dao.RatingDao;
+import br.edu.ifspsaocarlos.sosprecos.dto.RatingInformationDto;
 import br.edu.ifspsaocarlos.sosprecos.model.Category;
 import br.edu.ifspsaocarlos.sosprecos.model.CategoryPlace;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
+import br.edu.ifspsaocarlos.sosprecos.model.PlaceRating;
+import br.edu.ifspsaocarlos.sosprecos.model.Rating;
 import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 import br.edu.ifspsaocarlos.sosprecos.view.maps.MapActivity;
@@ -38,6 +48,14 @@ public class PlaceInfoActivity extends AppCompatActivity {
     private CategoryPlaceDao categoryPlaceDao;
     private CategoryDao categoryDao;
 
+    private ListView listView;
+    private RatingInformationAdapter listAdapter;
+    private List<RatingInformationDto> ratingsList;
+
+    private RatingDao ratingDao;
+    private PlaceRatingDao placeRatingDao;
+    private int totalRatingsLoaded;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +69,21 @@ public class PlaceInfoActivity extends AppCompatActivity {
 
         this.place = (Place) getIntent().getSerializableExtra(SystemConstants.PLACE);
 
+        this.ratingDao = new RatingDao(this);
+        this.placeRatingDao = new PlaceRatingDao(this);
+
+        this.listView = findViewById(R.id.list_view);
+        this.ratingsList = new ArrayList<>();
+
         configureToolbar();
+        configureListAdapter();
         updateUI();
+        loadRatings();
+    }
+
+    private void configureListAdapter() {
+        this.listAdapter = new RatingInformationAdapter(this, R.id.list_view, ratingsList);
+        this.listView.setAdapter(listAdapter);
     }
 
     private void updateUI() {
@@ -177,5 +208,79 @@ public class PlaceInfoActivity extends AppCompatActivity {
         intentRateProvider.putExtra(SystemConstants.PLACE, place);
         intentRateProvider.putExtra(SystemConstants.CATEGORY, tvCategory.getText().toString());
         startActivity(intentRateProvider);
+    }
+
+    private void loadRatings() {
+        final List<PlaceRating> placeRatings = new ArrayList<>();
+
+        Query query = placeRatingDao.getDatabaseReference().orderByChild("placeId").equalTo(place.getId());
+        query.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                        for (DataSnapshot child : children) {
+                            PlaceRating placeRating = child.getValue(PlaceRating.class);
+                            placeRatings.add(placeRating);
+                        }
+                        loadRatings(placeRatings);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(LOG_TAG, databaseError.getMessage());
+                        Log.e(LOG_TAG, databaseError.getDetails());
+                    }
+                });
+    }
+
+    private int getTotalRatingsLoaded() {
+        return totalRatingsLoaded;
+    }
+
+    private void loadRatings(final List<PlaceRating> placeRatings) {
+        this.ratingsList.clear();
+        this.totalRatingsLoaded = 0;
+        for (PlaceRating placeRating : placeRatings) {
+            Query query = ratingDao.getDatabaseReference()
+                    .orderByChild("keyRegistrationDate")
+                    .startAt(placeRating.getRateId() + "_0")
+                    .endAt(placeRating.getRateId() + "_" + Long.MAX_VALUE)
+                    .limitToLast(5);
+
+            query.addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            totalRatingsLoaded++;
+                            Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                            for (DataSnapshot child : children) {
+                                Rating rating = child.getValue(Rating.class);
+                                RatingInformationDto ratingInformationDto = RatingInformationDto.getInstance(rating);
+                                if (!ratingsList.contains(ratingInformationDto)){
+                                    ratingsList.add(ratingInformationDto);
+                                }
+                                if (getTotalRatingsLoaded() == placeRatings.size()) {
+                                    //All ratings loaded
+                                    listAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.e(LOG_TAG, databaseError.getMessage());
+                            Log.e(LOG_TAG, databaseError.getDetails());
+                        }
+                    });
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadRatings();
     }
 }

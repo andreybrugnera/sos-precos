@@ -163,6 +163,7 @@ public class ServiceInfoActivity extends AppCompatActivity {
             Query query = ratingDao.getDatabaseReference()
                     .orderByChild("keyRegistrationDate")
                     .startAt(serviceRating.getRateId() + "_0")
+                    .endAt(serviceRating.getRateId() + "_" + Long.MAX_VALUE)
                     .limitToLast(5);
 
             query.addListenerForSingleValueEvent(
@@ -175,7 +176,7 @@ public class ServiceInfoActivity extends AppCompatActivity {
                             for (DataSnapshot child : children) {
                                 Rating rating = child.getValue(Rating.class);
                                 RatingInformationDto ratingInformationDto = RatingInformationDto.getInstance(rating);
-                                if (!ratingsList.contains(ratingInformationDto)){
+                                if (!ratingsList.contains(ratingInformationDto)) {
                                     ratingsList.add(ratingInformationDto);
                                 }
                                 if (getTotalRatingsLoaded() == serviceRatings.size()) {
