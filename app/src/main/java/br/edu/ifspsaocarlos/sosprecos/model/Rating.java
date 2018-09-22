@@ -13,8 +13,6 @@ public class Rating implements Serializable {
     private String userId;
     private String description;
     private Date registrationDate;
-    //Combined index (key + registrationDate)
-    private String keyRegistrationDate;
     private float priceScore;
     private float qualityScore;
     private float locationScore;
@@ -57,14 +55,6 @@ public class Rating implements Serializable {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
-    }
-
-    public String getKeyRegistrationDate() {
-        return keyRegistrationDate;
-    }
-
-    public void setKeyRegistrationDate(String keyRegistrationDate) {
-        this.keyRegistrationDate = keyRegistrationDate;
     }
 
     public float getPriceScore() {

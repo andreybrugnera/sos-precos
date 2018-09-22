@@ -194,13 +194,14 @@ public class RatingServiceActivity extends AppCompatActivity {
                 if (existingRating == null) {
                     ratingDao.add(rating);
 
-                    ServiceRating placeRating = new ServiceRating();
-                    placeRating.setServiceId(service.getId());
-                    placeRating.setRateId(rating.getId());
-                    placeRating.setUserId(SessionUtils.getCurrentUser().getUuid());
-                    placeRating.setServiceIdUserId(service.getId() + "_" + SessionUtils.getCurrentUser().getUuid());
-
-                    serviceRatingDao.add(placeRating);
+                    ServiceRating serviceRating = new ServiceRating();
+                    serviceRating.setServiceId(service.getId());
+                    serviceRating.setRateId(rating.getId());
+                    serviceRating.setUserId(SessionUtils.getCurrentUser().getUuid());
+                    serviceRating.setServiceIdUserId(service.getId() + "_" + SessionUtils.getCurrentUser().getUuid());
+                    serviceRating.setRegistrationDate(rating.getRegistrationDate());
+                    serviceRating.setServiceIdRegistrationDate(service.getId() + "_" + rating.getRegistrationDate().getTime());
+                    serviceRatingDao.add(serviceRating);
                 } else {
                     ratingDao.update(rating);
                 }

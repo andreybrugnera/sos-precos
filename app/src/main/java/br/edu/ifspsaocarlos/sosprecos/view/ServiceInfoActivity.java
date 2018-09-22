@@ -18,6 +18,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import br.edu.ifspsaocarlos.sosprecos.R;
@@ -31,6 +32,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.Service;
 import br.edu.ifspsaocarlos.sosprecos.model.ServiceRating;
 import br.edu.ifspsaocarlos.sosprecos.util.NumberUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
+import br.edu.ifspsaocarlos.sosprecos.util.comparator.RatingComparator;
 
 public class ServiceInfoActivity extends AppCompatActivity {
 
@@ -130,7 +132,12 @@ public class ServiceInfoActivity extends AppCompatActivity {
     private void loadRatings() {
         final List<ServiceRating> serviceRatings = new ArrayList<>();
 
-        Query query = serviceRatingDao.getDatabaseReference().orderByChild("serviceId").equalTo(service.getId());
+        Query query = serviceRatingDao.getDatabaseReference()
+                .orderByChild("serviceIdRegistrationDate")
+                .startAt(service.getId() + "_0")
+                .endAt(service.getId() + "_" + Long.MAX_VALUE)
+                .limitToLast(5);
+
         query.addListenerForSingleValueEvent(
                 new ValueEventListener() {
 
@@ -160,29 +167,25 @@ public class ServiceInfoActivity extends AppCompatActivity {
         this.ratingsList.clear();
         this.totalRatingsLoaded = 0;
         for (ServiceRating serviceRating : serviceRatings) {
-            Query query = ratingDao.getDatabaseReference()
-                    .orderByChild("keyRegistrationDate")
-                    .startAt(serviceRating.getRateId() + "_0")
-                    .endAt(serviceRating.getRateId() + "_" + Long.MAX_VALUE)
-                    .limitToLast(5);
-
+            Query query = ratingDao.getDatabaseReference().orderByChild("id").equalTo(serviceRating.getRateId());
             query.addListenerForSingleValueEvent(
                     new ValueEventListener() {
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            totalRatingsLoaded++;
                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                             for (DataSnapshot child : children) {
                                 Rating rating = child.getValue(Rating.class);
                                 RatingInformationDto ratingInformationDto = RatingInformationDto.getInstance(rating);
                                 if (!ratingsList.contains(ratingInformationDto)) {
+                                    totalRatingsLoaded++;
                                     ratingsList.add(ratingInformationDto);
                                 }
-                                if (getTotalRatingsLoaded() == serviceRatings.size()) {
-                                    //All ratings loaded
-                                    listAdapter.notifyDataSetChanged();
-                                }
+                            }
+                            if (getTotalRatingsLoaded() == serviceRatings.size()) {
+                                //All ratings loaded
+                                Collections.sort(ratingsList, new RatingComparator(RatingComparator.ORDER_BY_DATE_DESC));
+                                listAdapter.notifyDataSetChanged();
                             }
                         }
 

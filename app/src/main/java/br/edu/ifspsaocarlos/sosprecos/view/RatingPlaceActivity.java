@@ -203,7 +203,8 @@ public class RatingPlaceActivity extends AppCompatActivity {
                     placeRating.setRateId(rating.getId());
                     placeRating.setUserId(SessionUtils.getCurrentUser().getUuid());
                     placeRating.setPlaceIdUserId(place.getId() + "_" + SessionUtils.getCurrentUser().getUuid());
-
+                    placeRating.setRegistrationDate(rating.getRegistrationDate());
+                    placeRating.setPlaceIdRegistrationDate(place.getId() + "_" + rating.getRegistrationDate().getTime());
                     placeRatingDao.add(placeRating);
                 } else {
                     ratingDao.update(rating);

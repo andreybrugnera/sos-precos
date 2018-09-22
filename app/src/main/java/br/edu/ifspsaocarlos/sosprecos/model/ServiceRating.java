@@ -1,6 +1,7 @@
 package br.edu.ifspsaocarlos.sosprecos.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -8,6 +9,8 @@ import java.util.Objects;
  */
 public class ServiceRating implements Serializable {
     private String id;
+    private Date registrationDate;
+    private String serviceIdRegistrationDate;
     private String serviceId;
     private String rateId;
     private String userId;
@@ -51,6 +54,22 @@ public class ServiceRating implements Serializable {
 
     public void setServiceIdUserId(String serviceIdUserId) {
         this.serviceIdUserId = serviceIdUserId;
+    }
+
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    public String getServiceIdRegistrationDate() {
+        return serviceIdRegistrationDate;
+    }
+
+    public void setServiceIdRegistrationDate(String serviceIdRegistrationDate) {
+        this.serviceIdRegistrationDate = serviceIdRegistrationDate;
     }
 
     @Override
