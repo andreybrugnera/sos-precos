@@ -14,6 +14,7 @@ public class Service implements Serializable {
     private String placeId;
     private Integer ratingCount;
     private Float averageScore;
+    private String userId;
 
     public static Service getInstance(){
         Service service = new Service();
@@ -77,6 +78,14 @@ public class Service implements Serializable {
 
     public void setAverageScore(Float averageScore) {
         this.averageScore = averageScore;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override

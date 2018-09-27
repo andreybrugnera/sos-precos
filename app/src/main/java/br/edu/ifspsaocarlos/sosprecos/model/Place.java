@@ -23,6 +23,7 @@ public class Place implements Serializable {
     private Date registrationDate;
     private Integer ratingCount;
     private Float averageScore;
+    private String userId;
     @Exclude
     private Float distanceFromCurrentLocation;
 
@@ -130,6 +131,14 @@ public class Place implements Serializable {
 
     public void setDistanceFromCurrentLocation(Float distanceFromCurrentLocation) {
         this.distanceFromCurrentLocation = distanceFromCurrentLocation;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override

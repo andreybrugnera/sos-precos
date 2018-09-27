@@ -7,6 +7,7 @@ import android.util.Log;
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
+import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
 
 /**
  * Created by Andrey R. Brugnera on 06/04/2018.
@@ -24,6 +25,7 @@ public class ServiceDao extends FirebaseHelper<Service> {
 
         String serviceId = getDatabaseReference().push().getKey();
         service.setId(serviceId);
+        service.setUserId(SessionUtils.getCurrentUser().getUuid());
         add(serviceId, service);
     }
 
@@ -36,6 +38,7 @@ public class ServiceDao extends FirebaseHelper<Service> {
     @Override
     public void update(Service service) throws DaoException{
         validate(service, true);
+        service.setUserId(SessionUtils.getCurrentUser().getUuid());
         update(service.getId(), service);
     }
 

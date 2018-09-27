@@ -7,6 +7,7 @@ import android.util.Log;
 import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
+import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
 
 /**
  * Created by Andrey R. Brugnera on 30/03/2018.
@@ -24,6 +25,7 @@ public class PlaceDao extends FirebaseHelper<Place> {
 
         String placeId = getDatabaseReference().push().getKey();
         place.setId(placeId);
+        place.setUserId(SessionUtils.getCurrentUser().getUuid());
         add(placeId, place);
     }
 
@@ -36,6 +38,7 @@ public class PlaceDao extends FirebaseHelper<Place> {
     @Override
     public void update(Place place) throws DaoException {
         validate(place, true);
+        place.setUserId(SessionUtils.getCurrentUser().getUuid());
         update(place.getId(), place);
     }
 
