@@ -1,7 +1,9 @@
 package br.edu.ifspsaocarlos.sosprecos.view.login;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -29,12 +31,14 @@ import br.edu.ifspsaocarlos.sosprecos.R;
 import br.edu.ifspsaocarlos.sosprecos.dao.UserDao;
 import br.edu.ifspsaocarlos.sosprecos.model.User;
 import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
+import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 import br.edu.ifspsaocarlos.sosprecos.view.MainActivity;
 
 public class LoginActivity extends Activity {
     private String LOG_TAG = "LOGIN";
 
+    private SharedPreferences sharedPreferences;
     private AutoCompleteTextView acTvEmail;
     private EditText etPassword;
     private FrameLayout progressBarHolder;
@@ -52,7 +56,22 @@ public class LoginActivity extends Activity {
         this.progressBarHolder = findViewById(R.id.progress_bar_holder);
         this.auth = FirebaseAuth.getInstance();
 
+        this.sharedPreferences = getSharedPreferences(SystemConstants.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+
         this.userDao = new UserDao(this);
+
+        updateUI();
+    }
+
+    private void updateUI() {
+        String userEmail = sharedPreferences.getString(SystemConstants.USER_EMAIL, "");
+        this.acTvEmail.setText(userEmail);
+    }
+
+    private void saveUserEmail() {
+        SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+        sharedPreferencesEditor.putString(SystemConstants.USER_EMAIL, this.acTvEmail.getText().toString());
+        sharedPreferencesEditor.commit();
     }
 
     /**
@@ -85,12 +104,15 @@ public class LoginActivity extends Activity {
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = auth.getCurrentUser();
                             loadCurrentUser(firebaseUser.getUid());
+                            saveUserEmail();
                         } else if (task.getException() instanceof FirebaseAuthInvalidUserException || task.getException() instanceof FirebaseAuthInvalidCredentialsException){
                             Toast.makeText(LoginActivity.this, getString(R.string.invalid_email_passeord),
                                     Toast.LENGTH_SHORT).show();
+                            ViewUtils.hideProgressBar(progressBarHolder);
                         } else {
                             Toast.makeText(LoginActivity.this, getString(R.string.login_failure),
                                     Toast.LENGTH_SHORT).show();
+                            ViewUtils.hideProgressBar(progressBarHolder);
                         }
                     }
                 });

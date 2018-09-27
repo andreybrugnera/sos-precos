@@ -58,10 +58,11 @@ public class MainActivity extends AppCompatActivity {
                                 MainFragment mainFragment = new MainFragment();
                                 changeFragment(mainFragment, "main");
                                 break;
+                            /*
                             case R.id.nav_categories:
                                 CategoryListFragment categoryListFragment = new CategoryListFragment();
                                 changeFragment(categoryListFragment, "categories");
-                                break;
+                                break; */
                             case R.id.nav_places:
                                 PlaceListFragment placeListFragment = new PlaceListFragment();
                                 changeFragment(placeListFragment, "places");

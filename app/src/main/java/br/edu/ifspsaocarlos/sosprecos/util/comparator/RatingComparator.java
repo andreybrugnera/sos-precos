@@ -26,9 +26,9 @@ public class RatingComparator implements Comparator<RatingInformationDto> {
     public int compare(RatingInformationDto t1, RatingInformationDto t2) {
         switch (orderBy) {
             case ORDER_BY_DATE_DESC:
-                return t1.getRegistrationDate().compareTo(t2.getRegistrationDate());
-            case ORDER_BY_DATE_ASC:
                 return t2.getRegistrationDate().compareTo(t1.getRegistrationDate());
+            case ORDER_BY_DATE_ASC:
+                return t1.getRegistrationDate().compareTo(t2.getRegistrationDate());
         }
         return 0;
     }
