@@ -52,6 +52,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.Category;
 import br.edu.ifspsaocarlos.sosprecos.model.CategoryPlace;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.service.FetchLocationService;
+import br.edu.ifspsaocarlos.sosprecos.util.PhoneNumberTextWatcher;
 import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.location.LocationAddress;
@@ -111,6 +112,8 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
         this.etPlaceDescription = findViewById(R.id.et_place_description);
         this.btGetCurrentLocation = findViewById(R.id.bt_get_current_location);
         this.btGetLocationFromMap = findViewById(R.id.bt_get_location_from_map);
+
+        this.etPlacePhone.addTextChangedListener(new PhoneNumberTextWatcher(this.etPlacePhone));
 
         this.btAddOrEditPlace = findViewById(R.id.bt_add_edit_place);
 
@@ -291,10 +294,12 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
         }
 
         String placePhone = this.etPlacePhone.getText().toString();
-        if (TextUtils.isEmpty(placePhone)) {
-            this.etPlacePhone.setError(getString(R.string.enter_place_phone));
-            this.etPlacePhone.requestFocus();
-            return false;
+        if (!TextUtils.isEmpty(placePhone)) {
+            if (placePhone.length() < SystemConstants.MIN_PHONE_NUMBER_LENGTH) {
+                this.etPlacePhone.setError(getString(R.string.enter_valid_phone));
+                this.etPlacePhone.requestFocus();
+                return false;
+            }
         }
 
         String placeDescription = this.etPlaceDescription.getText().toString();

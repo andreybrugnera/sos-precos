@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -42,11 +43,12 @@ public class PlaceAdapter extends ArrayAdapter<Place> {
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.place_layout, null);
+            convertView = inflater.inflate(R.layout.place_list_item_layout, null);
 
-            TextView etName = convertView.findViewById(R.id.et_name);
-            TextView etDistance = convertView.findViewById(R.id.et_distance);
-            viewHolder = new ViewHolder(etName, etDistance);
+            TextView etName = convertView.findViewById(R.id.et_place_name);
+            RatingBar ratingBar = convertView.findViewById(R.id.rb_place_avg_score);
+            TextView etDistance = convertView.findViewById(R.id.et_place_distance);
+            viewHolder = new ViewHolder(etName, etDistance, ratingBar);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -54,6 +56,7 @@ public class PlaceAdapter extends ArrayAdapter<Place> {
 
         Place place = places.get(position);
         viewHolder.getName().setText(place.getName());
+        viewHolder.getRatingBar().setRating(place.getAverageScore());
         if (place.getDistanceFromCurrentLocation() != null) {
             viewHolder.getDistance().setText(NumberUtils.format(place.getDistanceFromCurrentLocation()) + " Km");
         }
@@ -63,10 +66,12 @@ public class PlaceAdapter extends ArrayAdapter<Place> {
     private class ViewHolder {
         private TextView name;
         private TextView distance;
+        private RatingBar ratingBar;
 
-        public ViewHolder(TextView name, TextView distance) {
+        public ViewHolder(TextView name, TextView distance, RatingBar ratingBar) {
             this.name = name;
             this.distance = distance;
+            this.ratingBar = ratingBar;
         }
 
         public TextView getName() {
@@ -77,8 +82,8 @@ public class PlaceAdapter extends ArrayAdapter<Place> {
             return distance;
         }
 
-        public void setDistance(TextView distance) {
-            this.distance = distance;
+        public RatingBar getRatingBar() {
+            return ratingBar;
         }
     }
 }

@@ -74,6 +74,7 @@
     <string name="description">Descrição</string>
     <string name="enter_place_name">Informe o nome do local</string>
     <string name="enter_place_phone">Informe o telefone do local</string>
+    <string name="enter_valid_phone">Informe um telefone válido</string>
     <string name="enter_place_description">Informe uma descrição para o local</string>
     <string name="enter_place_address">Informe o endereço do local</string>
     <string name="error_adding_place">Erro ao adicionar o local</string>

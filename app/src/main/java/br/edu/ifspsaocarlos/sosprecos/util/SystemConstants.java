@@ -7,6 +7,7 @@ public interface SystemConstants {
     int MAX_DISTANCE_IN_KILOMETERS = 20;
     String MAX_DIST_KM = "MAX_DIST_KM";
     String SHARED_PREFERENCES_FILE = "application_preferences";
+    int MIN_PHONE_NUMBER_LENGTH = 15;
 
     String PLACE = "place";
     String SERVICE = "service";
