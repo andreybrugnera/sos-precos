@@ -8,5 +8,6 @@
     <color name="button_background_color">#000000</color>
     <color name="link_text_color">#000000</color>
     <color name="focused_button_color">#ABABAB</color>
-    <color name="pressed_button_color">#ABABAB</color>
+    <color name="pressed_button_color">#EBEBEB</color>
+    <color name="list_background_color">#EDEDED</color>
 </resources>
