@@ -34,6 +34,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.CategoryPlace;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.model.PlaceRating;
 import br.edu.ifspsaocarlos.sosprecos.model.Rating;
+import br.edu.ifspsaocarlos.sosprecos.util.NumberUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.comparator.RatingComparator;
@@ -102,7 +103,7 @@ public class PlaceInfoActivity extends AppCompatActivity {
         ratingBar.setRating(place.getAverageScore());
 
         TextView tvScore = findViewById(R.id.tv_score);
-        tvScore.setText("(" + String.valueOf(place.getAverageScore()) + ")");
+        tvScore.setText("(" + String.valueOf(NumberUtils.format(place.getAverageScore())) + ")");
 
         TextView tvDescription = findViewById(R.id.tv_description);
         tvDescription.setText(place.getDescription());

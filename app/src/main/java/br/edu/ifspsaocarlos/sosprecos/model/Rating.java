@@ -13,6 +13,7 @@ public class Rating implements Serializable {
     private String userId;
     private String description;
     private Date registrationDate;
+    private String ownerId;
     private float priceScore;
     private float qualityScore;
     private float locationScore;
@@ -79,6 +80,14 @@ public class Rating implements Serializable {
 
     public void setLocationScore(float locationScore) {
         this.locationScore = locationScore;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     @Override

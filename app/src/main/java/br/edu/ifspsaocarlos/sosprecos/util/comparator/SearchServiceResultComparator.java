@@ -25,7 +25,7 @@ public class SearchServiceResultComparator implements Comparator<SearchServiceRe
             case ORDER_BY_PRICE:
                 return t1.getServicePrice().compareTo(t2.getServicePrice());
             case ORDER_BY_QUALITY:
-                return t1.getPlaceAverageScore().compareTo(t2.getPlaceAverageScore());
+                return t2.getPlaceAverageScore().compareTo(t1.getPlaceAverageScore());
             case ORDER_BY_LOCATION:
                 return t1.getDistanceFromCurrentLocation().compareTo(t2.getDistanceFromCurrentLocation());
         }

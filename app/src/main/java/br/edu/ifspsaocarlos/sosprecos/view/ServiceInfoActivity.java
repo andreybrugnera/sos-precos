@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -116,7 +117,10 @@ public class ServiceInfoActivity extends AppCompatActivity {
         tvDescription.setText(this.service.getDescription());
 
         TextView tvScore = findViewById(R.id.tv_score);
-        tvScore.setText("(" + String.valueOf(service.getAverageScore()) + ")");
+        tvScore.setText("(" + String.valueOf(NumberUtils.format(service.getAverageScore())) + ")");
+
+        RatingBar ratingBar = findViewById(R.id.rating_bar);
+        ratingBar.setRating(service.getAverageScore());
 
         TextView tvPrice = findViewById(R.id.tv_price);
         tvPrice.setText("$" + NumberUtils.format(this.service.getPrice()));

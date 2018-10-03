@@ -186,6 +186,7 @@ public class RatingPlaceActivity extends AppCompatActivity {
             rating.setRegistrationDate(new Date());
             rating.setUserId(SessionUtils.getCurrentUser().getUuid());
             rating.setUserName(SessionUtils.getCurrentUser().getName());
+            rating.setOwnerId(place.getId());
             return true;
         }
         return false;

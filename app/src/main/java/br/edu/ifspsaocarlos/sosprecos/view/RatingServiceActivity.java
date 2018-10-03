@@ -182,6 +182,7 @@ public class RatingServiceActivity extends AppCompatActivity {
             rating.setRegistrationDate(new Date());
             rating.setUserName(SessionUtils.getCurrentUser().getName());
             rating.setUserId(SessionUtils.getCurrentUser().getUuid());
+            rating.setOwnerId(service.getId());
             return true;
         }
         return false;
