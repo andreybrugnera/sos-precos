@@ -1,11 +1,14 @@
 package br.edu.ifspsaocarlos.sosprecos.view.login;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -25,7 +28,7 @@ import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.User;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
-public class RegisterActivity extends Activity {
+public class RegisterActivity extends AppCompatActivity {
 
     private AutoCompleteTextView acTvEmail;
     private EditText etName;
@@ -51,6 +54,25 @@ public class RegisterActivity extends Activity {
         this.userDao = new UserDao(this);
 
         this.auth = FirebaseAuth.getInstance();
+        configureToolbar();
+    }
+
+    private void configureToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
