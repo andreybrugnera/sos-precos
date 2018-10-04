@@ -48,14 +48,28 @@
         <activity
             android:name=".view.PlaceActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".view.PlaceInfoActivity" />
+        <activity
+            android:name=".view.PlaceInfoActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".view.maps.MapActivity" />
-        <activity android:name=".view.ServiceListActivity" />
-        <activity android:name=".view.ServiceActivity" />
-        <activity android:name=".view.RatingPlaceActivity" />
-        <activity android:name=".view.ServiceInfoActivity" />
-        <activity android:name=".view.RatingServiceActivity" />
-        <activity android:name=".view.SearchActivity"></activity>
+        <activity
+            android:name=".view.ServiceListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.ServiceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.RatingPlaceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.ServiceInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.RatingServiceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.SearchActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
