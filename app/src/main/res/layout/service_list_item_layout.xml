@@ -15,7 +15,7 @@
         android:paddingLeft="10dp">
 
         <TextView
-            android:id="@+id/et_place_name"
+            android:id="@+id/et_service_name"
             style="?android:textAppearanceListItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
         android:paddingEnd="10dp">
 
         <RatingBar
-            android:id="@+id/rb_place_avg_score"
+            android:id="@+id/rb_service_avg_score"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
             android:theme="@style/RatingBar" />
 
         <TextView
-            android:id="@+id/et_place_distance"
+            android:id="@+id/et_service_price"
             style="?android:textAppearanceListItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

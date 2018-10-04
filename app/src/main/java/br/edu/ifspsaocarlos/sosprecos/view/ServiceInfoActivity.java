@@ -33,6 +33,7 @@ import br.edu.ifspsaocarlos.sosprecos.model.Service;
 import br.edu.ifspsaocarlos.sosprecos.model.ServiceRating;
 import br.edu.ifspsaocarlos.sosprecos.util.NumberUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
+import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.comparator.RatingComparator;
 
 public class ServiceInfoActivity extends AppCompatActivity {
@@ -77,6 +78,7 @@ public class ServiceInfoActivity extends AppCompatActivity {
     private void configureListAdapter() {
         this.listAdapter = new RatingInformationAdapter(this, R.id.list_view, ratingsList);
         this.listView.setAdapter(listAdapter);
+        ViewUtils.setListViewHeightBasedOnItems(this.listView);
     }
 
     /**
@@ -190,6 +192,7 @@ public class ServiceInfoActivity extends AppCompatActivity {
                                 //All ratings loaded
                                 Collections.sort(ratingsList, new RatingComparator(RatingComparator.ORDER_BY_DATE_DESC));
                                 listAdapter.notifyDataSetChanged();
+                                ViewUtils.setListViewHeightBasedOnItems(listView);
                             }
                         }
 

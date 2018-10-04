@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_weight="2"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="10dp">
 
         <TextView
             android:id="@+id/et_place_name"
@@ -20,10 +21,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="start"
-            android:paddingBottom="5dp"
-            android:paddingEnd="0dp"
             android:paddingStart="2dp"
             android:paddingTop="0dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="5dp"
             android:textColor="@color/input_text_color"
             android:textStyle="italic|bold" />
 
@@ -34,10 +35,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="start"
-            android:paddingBottom="5dp"
-            android:paddingEnd="0dp"
             android:paddingStart="2dp"
             android:paddingTop="5dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="5dp"
             android:textColor="@color/input_text_color" />
 
         <TextView
@@ -47,10 +48,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="start"
-            android:paddingBottom="10dp"
-            android:paddingEnd="0dp"
             android:paddingStart="2dp"
             android:paddingTop="0dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="10dp"
             android:textColor="@color/input_text_color" />
     </LinearLayout>
 
@@ -59,7 +60,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_weight="2"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingEnd="10dp">
 
         <RatingBar
             android:id="@+id/rb_place_avg_score"
@@ -69,10 +71,10 @@
             android:layout_gravity="end"
             android:layout_weight="2"
             android:numStars="5"
-            android:paddingBottom="10dp"
-            android:paddingEnd="2dp"
             android:paddingStart="0dp"
             android:paddingTop="5dp"
+            android:paddingEnd="2dp"
+            android:paddingBottom="10dp"
             android:stepSize="0.5"
             android:textColor="@color/label_text_color"
             android:theme="@style/RatingBar" />
@@ -84,10 +86,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_weight="2"
-            android:paddingBottom="10dp"
-            android:paddingEnd="2dp"
             android:paddingStart="0dp"
             android:paddingTop="5dp"
+            android:paddingEnd="2dp"
+            android:paddingBottom="10dp"
             android:textColor="@color/input_text_color" />
     </LinearLayout>
 

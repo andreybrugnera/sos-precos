@@ -87,6 +87,7 @@ public class PlaceInfoActivity extends AppCompatActivity {
     private void configureListAdapter() {
         this.listAdapter = new RatingInformationAdapter(this, R.id.list_view, ratingsList);
         this.listView.setAdapter(listAdapter);
+        ViewUtils.setListViewHeightBasedOnItems(this.listView);
     }
 
     private void updateUI() {
@@ -270,6 +271,7 @@ public class PlaceInfoActivity extends AppCompatActivity {
                                 //All ratings loaded
                                 Collections.sort(ratingsList, new RatingComparator(RatingComparator.ORDER_BY_DATE_DESC));
                                 listAdapter.notifyDataSetChanged();
+                                ViewUtils.setListViewHeightBasedOnItems(listView);
                             }
                         }
 

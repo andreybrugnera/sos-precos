@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -42,12 +43,13 @@ public class ServiceAdapter extends ArrayAdapter<Service> {
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.service_layout, null);
+            convertView = inflater.inflate(R.layout.service_list_item_layout, null);
 
-            TextView etName = convertView.findViewById(R.id.et_name);
-            TextView etPrice = convertView.findViewById(R.id.et_price);
+            TextView etName = convertView.findViewById(R.id.et_service_name);
+            RatingBar ratingBar = convertView.findViewById(R.id.rb_service_avg_score);
+            TextView etPrice = convertView.findViewById(R.id.et_service_price);
 
-            viewHolder = new ServiceAdapter.ViewHolder(etName, etPrice);
+            viewHolder = new ServiceAdapter.ViewHolder(etName, ratingBar, etPrice);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ServiceAdapter.ViewHolder) convertView.getTag();
@@ -55,6 +57,7 @@ public class ServiceAdapter extends ArrayAdapter<Service> {
 
         Service service = services.get(position);
         viewHolder.getName().setText(service.getName());
+        viewHolder.getRatingBar().setRating(service.getAverageScore());
         viewHolder.getPrice().setText("$" + NumberUtils.format(service.getPrice()));
 
         return convertView;
@@ -62,15 +65,21 @@ public class ServiceAdapter extends ArrayAdapter<Service> {
 
     private class ViewHolder {
         private TextView name;
+        private RatingBar ratingBar;
         private TextView price;
 
-        public ViewHolder(TextView name, TextView price) {
+        public ViewHolder(TextView name, RatingBar ratingBar, TextView price) {
             this.name = name;
+            this.ratingBar = ratingBar;
             this.price = price;
         }
 
         public TextView getName() {
             return name;
+        }
+
+        public RatingBar getRatingBar() {
+            return ratingBar;
         }
 
         public TextView getPrice() {
