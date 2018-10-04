@@ -45,6 +45,7 @@ import br.edu.ifspsaocarlos.sosprecos.dao.GeoFireHelper;
 import br.edu.ifspsaocarlos.sosprecos.dao.PlaceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
+import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
@@ -160,6 +161,11 @@ public class PlaceListFragment extends Fragment implements LocationListener {
     }
 
     private void removeSelectedPlace(final AdapterView.AdapterContextMenuInfo info) {
+        final Place selectedPlace = listAdapter.getItem(info.position);
+        if (!selectedPlace.getUserId().equals(SessionUtils.getCurrentUser().getUuid())) {
+            ViewUtils.showAlertDialog(getActivity(), getString(R.string.access_denied), getString(R.string.only_owner_can_remove_selected_item));
+            return;
+        }
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext(), R.style.AlertDialog);
         dialog.setTitle(getString(R.string.remove_place));
         dialog.setMessage(getString(R.string.confirm_remove_place));
@@ -169,7 +175,6 @@ public class PlaceListFragment extends Fragment implements LocationListener {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 ViewUtils.showProgressBar(progressBarHolder);
-                selectedPlace = listAdapter.getItem(info.position);
                 try {
                     placeDao.delete(selectedPlace);
                     places.remove(selectedPlace);

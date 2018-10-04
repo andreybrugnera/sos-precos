@@ -38,7 +38,6 @@ public class PlaceDao extends FirebaseHelper<Place> {
     @Override
     public void update(Place place) throws DaoException {
         validate(place, true);
-        place.setUserId(SessionUtils.getCurrentUser().getUuid());
         update(place.getId(), place);
     }
 

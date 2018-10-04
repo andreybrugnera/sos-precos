@@ -1,5 +1,8 @@
 package br.edu.ifspsaocarlos.sosprecos.util;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -9,6 +12,8 @@ import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+
+import br.edu.ifspsaocarlos.sosprecos.R;
 
 /**
  * Created by Andrey R. Brugnera on 22/08/2018.
@@ -33,6 +38,20 @@ public class ViewUtils {
         outAnimation.setDuration(200);
         progressBarHolder.setAnimation(outAnimation);
         progressBarHolder.setVisibility(View.GONE);
+    }
+
+    public static void showAlertDialog(Context context, String title, String message) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.AlertDialog);
+        dialog.setTitle(title);
+        dialog.setMessage(message);
+        dialog.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     public static void setListViewHeightBasedOnItems(ListView listView) {

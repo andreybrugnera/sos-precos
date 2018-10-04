@@ -35,6 +35,7 @@ import br.edu.ifspsaocarlos.sosprecos.dao.ServiceDao;
 import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
+import br.edu.ifspsaocarlos.sosprecos.util.SessionUtils;
 import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
 import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
@@ -165,6 +166,11 @@ public class ServiceListActivity extends AppCompatActivity {
     }
 
     private void removeSelectedService(final AdapterView.AdapterContextMenuInfo info) {
+        final Service selectedService = listAdapter.getItem(info.position);
+        if (!selectedService.getUserId().equals(SessionUtils.getCurrentUser().getUuid())) {
+            ViewUtils.showAlertDialog(this, getString(R.string.access_denied), getString(R.string.only_owner_can_remove_selected_item));
+            return;
+        }
         AlertDialog.Builder dialog = new AlertDialog.Builder(this, R.style.AlertDialog);
         dialog.setTitle(getString(R.string.remove_service));
         dialog.setMessage(getString(R.string.confirm_remove_service));
@@ -174,7 +180,6 @@ public class ServiceListActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 ViewUtils.showProgressBar(progressBarHolder);
-                selectedService = listAdapter.getItem(info.position);
                 try {
                     serviceDao.delete(selectedService);
                     services.remove(selectedService);

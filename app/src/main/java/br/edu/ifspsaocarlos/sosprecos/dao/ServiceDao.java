@@ -38,7 +38,6 @@ public class ServiceDao extends FirebaseHelper<Service> {
     @Override
     public void update(Service service) throws DaoException{
         validate(service, true);
-        service.setUserId(SessionUtils.getCurrentUser().getUuid());
         update(service.getId(), service);
     }
 
