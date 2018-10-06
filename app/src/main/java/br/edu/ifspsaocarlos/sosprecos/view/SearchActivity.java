@@ -402,9 +402,14 @@ public class SearchActivity extends AppCompatActivity implements LocationListene
             }
             updateTotalPlacesChecked();
             if (hasAllPlacesChecked()) {
-                updateResultsLocation();
-                orderResults();
-                ViewUtils.hideProgressBar(progressBarHolder);
+                if (results.isEmpty()) {
+                    ViewUtils.hideProgressBar(progressBarHolder);
+                    showNoResultsFoundAlert();
+                } else {
+                    updateResultsLocation();
+                    orderResults();
+                    ViewUtils.hideProgressBar(progressBarHolder);
+                }
             }
         }
 
@@ -414,5 +419,9 @@ public class SearchActivity extends AppCompatActivity implements LocationListene
             Log.e(LOG_TAG, databaseError.getDetails());
             ViewUtils.hideProgressBar(progressBarHolder);
         }
+    }
+
+    private void showNoResultsFoundAlert() {
+        ViewUtils.showAlertDialog(this, getString(R.string.ops), getString(R.string.no_results_found));
     }
 }

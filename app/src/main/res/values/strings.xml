@@ -123,4 +123,6 @@
     <string name="geofire_error_fetching_location_data">Erro ao buscar os locais com GeoFire</string>
     <string name="access_denied">Acesso negado</string>
     <string name="only_owner_can_remove_selected_item">Apenas o usuário criador pode remover o item selecionado</string>
+    <string name="ops">Ops!</string>
+    <string name="no_results_found">Nenhum resultado encontrado</string>
 </resources>
