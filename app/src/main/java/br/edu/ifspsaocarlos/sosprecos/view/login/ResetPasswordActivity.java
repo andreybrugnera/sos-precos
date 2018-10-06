@@ -36,6 +36,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         this.auth = FirebaseAuth.getInstance();
         configureToolbar();
+        ViewUtils.hideKeyboard(this);
     }
 
     private void configureToolbar() {

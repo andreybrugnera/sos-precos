@@ -61,6 +61,7 @@ public class CategoryActivity extends AppCompatActivity {
         configureToolbar();
         defineOperation();
         loadCategories();
+        ViewUtils.hideKeyboard(this);
     }
 
     private void configureToolbar() {

@@ -66,6 +66,7 @@ public class LoginActivity extends Activity {
     private void updateUI() {
         String userEmail = sharedPreferences.getString(SystemConstants.USER_EMAIL, "");
         this.acTvEmail.setText(userEmail);
+        ViewUtils.hideKeyboard(this);
     }
 
     private void saveUserEmail() {

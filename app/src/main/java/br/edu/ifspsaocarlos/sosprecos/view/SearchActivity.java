@@ -152,6 +152,7 @@ public class SearchActivity extends AppCompatActivity implements LocationListene
         checkLocationAccessPermission();
         configureListAdapter();
         loadCurrentLocation();
+        ViewUtils.hideKeyboard(this);
     }
 
     private void openServiceInfo(SearchServiceResultDto item) {

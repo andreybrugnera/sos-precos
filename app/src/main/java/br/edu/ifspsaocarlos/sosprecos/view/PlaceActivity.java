@@ -135,6 +135,7 @@ public class PlaceActivity extends AppCompatActivity implements LocationListener
         configureToolbar();
         defineOperation();
         checkLocationAccessPermission();
+        ViewUtils.hideKeyboard(this);
     }
 
     private void configureCategorySpinner() {

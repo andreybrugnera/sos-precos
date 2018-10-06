@@ -21,6 +21,7 @@ import br.edu.ifspsaocarlos.sosprecos.dao.exception.DaoException;
 import br.edu.ifspsaocarlos.sosprecos.model.Place;
 import br.edu.ifspsaocarlos.sosprecos.model.Service;
 import br.edu.ifspsaocarlos.sosprecos.util.SystemConstants;
+import br.edu.ifspsaocarlos.sosprecos.util.ViewUtils;
 
 public class ServiceActivity extends AppCompatActivity {
     private static final String LOG_TAG = "ADD_EDIT_SERVICE";
@@ -60,6 +61,7 @@ public class ServiceActivity extends AppCompatActivity {
 
         configureToolbar();
         defineOperation();
+        ViewUtils.hideKeyboard(this);
     }
 
     private void configureToolbar() {
