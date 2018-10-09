@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -22,7 +23,9 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,6 +64,10 @@ public class PlaceListFragment extends Fragment implements LocationListener {
     private ListView placesListView;
     private PlaceAdapter listAdapter;
     private TextView viewTitle;
+    private ImageView ivSearch;
+    private EditText etSearch;
+
+    private String searchString;
 
     private PlaceDao placeDao;
     private List<Place> places;
@@ -93,6 +100,8 @@ public class PlaceListFragment extends Fragment implements LocationListener {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         this.progressBarHolder = getView().findViewById(R.id.progress_bar_holder);
         this.placesListView = getView().findViewById(R.id.list_view);
+        this.etSearch = getView().findViewById(R.id.et_search);
+        this.ivSearch = getView().findViewById(R.id.iv_search);
         this.viewTitle = getView().findViewById(R.id.list_title);
         this.viewTitle.setText(getString(R.string.places));
 
@@ -115,10 +124,73 @@ public class PlaceListFragment extends Fragment implements LocationListener {
             }
         });
 
+        this.ivSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchString = etSearch.getText().toString();
+                if (validateSearchString(searchString)) {
+                    search();
+                } else {
+                    loadPlaces();
+                }
+            }
+        });
+
         configureListAdapter();
         registerForContextMenu(this.placesListView);
         checkLocationAccessPermission();
         loadPlaces();
+    }
+
+    private boolean validateSearchString(String searchString) {
+        if (TextUtils.isEmpty(searchString)) {
+            return false;
+        }
+        return true;
+    }
+
+    private void search() {
+        ViewUtils.showProgressBar(progressBarHolder);
+        Log.i(LOG_TAG, getString(R.string.searching) + " > " + searchString);
+
+        this.searchString = etSearch.getText().toString().toUpperCase();
+
+        placeDao.getDatabaseReference().addListenerForSingleValueEvent(
+                new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        places.clear();
+                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                        for (DataSnapshot child : children) {
+                            Place place = child.getValue(Place.class);
+                            if (place.getName().toUpperCase().contains(searchString)) {
+                                places.add(place);
+                            }
+                        }
+                        if (!places.isEmpty()) {
+                            sortPlacesByName();
+                            loadCurrentLocation();
+                            listAdapter.notifyDataSetChanged();
+                            ViewUtils.hideProgressBar(progressBarHolder);
+                        } else {
+                            listAdapter.notifyDataSetChanged();
+                            ViewUtils.hideProgressBar(progressBarHolder);
+                            showNoResultsFoundAlert();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(LOG_TAG, databaseError.getMessage());
+                        Log.e(LOG_TAG, databaseError.getDetails());
+                        ViewUtils.hideProgressBar(progressBarHolder);
+                    }
+                });
+    }
+
+    private void showNoResultsFoundAlert() {
+        ViewUtils.showAlertDialog(getView().getContext(), getString(R.string.ops), getString(R.string.no_results_found));
     }
 
     private void openPlaceInfo(Place place) {
@@ -200,7 +272,7 @@ public class PlaceListFragment extends Fragment implements LocationListener {
         dialog.show();
     }
 
-    private void removePlaceLocation(Place place){
+    private void removePlaceLocation(Place place) {
         GeoFireHelper.getGeoFire().removeLocation(place.getId(), new GeoFire.CompletionListener() {
 
             @Override

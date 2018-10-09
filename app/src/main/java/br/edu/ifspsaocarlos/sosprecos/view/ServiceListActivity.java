@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -14,7 +15,9 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +51,10 @@ public class ServiceListActivity extends AppCompatActivity {
     private ListView servicesListView;
     private ServiceAdapter listAdapter;
     private TextView viewTitle;
+    private ImageView ivSearch;
+    private EditText etSearch;
+
+    private String searchString;
 
     private ServiceDao serviceDao;
     private List<Service> services;
@@ -70,6 +77,8 @@ public class ServiceListActivity extends AppCompatActivity {
         this.progressBarHolder = findViewById(R.id.progress_bar_holder);
         this.servicesListView = findViewById(R.id.list_view);
         this.viewTitle = findViewById(R.id.list_title);
+        this.etSearch = findViewById(R.id.et_search);
+        this.ivSearch = findViewById(R.id.iv_search);
         this.viewTitle.setText(getString(R.string.services));
 
         this.btAddService = findViewById(R.id.bt_add_edit_item);
@@ -102,10 +111,72 @@ public class ServiceListActivity extends AppCompatActivity {
             }
         });
 
+        this.ivSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchString = etSearch.getText().toString();
+                if (validateSearchString(searchString)) {
+                    search(place.getId());
+                } else {
+                    loadServices(place.getId());
+                }
+            }
+        });
+
         configureToolbar();
         configureListAdapter();
         registerForContextMenu(this.servicesListView);
         loadServices(place.getId());
+    }
+
+    private boolean validateSearchString(String searchString) {
+        if (TextUtils.isEmpty(searchString)) {
+            return false;
+        }
+        return true;
+    }
+
+    public void search(final String placeId) {
+        ViewUtils.showProgressBar(progressBarHolder);
+        Log.i(LOG_TAG, getString(R.string.searching) + " > " + searchString);
+
+        searchString = searchString.toUpperCase();
+
+        Query query = serviceDao.getDatabaseReference().orderByChild("placeId").equalTo(placeId);
+        query.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        services.clear();
+                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                        for (DataSnapshot child : children) {
+                            Service service = child.getValue(Service.class);
+                            if (service.getName().toUpperCase().contains(searchString) ||
+                                    service.getDescription().toUpperCase().contains(searchString)) {
+                                services.add(service);
+                            }
+                        }
+                        if (!services.isEmpty()) {
+                            sortServicesByName();
+                            ViewUtils.hideProgressBar(progressBarHolder);
+                        } else {
+                            ViewUtils.hideProgressBar(progressBarHolder);
+                            showNoResultsFoundAlert();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(LOG_TAG, databaseError.getMessage());
+                        Log.e(LOG_TAG, databaseError.getDetails());
+                        ViewUtils.hideProgressBar(progressBarHolder);
+                    }
+                });
+    }
+
+    private void showNoResultsFoundAlert() {
+        ViewUtils.showAlertDialog(this, getString(R.string.ops), getString(R.string.no_results_found));
     }
 
     private void configureToolbar() {
@@ -214,6 +285,7 @@ public class ServiceListActivity extends AppCompatActivity {
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        services.clear();
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
                             Service service = child.getValue(Service.class);
