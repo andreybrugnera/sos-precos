@@ -127,6 +127,7 @@ public class ServiceListActivity extends AppCompatActivity {
         configureListAdapter();
         registerForContextMenu(this.servicesListView);
         loadServices(place.getId());
+        ViewUtils.hideKeyboard(this);
     }
 
     private boolean validateSearchString(String searchString) {
@@ -323,11 +324,8 @@ public class ServiceListActivity extends AppCompatActivity {
         this.servicesListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
-                if (btAddService.getVisibility() == View.VISIBLE) {
-                    btAddService.setVisibility(View.GONE);
-                } else {
-                    btAddService.setVisibility(View.VISIBLE);
-                }
+                int visibility = btAddService.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE;
+                btAddService.setVisibility(visibility);
             }
 
             @Override

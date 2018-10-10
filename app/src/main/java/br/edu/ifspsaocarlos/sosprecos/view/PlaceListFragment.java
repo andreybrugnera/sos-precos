@@ -140,6 +140,7 @@ public class PlaceListFragment extends Fragment implements LocationListener {
         registerForContextMenu(this.placesListView);
         checkLocationAccessPermission();
         loadPlaces();
+        ViewUtils.hideKeyboard(getActivity());
     }
 
     private boolean validateSearchString(String searchString) {
@@ -370,11 +371,8 @@ public class PlaceListFragment extends Fragment implements LocationListener {
         this.placesListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
-                if (btAddPlace.getVisibility() == View.VISIBLE) {
-                    btAddPlace.setVisibility(View.GONE);
-                } else {
-                    btAddPlace.setVisibility(View.VISIBLE);
-                }
+                int visibility = btAddPlace.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE;
+                btAddPlace.setVisibility(visibility);
             }
 
             @Override
