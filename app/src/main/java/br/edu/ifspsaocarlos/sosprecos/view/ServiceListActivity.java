@@ -323,9 +323,15 @@ public class ServiceListActivity extends AppCompatActivity {
 
         this.servicesListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView absListView, int i) {
-                int visibility = btAddService.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE;
-                btAddService.setVisibility(visibility);
+            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
+                int initPosY = btAddService.getScrollY();
+                if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
+                    btAddService.animate().cancel();
+                    btAddService.animate().translationYBy(150);
+                } else {
+                    btAddService.animate().cancel();
+                    btAddService.animate().translationY(initPosY);
+                }
             }
 
             @Override

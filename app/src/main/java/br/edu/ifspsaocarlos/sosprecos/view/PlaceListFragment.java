@@ -370,9 +370,15 @@ public class PlaceListFragment extends Fragment implements LocationListener {
 
         this.placesListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView absListView, int i) {
-                int visibility = btAddPlace.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE;
-                btAddPlace.setVisibility(visibility);
+            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
+                int initPosY = btAddPlace.getScrollY();
+                if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
+                    btAddPlace.animate().cancel();
+                    btAddPlace.animate().translationYBy(150);
+                } else {
+                    btAddPlace.animate().cancel();
+                    btAddPlace.animate().translationY(initPosY);
+                }
             }
 
             @Override
